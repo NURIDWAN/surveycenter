@@ -169,11 +169,31 @@ class User extends Authenticatable
         return $this->hasMany(TopupTransaction::class);
     }
 
+    public function wallet()
+    {
+        return $this->hasOne(Wallet::class);
+    }
+
+    public function walletTransactions()
+    {
+        return $this->hasMany(WalletTransaction::class);
+    }
+
     /**
-     * Get user's current deposit balance (Total Top Up - Total Survey Paid)
+     * Get user's current deposit balance.
      */
     public function getDepositBalanceAttribute(): int
     {
+        if ($this->relationLoaded('wallet') && $this->wallet) {
+            return (int) $this->wallet->balance;
+        }
+
+        $wallet = $this->wallet()->first();
+
+        if ($wallet) {
+            return (int) $wallet->balance;
+        }
+
         $totalTopup = (int) $this->topupTransactions()
             ->where('status', TopupTransaction::STATUS_PAID)
             ->sum('amount');

@@ -167,9 +167,9 @@
                 <div x-show="sidebarOpen" x-transition:enter="transition-opacity duration-200" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100">
                     <p class="text-2xs font-semibold uppercase tracking-[0.15em] text-orange-200 mb-1">Saldo Deposit</p>
                     <p class="text-lg font-bold text-white mb-2.5">Rp {{ number_format(auth()->user()->deposit_balance ?? 0, 0, ',', '.') }}</p>
-                    <a href="{{ route('user.topups.create') }}" class="flex items-center justify-center gap-1.5 w-full py-1.5 rounded-lg bg-white/10 text-white hover:bg-white transition text-xs font-semibold hover:text-orange-600 border border-white/20 shadow-sm">
-                        <i data-lucide="plus" class="w-3.5 h-3.5"></i>
-                        Top Up
+                    <a href="{{ route('user.wallet.index') }}" class="flex items-center justify-center gap-1.5 w-full py-1.5 rounded-lg bg-white/10 text-white hover:bg-white transition text-xs font-semibold hover:text-orange-600 border border-white/20 shadow-sm">
+                        <i data-lucide="wallet" class="w-3.5 h-3.5"></i>
+                        Wallet
                     </a>
                 </div>
 
@@ -191,6 +191,7 @@
                         ['route' => 'user.surveys.index', 'is' => 'user.surveys.*', 'icon' => 'clipboard-list', 'label' => 'Survey Saya'],
                         ['route' => 'user.surveys.create', 'is' => 'user.surveys.create', 'icon' => 'plus-circle', 'label' => 'Buat Survey'],
                         ['route' => 'user.transactions.index', 'is' => 'user.transactions.*', 'icon' => 'receipt', 'label' => 'Transaksi'],
+                        ['route' => 'user.wallet.index', 'is' => 'user.wallet.*', 'icon' => 'wallet', 'label' => 'Wallet'],
                         ['route' => 'user.analytics', 'is' => 'user.analytics', 'icon' => 'bar-chart-2', 'label' => 'Analytics'],
                         ['route' => 'user.rewards.index', 'is' => 'user.rewards.*', 'icon' => 'gift', 'label' => 'Reward & Poin'],
                         ['route' => 'user.affiliate.index', 'is' => 'user.affiliate.*', 'icon' => 'share-2', 'label' => 'Affiliate'],

@@ -74,6 +74,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/history', [TransactionController::class, 'history'])
         ->name('user.history');
 
+    Route::get('/wallet', [\App\Http\Controllers\User\WalletController::class, 'index'])
+        ->name('user.wallet.index');
+
     Route::get('/profile', [ProfileController::class, 'show'])->name('user.profile.show');
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('user.profile.edit');
     Route::post('/profile', [ProfileController::class, 'update'])->name('user.profile.update');

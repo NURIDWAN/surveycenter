@@ -131,8 +131,8 @@
                     </div>
                 </div>
                 <div class="flex gap-2">
-                    <a href="{{ route('user.topups.index') }}" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-white border border-emerald-200 text-emerald-700 text-xs font-semibold hover:bg-emerald-50 transition shadow-sm">
-                        Riwayat
+                    <a href="{{ route('user.wallet.index') }}" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-white border border-emerald-200 text-emerald-700 text-xs font-semibold hover:bg-emerald-50 transition shadow-sm">
+                        Wallet
                     </a>
                     <a href="{{ route('user.topups.create') }}" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-600 text-white text-xs font-semibold hover:bg-emerald-700 transition shadow-sm">
                         <i data-lucide="plus" class="w-4 h-4"></i>

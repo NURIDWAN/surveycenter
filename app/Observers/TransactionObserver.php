@@ -6,6 +6,8 @@ use App\Models\PointTransaction;
 use App\Models\ReferralCommission;
 use App\Models\Transaction;
 use App\Models\User;
+use App\Services\WalletService;
+use Illuminate\Support\Facades\Log;
 
 class TransactionObserver
 {
@@ -20,8 +22,28 @@ class TransactionObserver
             $transaction->status === Transaction::STATUS_PAID &&
             $transaction->getOriginal('status') !== Transaction::STATUS_PAID
         ) {
+            $this->debitWalletIfPaidBySaldo($transaction);
             $this->awardPoints($transaction);
             $this->awardReferralCommission($transaction);
+        }
+    }
+
+    private function debitWalletIfPaidBySaldo(Transaction $transaction): void
+    {
+        if ($transaction->payment_method !== 'saldo') {
+            return;
+        }
+
+        try {
+            app(WalletService::class)->debitPaidSaldoTransaction($transaction);
+        } catch (\Throwable $e) {
+            Log::error('Failed to debit wallet from transaction', [
+                'transaction_id' => $transaction->id,
+                'user_id' => $transaction->user_id,
+                'error' => $e->getMessage(),
+            ]);
+
+            throw $e;
         }
     }
 

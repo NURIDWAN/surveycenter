@@ -8,6 +8,7 @@ use App\Mail\PaymentSuccessMail;
 use App\Models\Transaction;
 use App\Services\FaspayService;
 use App\Services\SingaPayService;
+use App\Services\WalletService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -56,10 +57,12 @@ class PaymentController extends Controller
             return back()->with('error', 'Saldo tidak mencukupi. Silakan lakukan Top Up terlebih dahulu.');
         }
 
-        $transaction->update([
-            'payment_method' => 'saldo',
-            'status' => Transaction::STATUS_PAID,
-        ]);
+        try {
+            app(WalletService::class)->payTransactionWithWallet($transaction, Auth::user());
+            $transaction->refresh();
+        } catch (\RuntimeException $e) {
+            return back()->with('error', $e->getMessage());
+        }
 
         Log::info('Payment processed with balance', [
             'transaction_id' => $transaction->id,

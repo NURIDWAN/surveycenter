@@ -7,9 +7,11 @@ use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Models\Transaction;
+use App\Models\TopupTransaction;
 use App\Models\Layanan;
 use App\Models\Setting;
 use App\Observers\TransactionObserver;
+use App\Observers\TopupTransactionObserver;
 
 
 class AppServiceProvider extends ServiceProvider
@@ -28,6 +30,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Transaction::observe(TransactionObserver::class);
+        TopupTransaction::observe(TopupTransactionObserver::class);
 
         // Map route names → seo slugs stored in settings table
         $seoSlugMap = [
