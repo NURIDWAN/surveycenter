@@ -79,7 +79,7 @@
             transform: translateY(-50%);
             width: 3px;
             height: 60%;
-            background: #fff;
+            background: #ea580c;
             border-radius: 0 3px 3px 0;
         }
 
@@ -132,131 +132,126 @@
                 sidebarOpen ? 'w-[260px]' : 'w-[70px]',
                 mobileSidebar ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
             ]"
-            class="fixed lg:relative inset-y-0 left-0 z-50 flex flex-col sidebar-gradient text-white transition-all duration-300 ease-in-out shadow-xl shadow-orange-900/20">
+            class="fixed lg:relative inset-y-0 left-0 z-50 flex flex-col bg-white border-r border-gray-200/80 text-gray-700 transition-all duration-300 ease-in-out shadow-sm">
 
             {{-- Floating Toggle Button --}}
             <button @click="sidebarOpen = !sidebarOpen"
-                class="absolute -right-3 top-6 w-6 h-6 bg-white rounded-full hidden lg:flex items-center justify-center text-gray-700 hover:text-orange-600 shadow-md border border-gray-200 z-[60] hover:scale-110 transition-all">
+                class="absolute -right-3 top-6 w-6 h-6 bg-white rounded-full hidden lg:flex items-center justify-center text-gray-400 hover:text-orange-600 shadow-md border border-gray-200 z-[60] hover:scale-110 transition-all">
                 <i x-show="sidebarOpen" data-lucide="chevron-left" class="w-3.5 h-3.5"></i>
                 <i x-show="!sidebarOpen" data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
             </button>
 
             {{-- Logo --}}
-            <div class="flex items-center h-[64px] px-4 flex-shrink-0" :class="sidebarOpen ? 'justify-start' : 'justify-center'">
+            <div class="flex items-center h-[64px] px-5 flex-shrink-0" :class="sidebarOpen ? 'justify-start' : 'justify-center'">
                 <a href="{{ url('/') }}" class="flex items-center gap-3 min-w-0">
-                    <div class="w-9 h-9 rounded-xl bg-white/20 backdrop-blur flex items-center justify-center flex-shrink-0 shadow-lg p-1">
+                    <div class="w-9 h-9 rounded-xl bg-orange-50 flex items-center justify-center flex-shrink-0 shadow-sm p-1.5 border border-orange-100">
                         <img src="{{ asset('assets/logosc.png') }}" alt="SurveyCenter Logo" class="w-full h-full object-contain">
                     </div>
                     <div x-show="sidebarOpen" x-transition:enter="transition-opacity duration-200" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" class="min-w-0">
-                        <span class="font-bold text-[13px] tracking-wide text-white block">SurveyCenter</span>
-                        <span class="text-2xs text-orange-200 font-medium">User Dashboard</span>
+                        <span class="font-bold text-[14px] tracking-wide text-gray-900 block">SurveyCenter</span>
+                        <span class="text-[10px] text-gray-400 font-medium">User Dashboard</span>
                     </div>
                 </a>
-                <button @click="mobileSidebar = false" class="ml-auto w-7 h-7 rounded-lg hover:bg-white/10 transition lg:hidden flex items-center justify-center">
-                    <i data-lucide="x" class="w-4 h-4 text-orange-200"></i>
+                <button @click="mobileSidebar = false" class="ml-auto w-7 h-7 rounded-lg hover:bg-gray-100 transition lg:hidden flex items-center justify-center">
+                    <i data-lucide="x" class="w-4 h-4 text-gray-400"></i>
                 </button>
             </div>
 
-            <div class="mx-4 border-t border-white/20"></div>
-
-            {{-- Saldo Widget --}}
-            @auth
-            <div class="mx-3 mt-4 mb-1 p-3 rounded-xl bg-white/10 border border-white/10 relative overflow-hidden group">
-                <div class="absolute top-0 right-0 w-16 h-16 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/4 blur-lg"></div>
-                
-                <div x-show="sidebarOpen" x-transition:enter="transition-opacity duration-200" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100">
-                    <p class="text-2xs font-semibold uppercase tracking-[0.15em] text-orange-200 mb-1">Saldo Deposit</p>
-                    <p class="text-lg font-bold text-white mb-2.5">Rp {{ number_format(auth()->user()->deposit_balance ?? 0, 0, ',', '.') }}</p>
-                    <a href="{{ route('user.wallet.index') }}" class="flex items-center justify-center gap-1.5 w-full py-1.5 rounded-lg bg-white/10 text-white hover:bg-white transition text-xs font-semibold hover:text-orange-600 border border-white/20 shadow-sm">
-                        <i data-lucide="wallet" class="w-3.5 h-3.5"></i>
-                        Wallet
-                    </a>
-                </div>
-
-                <div x-show="!sidebarOpen" class="flex flex-col items-center justify-center relative cursor-pointer" @click="sidebarOpen = true" x-transition:enter="transition-opacity duration-200" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100">
-                    <i data-lucide="wallet" class="w-5 h-5 text-orange-200 group-hover:text-white transition"></i>
-                </div>
-            </div>
-            @endauth
+            <div class="mx-5 border-t border-gray-100"></div>
 
             {{-- Navigation --}}
-            <nav class="flex-1 px-3 py-5 space-y-0.5 overflow-y-auto sidebar-scroll">
-
-                <p x-show="sidebarOpen" class="px-3 mb-3 text-2xs font-semibold uppercase tracking-[0.15em] text-orange-200">Menu</p>
-                <div x-show="!sidebarOpen" class="mb-2 mx-3 border-t border-white/10"></div>
+            <nav class="flex-1 px-3 py-5 space-y-5 overflow-y-auto sidebar-scroll">
 
                 @php
-                    $userLinks = [
-                        ['route' => 'user.dashboard', 'is' => 'user.dashboard', 'icon' => 'layout-dashboard', 'label' => 'Dashboard'],
-                        ['route' => 'user.surveys.index', 'is' => 'user.surveys.*', 'icon' => 'clipboard-list', 'label' => 'Survey Saya'],
-                        ['route' => 'user.surveys.create', 'is' => 'user.surveys.create', 'icon' => 'plus-circle', 'label' => 'Buat Survey'],
-                        ['route' => 'user.transactions.index', 'is' => 'user.transactions.*', 'icon' => 'receipt', 'label' => 'Transaksi'],
-                        ['route' => 'user.wallet.index', 'is' => 'user.wallet.*', 'icon' => 'wallet', 'label' => 'Wallet'],
-                        ['route' => 'user.analytics', 'is' => 'user.analytics', 'icon' => 'bar-chart-2', 'label' => 'Analytics'],
-                        ['route' => 'user.rewards.index', 'is' => 'user.rewards.*', 'icon' => 'gift', 'label' => 'Reward & Poin'],
-                        ['route' => 'user.affiliate.index', 'is' => 'user.affiliate.*', 'icon' => 'share-2', 'label' => 'Affiliate'],
+                    $menuGroups = [
+                        'SURVEY' => [
+                            ['route' => 'user.dashboard', 'is' => 'user.dashboard', 'icon' => 'layout-dashboard', 'label' => 'Dashboard'],
+                            ['route' => 'user.surveys.index', 'is' => 'user.surveys.*', 'icon' => 'clipboard-list', 'label' => 'Survey Saya'],
+                            ['route' => 'user.surveys.create', 'is' => 'user.surveys.create', 'icon' => 'plus-circle', 'label' => 'Buat Survey'],
+                            
+                        ],
+                        'TRANSAKSI' => [
+                            ['route' => 'user.transactions.index', 'is' => 'user.transactions.*', 'icon' => 'receipt', 'label' => 'Transaksi'],
+                            ['route' => 'user.wallet.index', 'is' => 'user.wallet.*', 'icon' => 'wallet', 'label' => 'Wallet'],
+                        ],
+                        'ANALYTICS' => [
+                            ['route' => 'user.analytics', 'is' => 'user.analytics', 'icon' => 'bar-chart-2', 'label' => 'Analytics'],
+                            ['route' => 'user.reports.index', 'is' => 'user.reports.*', 'icon' => 'file-bar-chart', 'label' => 'Laporan'],
+                        ],
+                        'REWARD' => [
+                            ['route' => 'user.rewards.index', 'is' => 'user.rewards.*', 'icon' => 'gift', 'label' => 'Reward & Poin'],
+                            ['route' => 'user.affiliate.index', 'is' => 'user.affiliate.*', 'icon' => 'share-2', 'label' => 'Affiliate'],
+                        ],
+                        'AKUN' => [
+                            ['route' => 'user.profile.show', 'is' => 'user.profile.*', 'icon' => 'user-circle', 'label' => 'Profil Saya'],
+                    
+                        ],
                     ];
                 @endphp
 
-                @foreach($userLinks as $link)
-                    @php
-                        $isActive = request()->routeIs($link['is']);
-                    @endphp
-                    <div class="relative">
-                        <a href="{{ route($link['route']) }}"
-                           class="nav-item {{ $isActive ? 'active' : '' }} flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] font-medium
-                           {{ $isActive ? 'bg-white/20 text-white' : 'text-orange-100 hover:bg-white/10 hover:text-white' }}">
-                            <i data-lucide="{{ $link['icon'] }}" class="w-[18px] h-[18px] flex-shrink-0"></i>
-                            <span x-show="sidebarOpen" class="whitespace-nowrap">{{ $link['label'] }}</span>
-                        </a>
-                        <div x-show="!sidebarOpen" class="nav-tooltip absolute left-full top-1/2 -translate-y-1/2 ml-3 z-[60]">
-                            <div class="bg-gray-900 text-white text-xs font-medium px-2.5 py-1.5 rounded-lg shadow-xl whitespace-nowrap border border-white/10">
-                                {{ $link['label'] }}
-                            </div>
-                        </div>
-                    </div>
-                @endforeach
-
-                <div class="pt-4">
-                    <p x-show="sidebarOpen" class="px-3 mb-3 text-2xs font-semibold uppercase tracking-[0.15em] text-orange-200">Akun</p>
-                    <div x-show="!sidebarOpen" class="mb-2 mx-3 border-t border-white/10"></div>
-                </div>
-
-                @php
-                    $accountLinks = [
-                        ['route' => 'user.profile.show', 'is' => 'user.profile.*', 'icon' => 'user-circle', 'label' => 'Profil Saya'],
-                    ];
-                @endphp
-
-                @foreach($accountLinks as $link)
-                    @php
-                        $isActive = request()->routeIs($link['is']);
-                    @endphp
-                    <div class="relative">
-                        <a href="{{ route($link['route']) }}"
-                           class="nav-item {{ $isActive ? 'active' : '' }} flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] font-medium
-                           {{ $isActive ? 'bg-white/20 text-white' : 'text-orange-100 hover:bg-white/10 hover:text-white' }}">
-                            <i data-lucide="{{ $link['icon'] }}" class="w-[18px] h-[18px] flex-shrink-0"></i>
-                            <span x-show="sidebarOpen" class="whitespace-nowrap">{{ $link['label'] }}</span>
-                        </a>
-                        <div x-show="!sidebarOpen" class="nav-tooltip absolute left-full top-1/2 -translate-y-1/2 ml-3 z-[60]">
-                            <div class="bg-gray-900 text-white text-xs font-medium px-2.5 py-1.5 rounded-lg shadow-xl whitespace-nowrap border border-white/10">
-                                {{ $link['label'] }}
-                            </div>
+                @foreach($menuGroups as $groupName => $links)
+                    <div>
+                        <p x-show="sidebarOpen" class="px-3 mb-2 text-[10px] font-bold uppercase tracking-wider text-gray-400/90">{{ $groupName }}</p>
+                        <div x-show="!sidebarOpen" class="mb-2 mx-2 border-t border-gray-100"></div>
+                        
+                        <div class="space-y-0.5">
+                            @foreach($links as $link)
+                                @php
+                                    $isActive = request()->routeIs($link['is']);
+                                    $href = \Illuminate\Support\Facades\Route::has($link['route']) ? route($link['route']) : '#';
+                                @endphp
+                                <div class="relative">
+                                    <a href="{{ $href }}"
+                                       class="nav-item {{ $isActive ? 'active' : '' }} flex items-center gap-3 px-3 py-2 rounded-xl text-[13px] font-medium transition-all duration-200
+                                       {{ $isActive 
+                                            ? 'bg-orange-50 text-orange-600 font-semibold shadow-sm shadow-orange-500/5' 
+                                            : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }}">
+                                        <i data-lucide="{{ $link['icon'] }}" class="w-[18px] h-[18px] flex-shrink-0 {{ $isActive ? 'text-orange-500' : 'text-gray-400 group-hover:text-gray-900' }}"></i>
+                                        <span x-show="sidebarOpen" class="whitespace-nowrap flex-1">
+                                            {{ $link['label'] }}
+                                        </span>
+                                    </a>
+                                    <div x-show="!sidebarOpen" class="nav-tooltip absolute left-full top-1/2 -translate-y-1/2 ml-3 z-[60]">
+                                        <div class="bg-gray-900 text-white text-xs font-medium px-2.5 py-1.5 rounded-lg shadow-xl whitespace-nowrap border border-white/10">
+                                            {{ $link['label'] }}
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
                         </div>
                     </div>
                 @endforeach
 
             </nav>
 
+            {{-- Saldo Widget (Moved down just above footer) --}}
+            @auth
+            <div class="mx-3 mt-auto mb-2 p-4 rounded-xl bg-gray-50/80 border border-gray-100 relative overflow-hidden group">
+                <div class="absolute top-0 right-0 w-16 h-16 bg-orange-50 rounded-full -translate-y-1/2 translate-x-1/4 blur-md"></div>
+                
+                <div x-show="sidebarOpen" x-transition:enter="transition-opacity duration-200" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100">
+                    <p class="text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-1">Saldo Deposit</p>
+                    <p class="text-base font-extrabold text-gray-900 mb-3">Rp {{ number_format(auth()->user()->deposit_balance ?? 0, 0, ',', '.') }}</p>
+                    <a href="{{ route('user.topups.create') }}" class="flex items-center justify-center gap-1.5 w-full py-2 rounded-xl bg-orange-500 hover:bg-orange-600 text-white hover:scale-[1.02] transition-all text-xs font-bold shadow-md shadow-orange-500/10">
+                        <i data-lucide="wallet" class="w-3.5 h-3.5"></i>
+                        Top Up Wallet
+                    </a>
+                </div>
+
+                <div x-show="!sidebarOpen" class="flex flex-col items-center justify-center relative cursor-pointer" @click="sidebarOpen = true" x-transition:enter="transition-opacity duration-200" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100">
+                    <i data-lucide="wallet" class="w-5 h-5 text-gray-500 group-hover:text-orange-500 transition"></i>
+                </div>
+            </div>
+            @endauth
+
             {{-- Bottom --}}
             <div class="px-3 pb-4 flex-shrink-0 space-y-1">
-                <div class="border-t border-white/20 mb-3"></div>
+                <div class="border-t border-gray-100 mb-3"></div>
 
                 <div class="relative">
                     <a href="{{ url('/') }}"
-                        class="nav-item flex items-center gap-3 px-3 py-2 rounded-lg text-[13px] font-medium text-orange-100 hover:bg-white/10 hover:text-white">
-                        <i data-lucide="home" class="w-[18px] h-[18px] flex-shrink-0"></i>
+                        class="nav-item flex items-center gap-3 px-3 py-2 rounded-lg text-[13px] font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900 transition-all">
+                        <i data-lucide="home" class="w-[18px] h-[18px] flex-shrink-0 text-gray-400"></i>
                         <span x-show="sidebarOpen" class="whitespace-nowrap">Kembali ke Website</span>
                     </a>
                     <div x-show="!sidebarOpen" class="nav-tooltip absolute left-full top-1/2 -translate-y-1/2 ml-3 z-[60]">
@@ -268,12 +263,12 @@
                     @csrf
                     <div class="relative">
                         <button type="submit"
-                            class="nav-item flex items-center gap-3 w-full px-3 py-2 rounded-lg text-[13px] font-medium text-orange-200 hover:bg-red-500/20 hover:text-white">
+                            class="nav-item flex items-center gap-3 w-full px-3 py-2 rounded-lg text-[13px] font-medium text-red-500 hover:bg-red-50 hover:text-red-600 transition-all">
                             <i data-lucide="log-out" class="w-[18px] h-[18px] flex-shrink-0"></i>
                             <span x-show="sidebarOpen" class="whitespace-nowrap">Keluar</span>
                         </button>
                         <div x-show="!sidebarOpen" class="nav-tooltip absolute left-full top-1/2 -translate-y-1/2 ml-3 z-[60]">
-                            <div class="bg-gray-900 text-white text-xs font-medium px-2.5 py-1.5 rounded-lg shadow-xl whitespace-nowrap border border-white/10">Keluar</div>
+                            <div class="bg-gray-900 text-white text-xs font-medium px-2.5 py-1.5 rounded-lg shadow-xl whitespace-nowrap border border-white/10 text-red-500">Keluar</div>
                         </div>
                     </div>
                 </form>
@@ -360,7 +355,7 @@
                     <div class="relative" @click.away="userMenu = false">
                         <button @click="userMenu = !userMenu"
                             class="flex items-center gap-2 p-1.5 rounded-xl hover:bg-gray-100 transition">
-                            <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-orange-500 to-amber-600 flex items-center justify-center shadow-sm">
+                            <div class="w-8 h-8 rounded-full bg-gradient-to-br from-orange-500 to-amber-600 flex items-center justify-center shadow-sm">
                                 <span class="text-white font-bold text-xs">{{ substr(auth()->user()->name ?? 'U', 0, 1) }}</span>
                             </div>
                             <div class="hidden sm:block text-left">

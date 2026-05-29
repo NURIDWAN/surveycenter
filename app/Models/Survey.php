@@ -9,7 +9,17 @@ class Survey extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'title', 'question_count', 'respondent_count', 'form_link', 'description'];
+    public const STATUS_ACTIVE = 'active';
+    public const STATUS_DRAFT = 'draft';
+
+    protected $fillable = ['user_id', 'title', 'question_count', 'respondent_count', 'form_link', 'description', 'status', 'completed_at'];
+
+    protected function casts(): array
+    {
+        return [
+            'completed_at' => 'datetime',
+        ];
+    }
 
     public function responses()
     {
