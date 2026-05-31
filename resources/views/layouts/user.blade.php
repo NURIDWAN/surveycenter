@@ -462,53 +462,7 @@
         });
     </script>
 
-    {{-- Force Phone Number Modal for Existing Users --}}
-    @if(auth()->check() && !auth()->user()->phone)
-    <div x-data="{ show: true }" 
-         x-show="show" 
-         class="fixed inset-0 z-[100] flex items-center justify-center bg-gray-900/80 backdrop-blur-sm"
-         style="display: none;">
-        
-        <div class="bg-white rounded-2xl shadow-2xl p-6 sm:p-8 w-full max-w-md mx-4 transform"
-             @click.stop>
-            
-            <div class="w-12 h-12 rounded-full bg-orange-100 flex items-center justify-center mb-5 mx-auto">
-                <i data-lucide="smartphone" class="w-6 h-6 text-orange-600"></i>
-            </div>
-            
-            <h3 class="text-xl font-bold text-center text-gray-900 mb-2">Lengkapi Data Anda</h3>
-            <p class="text-sm text-center text-gray-500 mb-6">
-                Untuk keamanan akun dan fitur notifikasi, mohon masukkan nomor WhatsApp Anda yang aktif.
-            </p>
 
-            <form action="{{ route('user.profile.update-phone') }}" method="POST">
-                @csrf
-                <div class="mb-5">
-                    <label for="phone" class="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-2">
-                        Nomor WhatsApp
-                    </label>
-                    <input type="tel" name="phone" id="phone" required 
-                           pattern="^08[0-9]{8,13}$"
-                           class="w-full px-4 py-3 bg-gray-50 border rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all @error('phone') border-red-500 @else border-gray-200 @enderror"
-                           placeholder="08xxxxxxxxxx"
-                           value="{{ old('phone') }}">
-                    <p class="text-xs text-gray-400 mt-2">Gunakan format 08... (contoh: 081234567890)</p>
-                    @error('phone')
-                        <p class="mt-2 text-xs font-semibold text-red-500">{{ $message }}</p>
-                    @enderror
-                </div>
-                
-                <button type="submit" 
-                        class="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-3.5 px-4 rounded-xl transition-colors shadow-lg shadow-orange-600/20">
-                    Simpan Nomor HP
-                </button>
-                <p class="text-[11px] text-center text-gray-400 mt-4">
-                    Anda tidak dapat menutup halaman ini sebelum nomor HP diisi.
-                </p>
-            </form>
-        </div>
-    </div>
-    @endif
 
     @stack('scripts')
 </body>
