@@ -6,7 +6,7 @@ $normalizeGateway = static function (?string $value): string {
     return $gateway === 'fastpay' ? 'faspay' : $gateway;
 };
 
-$configuredOrder = array_values(array_filter(array_map('trim', explode(',', (string) env('PAYMENT_GATEWAY_ORDER', 'singapay,faspay')))));
+$configuredOrder = array_values(array_filter(array_map('trim', explode(',', (string) env('PAYMENT_GATEWAY_ORDER', 'faspay,singapay')))));
 $normalizedOrder = [];
 $mockMode = env('PAYMENT_MOCK_MODE', false);
 
@@ -26,7 +26,7 @@ return [
 
     'order' => $normalizedOrder,
 
-    'default' => $normalizeGateway(env('PAYMENT_GATEWAY_DEFAULT', 'singapay')),
+    'default' => $normalizeGateway(env('PAYMENT_GATEWAY_DEFAULT', 'faspay')),
 
     'gateways' => [
         'singapay' => [

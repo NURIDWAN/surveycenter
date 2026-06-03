@@ -201,7 +201,17 @@ class TopupController extends Controller
 
     private function getGatewayOptions(): array
     {
-        return config('payment_gateways.gateways', []);
+        $gateways = config('payment_gateways.gateways', []);
+        $orderedGateways = [];
+
+        foreach (config('payment_gateways.order', []) as $gatewayKey) {
+            if (array_key_exists($gatewayKey, $gateways)) {
+                $orderedGateways[$gatewayKey] = $gateways[$gatewayKey];
+                unset($gateways[$gatewayKey]);
+            }
+        }
+
+        return $orderedGateways + $gateways;
     }
 
     private function resolveDefaultGateway(array $gatewayOptions): string
