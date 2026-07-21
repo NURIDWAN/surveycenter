@@ -15,9 +15,6 @@ Route::post('/webhook/singapay/disbursement', [SingaPayWebhookController::class,
 Route::post('/hub-webhook/singapay', [HubWebhookController::class, 'singapay'])
     ->withoutMiddleware(VerifyCsrfToken::class)
     ->name('hub.webhook.singapay');
-Route::post('/hub-webhook/faspay', [HubWebhookController::class, 'faspay'])
-    ->withoutMiddleware(VerifyCsrfToken::class)
-    ->name('hub.webhook.faspay');
 
 Route::get('/blogs', [BlogController::class, 'getBlogs']);
 Route::post('/crm/customers/store', [HomeController::class, 'storeCustomer']);

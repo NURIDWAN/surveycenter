@@ -31,8 +31,7 @@ use App\Http\Controllers\Admin\UserImpersonationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PaymentProofController;
 use App\Http\Controllers\OrderController;
-use App\Http\Controllers\FaspayTestTransactionController;
-use App\Http\Controllers\FaspayController;
+
 use App\Http\Controllers\FormAnalyzerController;
 use App\Http\Controllers\User\RewardController;
 use App\Http\Controllers\User\AffiliateController;
@@ -190,9 +189,6 @@ Route::get('/blog/category/{category?}', [BlogController::class, 'category'])->n
 // route dinamis halaman layanan
 Route::get('/layanan/{slug}', [App\Http\Controllers\LayananController::class, 'show'])
     ->name('layanan.show');
-
-// Faspay Return URL
-Route::get('/transaction/faspay/return', [FaspayController::class, 'returnUrl'])->name('faspay.return');
 
 Route::get('/{slug}', [BlogController::class, 'show'])->name('blog.show');
 
@@ -370,33 +366,7 @@ Route::middleware(['admin'])->prefix('admin')->group(function () {
     Route::get('payment-proofs', [\App\Http\Controllers\Admin\PaymentProofController::class, 'index'])->name('admin.payment-proofs.index');
 });
 
-// ===== FASPAY XPRESS INTEGRATION ROUTES =====
 
-// Test Transaction Routes (requires auth)
-Route::middleware(['auth'])->prefix('faspay/test')->name('faspay.')->group(function () {
-    Route::get('transactions', [FaspayTestTransactionController::class, 'index'])->name('test-transaction.index');
-    Route::get('transactions/create', [FaspayTestTransactionController::class, 'create'])->name('test-transaction.create');
-    Route::post('transactions', [FaspayTestTransactionController::class, 'store'])->name('test-transaction.store');
-    Route::get('transactions/{testTransaction}', [FaspayTestTransactionController::class, 'show'])->name('test-transaction.show');
-    Route::get('transactions/{testTransaction}/payment', [FaspayTestTransactionController::class, 'payment'])->name('test-transaction.payment');
-    Route::post('transactions/{testTransaction}/payment', [FaspayTestTransactionController::class, 'processPayment'])->name('test-transaction.process-payment');
-    Route::get('transactions/{testTransaction}/success', [FaspayTestTransactionController::class, 'success'])->name('test-transaction.success');
-    Route::delete('transactions/{testTransaction}', [FaspayTestTransactionController::class, 'destroy'])->name('test-transaction.destroy');
-    Route::post('transactions/{testTransaction}/simulate', [FaspayTestTransactionController::class, 'simulatePayment'])->name('test-transaction.simulate');
-});
-
-// Faspay Webhook Routes (NO auth required - Faspay will call these)
-Route::post('/api/webhook/faspay/notification', [FaspayController::class, 'notification'])
-    ->withoutMiddleware(\App\Http\Middleware\VerifyCsrfToken::class)
-    ->name('faspay.notification');
-
-// Return URL Faspay tersedia di /transaction/faspay/return
-
-// Faspay Debug Routes (dev only)
-Route::middleware(['auth'])->prefix('faspay')->group(function () {
-    Route::get('debug', [FaspayController::class, 'debugConfig'])->name('faspay.debug');
-    Route::get('list-transactions', [FaspayController::class, 'listTransactions'])->name('faspay.list-transactions');
-});
 
 // ===== SINGAPAY TEST TRANSACTION ROUTES =====
 Route::middleware(['auth'])->prefix('singapay/test')->name('singapay.test.')->group(function () {

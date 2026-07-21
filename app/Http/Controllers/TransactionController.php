@@ -6,7 +6,7 @@ use App\Models\Survey;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
-use App\Services\FaspayService;
+use App\Services\SingaPayService;
 use App\Services\FormLinkValidationService;
 use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
@@ -20,12 +20,12 @@ use Illuminate\Validation\ValidationException;
 
 class TransactionController extends Controller
 {
-    private FaspayService $faspayService;
+    private SingaPayService $singaPay;
     private FormLinkValidationService $formLinkValidationService;
 
-    public function __construct(FaspayService $faspayService, FormLinkValidationService $formLinkValidationService)
+    public function __construct(SingaPayService $singaPay, FormLinkValidationService $formLinkValidationService)
     {
-        $this->faspayService = $faspayService;
+        $this->singaPay = $singaPay;
         $this->formLinkValidationService = $formLinkValidationService;
     }
 
@@ -82,42 +82,33 @@ class TransactionController extends Controller
                 ->with('success', 'Mock payment dibuat dengan status: ' . $mockStatus . '.');
         }
 
-        // Create Faspay invoice (same flow as kost project)
         $billNo = $this->generateBillNo();
 
-        $invoiceData = [
-            'bill_no' => $billNo,
-            'bill_total' => $finalPrice,
-            'bill_description' => $validated['title'] ?? 'Survey Payment',
-            'cust_name' => preg_replace('/[^a-zA-Z0-9\s]/', '', Auth::user()->name ?? 'Customer'),
-            'cust_email' => Auth::user()->email ?? '',
-            'cust_phone' => Auth::user()->phone ?? '081234567890',
-            'bill_expired_date' => now()->addMinutes((int) config('faspay.invoice_expiration', 30))->format('Y-m-d H:i:s'),
-            'return_url' => config('faspay.webhook_urls.return') ?: route('faspay.return'),
-        ];
+        $invoice = $this->singaPay->createInvoice(
+            $finalPrice,
+            [['name' => $validated['title'] ?? 'Survey Payment', 'quantity' => 1, 'unit_price' => $finalPrice]],
+            route('transactions.progress', $transaction ?? ''),
+            $billNo
+        );
 
-        $response = $this->faspayService->createInvoice($invoiceData);
-
-        if (!($response['success'] ?? false) || empty($response['payment_url'])) {
-            Log::error('Transaction Failed (Faspay)', [
+        if (!$invoice['success']) {
+            Log::error('Transaction Failed (SingaPay)', [
                 'user_id' => Auth::id(),
-                'error' => $response['message'] ?? 'Unknown error',
-                'response' => $response,
+                'error' => $invoice['message'] ?? 'Unknown error',
             ]);
-            return back()->with('error', 'Gagal membuat pembayaran: ' . ($response['message'] ?? 'Kesalahan tidak diketahui.'));
+            return back()->with('error', 'Gagal membuat pembayaran: ' . ($invoice['message'] ?? 'Kesalahan tidak diketahui.'));
         }
 
-        Transaction::create([
+        $transaction = Transaction::create([
             'survey_id' => $survey->id,
             'user_id' => Auth::id(),
             'amount' => $finalPrice,
             'status' => Transaction::STATUS_PROCESSING,
             'bill_no' => $billNo,
-            'payment_ref' => $billNo,
-            'trx_id' => $response['trx_id'] ?? null,
+            'singapay_ref' => $invoice['reff_no'],
         ]);
 
-        return redirect($response['payment_url']);
+        return redirect($invoice['payment_url']);
     }
 
     public function handleInvoice(Request $request)
@@ -189,40 +180,31 @@ class TransactionController extends Controller
                 ->with('success', 'Mock payment diproses tanpa gateway eksternal.');
         }
 
-        // Create Faspay invoice for all payment methods (same as kost project)
         $billNo = $this->generateBillNo($transaction->id);
 
-        $invoiceData = [
-            'bill_no' => $billNo,
-            'bill_total' => $transaction->amount,
-            'bill_description' => $transaction->survey->title ?? 'Survey Payment',
-            'cust_name' => preg_replace('/[^a-zA-Z0-9\s]/', '', Auth::user()->name ?? 'Customer'),
-            'cust_email' => Auth::user()->email ?? '',
-            'cust_phone' => Auth::user()->phone ?? '081234567890',
-            'bill_expired_date' => now()->addMinutes((int) config('faspay.invoice_expiration', 30))->format('Y-m-d H:i:s'),
-            'return_url' => route('faspay.return'),
-        ];
+        $invoice = $this->singaPay->createInvoice(
+            $transaction->amount,
+            [['name' => $transaction->survey->title ?? 'Survey Payment', 'quantity' => 1, 'unit_price' => $transaction->amount]],
+            route('transactions.progress', $transaction),
+            $billNo
+        );
 
-        $response = $this->faspayService->createInvoice($invoiceData);
-
-        if (!($response['success'] ?? false) || empty($response['payment_url'])) {
-            Log::error('Faspay processPayment failed', [
+        if (!$invoice['success']) {
+            Log::error('Transaction Failed (SingaPay)', [
                 'transaction_id' => $transaction->id,
-                'response' => $response,
+                'error' => $invoice['message'] ?? 'Unknown error',
             ]);
 
-            return back()->with('error', 'Gagal membuat pembayaran: ' . ($response['message'] ?? 'Kesalahan tidak diketahui.'));
+            return back()->with('error', 'Gagal membuat pembayaran: ' . ($invoice['message'] ?? 'Kesalahan tidak diketahui.'));
         }
 
         $transaction->update([
             'bill_no' => $billNo,
-            'payment_ref' => $billNo,
-            'trx_id' => $response['trx_id'] ?? null,
+            'singapay_ref' => $invoice['reff_no'],
             'status' => Transaction::STATUS_PROCESSING,
         ]);
 
-        // Redirect to Faspay payment page (handles all payment methods)
-        return redirect($response['payment_url']);
+        return redirect($invoice['payment_url']);
     }
 
     private function resolveMockStatus(): string

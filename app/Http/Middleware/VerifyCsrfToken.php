@@ -8,6 +8,5 @@ class VerifyCsrfToken extends Middleware
 {
      protected $except = [
          'api/webhook/singapay/invoice',
-         'api/webhook/faspay/notification',
      ];
 }

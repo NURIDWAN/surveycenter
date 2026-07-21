@@ -4,7 +4,6 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Models\TopupTransaction;
-use App\Services\FaspayService;
 use App\Services\SingaPayService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -69,10 +68,6 @@ class TopupController extends Controller
         }
 
         try {
-            if ($selectedGateway === 'faspay') {
-                return $this->processFaspayPayment($transaction, $validated['payment_method']);
-            }
-
             return $this->processSingaPayPayment($transaction, $validated['payment_method']);
         } catch (\Exception $e) {
             Log::error('Topup Processing Exception', [
@@ -152,51 +147,6 @@ class TopupController extends Controller
         ]);
 
         return redirect($invoice['payment_url']);
-    }
-
-    private function processFaspayPayment(TopupTransaction $transaction, string $paymentMethod)
-    {
-        /** @var FaspayService $faspayService */
-        $faspayService = app(FaspayService::class);
-
-        if (!$faspayService->isConfigured()) {
-            return back()->withInput()->withErrors([
-                'payment_gateway' => 'Faspay belum dikonfigurasi.',
-            ]);
-        }
-
-        $billNo = $this->generateBillNo();
-
-        $invoiceData = [
-            'bill_no' => $billNo,
-            'bill_reff' => 'TOPUP-' . $transaction->id,
-            'bill_total' => $transaction->amount,
-            'bill_description' => 'Top Up Saldo',
-            'cust_name' => preg_replace('/[^a-zA-Z0-9\s]/', '', Auth::user()->name ?? 'Customer'),
-            'cust_email' => Auth::user()->email ?? '',
-            'cust_phone' => Auth::user()->phone ?? '',
-            'due_date' => now()->addMinutes((int) config('faspay.invoice_expiration', 30))->format('Y-m-d H:i:s'),
-            'bill_expired_date' => now()->addMinutes((int) config('faspay.invoice_expiration', 30))->format('Y-m-d H:i:s'),
-            'return_url' => route('faspay.return'),
-            'notif_url' => route('faspay.notification'),
-        ];
-
-        $response = $faspayService->createInvoice($invoiceData);
-
-        if (!($response['success'] ?? false) || empty($response['payment_url'])) {
-            $reason = $response['message'] ?? 'Gagal membuat link pembayaran Faspay.';
-            return back()->with('error', $reason);
-        }
-
-        $transaction->update([
-            'singapay_ref' => $billNo,
-            'bill_no' => $billNo,
-            'payment_ref' => $billNo,
-            'trx_id' => $response['trx_id'] ?? null,
-            'status' => TopupTransaction::STATUS_PROCESSING,
-        ]);
-
-        return redirect($response['payment_url']);
     }
 
     private function getGatewayOptions(): array

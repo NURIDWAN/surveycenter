@@ -21,12 +21,6 @@ class HubWebhookController extends Controller
         return $delegate->handleInvoice($request);
     }
 
-    public function faspay(Request $request, FaspayController $delegate)
-    {
-        $this->verifyHubSignature($request);
-        return $delegate->notification($request);
-    }
-
     private function verifyHubSignature(Request $request): void
     {
         $secret = (string) env('HUB_SECRET', '');

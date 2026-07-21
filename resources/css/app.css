@@ -9,3 +9,50 @@
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
 }
+
+
+[x-cloak] { display: none !important; }
+
+/* Readable typography scale */
+.site-navbar a,
+.site-navbar button { font-size: 0.875rem !important; line-height: 1.4 !important; }
+.site-navbar strong { font-size: 0.9375rem !important; line-height: 1.25 !important; }
+.site-navbar p { font-size: 0.75rem !important; }
+.site-navbar [class*="text-[6px]"],
+.site-navbar [class*="text-[7px]"],
+.site-navbar [class*="text-[8px]"],
+.site-navbar [class*="text-[9px]"],
+.site-navbar [class*="text-[10px]"] { font-size: 0.75rem !important; }
+
+.site-footer { font-size: 0.875rem; }
+.site-footer h3,
+.site-footer strong { font-size: 0.9375rem !important; line-height: 1.4 !important; }
+.site-footer p,
+.site-footer a,
+.site-footer li { font-size: 0.875rem !important; line-height: 1.6 !important; }
+.site-footer [class*="text-[6px]"],
+.site-footer [class*="text-[7px]"],
+.site-footer [class*="text-[8px]"],
+.site-footer [class*="text-[9px]"],
+.site-footer [class*="text-[10px]"] { font-size: 0.75rem !important; }
+
+.landing-shell [class*="text-[6px]"],
+.landing-shell [class*="text-[6.5px]"],
+.landing-shell [class*="text-[7px]"] { font-size: 0.6875rem !important; line-height: 1.45 !important; }
+.landing-shell [class*="text-[8px]"],
+.landing-shell [class*="text-[9px]"] { font-size: 0.75rem !important; line-height: 1.45 !important; }
+.landing-shell [class*="text-[10px]"],
+.landing-shell [class*="text-[11px]"] { font-size: 0.8125rem !important; line-height: 1.5 !important; }
+.landing-shell .text-xs { font-size: 0.875rem !important; line-height: 1.55 !important; }
+
+@media (max-width: 640px) {
+  .site-navbar a,
+  .site-navbar button,
+  .site-footer p,
+  .site-footer a,
+  .site-footer li { font-size: 0.875rem !important; }
+  .landing-shell [class*="text-[6px]"],
+  .landing-shell [class*="text-[7px]"],
+  .landing-shell [class*="text-[8px]"],
+  .landing-shell [class*="text-[9px]"] { font-size: 0.75rem !important; }
+}

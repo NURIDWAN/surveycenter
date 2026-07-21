@@ -151,8 +151,6 @@
 
                     if ($reference === '') {
                         $paymentGatewayLabel = 'Belum ditentukan';
-                    } elseif (str_starts_with($reference, 'trx-')) {
-                        $paymentGatewayLabel = 'Faspay';
                     } else {
                         $paymentGatewayLabel = 'SingaPay';
                     }

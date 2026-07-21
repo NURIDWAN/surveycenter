@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Mail\PaymentFailedMail;
 use App\Mail\PaymentSuccessMail;
 use App\Models\Transaction;
-use App\Services\FaspayService;
 use App\Services\SingaPayService;
 use App\Services\WalletService;
 use Illuminate\Http\Request;
