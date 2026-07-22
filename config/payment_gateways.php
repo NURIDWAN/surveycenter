@@ -1,13 +1,5 @@
 <?php
 
-$normalizeGateway = static function (?string $value): string {
-    $gateway = strtolower(trim((string) $value));
-
-    return $gateway === 'fastpay' ? 'faspay' : $gateway;
-};
-
-$configuredOrder = array_values(array_filter(array_map('trim', explode(',', (string) env('PAYMENT_GATEWAY_ORDER', 'faspay,singapay')))));
-$normalizedOrder = [];
 $mockMode = env('PAYMENT_MOCK_MODE', false);
 
 return [
@@ -15,9 +7,9 @@ return [
     'mock_default_status' => env('PAYMENT_MOCK_DEFAULT_STATUS', 'paid'),
     'invoice_prefix' => strtoupper(trim((string) env('PAYMENT_INVOICE_PREFIX', 'TRX'))) ?: 'TRX',
 
-    'order' => $normalizedOrder,
+    'order' => ['singapay'],
 
-    'default' => $normalizeGateway(env('PAYMENT_GATEWAY_DEFAULT', 'faspay')),
+    'default' => 'singapay',
 
     'gateways' => [
         'singapay' => [
