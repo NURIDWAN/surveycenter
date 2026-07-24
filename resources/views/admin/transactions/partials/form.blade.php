@@ -37,8 +37,17 @@
     @endif
 </div>
 
-
-
+<div>
+    <label class="block mb-1 font-medium">Jumlah Pertanyaan</label>
+    @if (isset($transaction) && $transaction->survey)
+        <input type="number" name="question_count" value="{{ $transaction->survey->question_count }}"
+            class="w-full border rounded px-3 py-2" readonly>
+    @else
+        <input type="number" name="question_count" value="{{ old('question_count', 0) }}"
+            placeholder="Masukkan jumlah pertanyaan" min="0"
+            class="w-full border rounded px-3 py-2">
+    @endif
+</div>
 
 
 <div>

@@ -8,6 +8,7 @@ use App\Models\Transaction;
 use App\Models\Survey;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class TransactionController extends Controller
 {
@@ -25,9 +26,15 @@ class TransactionController extends Controller
 
     public function create()
     {
-        $surveys = Survey::all();
-        $users = User::all();
-        return view('admin.transactions.create', compact('surveys', 'users'));
+        try {
+            $surveys = Survey::select(['id', 'user_id', 'title'])->orderBy('title')->get();
+            $users = User::select(['id', 'name'])->orderBy('name')->get();
+            Log::info('Create page accessed', ['surveys' => $surveys->count(), 'users' => $users->count()]);
+            return view('admin.transactions.create', compact('surveys', 'users'));
+        } catch (\Exception $e) {
+            Log::error('Create page error: ' . $e->getMessage());
+            throw $e;
+        }
     }
 
     public function store(Request $request)
@@ -43,6 +50,7 @@ class TransactionController extends Controller
             ]),
             'survey_id' => 'nullable|exists:surveys,id',
             'survey_title' => 'nullable|string|max:255',
+            'question_count' => 'nullable|integer|min:0',
         ]);
 
         // Jika survey_id tidak dikirim, buat survey baru
@@ -50,6 +58,7 @@ class TransactionController extends Controller
             $survey = \App\Models\Survey::create([
                 'user_id' => $request->user_id,
                 'title' => $request->survey_title ?? 'Survey baru',
+                'question_count' => $request->question_count ?? 0,
             ]);
             $survey_id = $survey->id;
         } else {
@@ -66,15 +75,15 @@ class TransactionController extends Controller
             'payment_method' => $request->payment_method,
         ]);
 
-        return redirect()->route('admin.transaction.index')
+        return redirect()->route('admin.transactions.index')
             ->with('success', 'Transaction berhasil dibuat!');
     }
 
 
     public function edit(Transaction $transaction)
     {
-        $surveys = Survey::all();
-        $users = User::all();
+        $surveys = Survey::select(['id', 'user_id', 'title'])->orderBy('title')->get();
+        $users = User::select(['id', 'name'])->orderBy('name')->get();
         return view('admin.transactions.edit', compact('transaction', 'surveys', 'users'));
     }
 
