@@ -90,8 +90,27 @@
           </div>
         </div>
       @else
-        <div class="mt-10 flex flex-wrap items-center justify-center gap-x-10 gap-y-5 text-sm font-black tracking-wide text-slate-400 sm:gap-x-14">
-          <span>PRASARANA</span><span>PGN</span><span>KBN</span><span>SEVENDREAM</span><span>Infokost</span><span>Telkom Property</span><span>TAMINA</span><span>Prodia</span><span>SKIN+</span><span>Indosat</span><span>Perumnas</span><span>MASPION GROUP</span><span>Jasindo</span>
+        @php
+          $fallbackRow1 = ['PRASARANA', 'PGN', 'KBN', 'SEVENDREAM', 'Infokost', 'Telkom Property', 'TAMINA'];
+          $fallbackRow2 = ['Prodia', 'SKIN+', 'Indosat', 'Perumnas', 'MASPION GROUP', 'Jasindo', 'BRI'];
+        @endphp
+
+        {{-- Fallback Row 1: scroll left --}}
+        <div class="mt-10 overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]">
+          <div class="logo-marquee-left flex items-center gap-14 pr-14">
+            @foreach(array_merge($fallbackRow1, $fallbackRow1) as $brand)
+              <span class="shrink-0 text-sm font-black tracking-wide text-slate-400 whitespace-nowrap">{{ $brand }}</span>
+            @endforeach
+          </div>
+        </div>
+
+        {{-- Fallback Row 2: scroll right --}}
+        <div class="mt-6 overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]">
+          <div class="logo-marquee-right flex items-center gap-14 pr-14">
+            @foreach(array_merge($fallbackRow2, $fallbackRow2) as $brand)
+              <span class="shrink-0 text-sm font-black tracking-wide text-slate-400 whitespace-nowrap">{{ $brand }}</span>
+            @endforeach
+          </div>
         </div>
       @endif
     </div>
