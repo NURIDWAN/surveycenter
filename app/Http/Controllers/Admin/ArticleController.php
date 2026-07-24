@@ -196,7 +196,6 @@ class ArticleController extends Controller
 
             $targetImage = \imagecreatetruecolor($targetWidth, $targetHeight);
 
-            // Handle transparency for PNG/WebP if needed (converting to white background for JPEG)
             $white = \imagecolorallocate($targetImage, 255, 255, 255);
             \imagefill($targetImage, 0, 0, $white);
 
@@ -220,17 +219,34 @@ class ArticleController extends Controller
             \imagedestroy($sourceImage);
             \imagedestroy($targetImage);
 
-            if ($processedImage === false) {
+            if ($processedImage === false || $processedImage === '') {
                 return $file->store('articles', 'public');
             }
 
-            $path = 'articles/' . Str::uuid() . '.jpg';
-            Storage::disk('public')->put($path, $processedImage);
+            $filename = Str::uuid() . '.jpg';
+            $directory = storage_path('app/public/articles');
 
-            return $path;
+            if (! is_dir($directory)) {
+                mkdir($directory, 0755, true);
+            }
+
+            $fullPath = $directory . '/' . $filename;
+            file_put_contents($fullPath, $processedImage);
+
+            return 'articles/' . $filename;
         } catch (\Throwable $e) {
             report($e);
-            return $file->store('articles', 'public');
+            // Fallback: store directly without Storage facade to avoid finfo dependency
+            $filename = Str::uuid() . '.' . ($file->getClientOriginalExtension() ?: 'jpg');
+            $directory = storage_path('app/public/articles');
+
+            if (! is_dir($directory)) {
+                mkdir($directory, 0755, true);
+            }
+
+            $file->move($directory, $filename);
+
+            return 'articles/' . $filename;
         }
     }
 }
