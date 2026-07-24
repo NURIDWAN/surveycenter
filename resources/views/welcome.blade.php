@@ -74,18 +74,18 @@
 
         {{-- Row 1: scroll left --}}
         <div class="mt-10 overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]">
-          <div class="logo-marquee-left flex items-center gap-12 pr-12">
+          <div class="logo-marquee-left flex items-center gap-6 sm:gap-12 pr-6 sm:pr-12">
             @foreach($row1->concat($row1) as $logo)
-              <img src="{{ asset('storage/'.$logo->logo_path) }}" alt="{{ $logo->name }}" loading="lazy" class="h-14 w-40 shrink-0 object-contain grayscale opacity-60 transition hover:grayscale-0 hover:opacity-100">
+              <img src="{{ asset('storage/'.$logo->logo_path) }}" alt="{{ $logo->name }}" loading="lazy" class="h-10 w-24 sm:h-14 sm:w-40 shrink-0 object-contain grayscale opacity-60 transition hover:grayscale-0 hover:opacity-100">
             @endforeach
           </div>
         </div>
 
         {{-- Row 2: scroll right --}}
-        <div class="mt-6 overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]">
-          <div class="logo-marquee-right flex items-center gap-12 pr-12">
+        <div class="mt-4 sm:mt-6 overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]">
+          <div class="logo-marquee-right flex items-center gap-6 sm:gap-12 pr-6 sm:pr-12">
             @foreach($row2->concat($row2) as $logo)
-              <img src="{{ asset('storage/'.$logo->logo_path) }}" alt="{{ $logo->name }}" loading="lazy" class="h-14 w-40 shrink-0 object-contain grayscale opacity-60 transition hover:grayscale-0 hover:opacity-100">
+              <img src="{{ asset('storage/'.$logo->logo_path) }}" alt="{{ $logo->name }}" loading="lazy" class="h-10 w-24 sm:h-14 sm:w-40 shrink-0 object-contain grayscale opacity-60 transition hover:grayscale-0 hover:opacity-100">
             @endforeach
           </div>
         </div>
@@ -97,18 +97,18 @@
 
         {{-- Fallback Row 1: scroll left --}}
         <div class="mt-10 overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]">
-          <div class="logo-marquee-left flex items-center gap-14 pr-14">
+          <div class="logo-marquee-left flex items-center gap-8 sm:gap-14 pr-8 sm:pr-14">
             @foreach(array_merge($fallbackRow1, $fallbackRow1) as $brand)
-              <span class="shrink-0 text-sm font-black tracking-wide text-slate-400 whitespace-nowrap">{{ $brand }}</span>
+              <span class="shrink-0 text-xs sm:text-sm font-black tracking-wide text-slate-400 whitespace-nowrap">{{ $brand }}</span>
             @endforeach
           </div>
         </div>
 
         {{-- Fallback Row 2: scroll right --}}
-        <div class="mt-6 overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]">
-          <div class="logo-marquee-right flex items-center gap-14 pr-14">
+        <div class="mt-4 sm:mt-6 overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]">
+          <div class="logo-marquee-right flex items-center gap-8 sm:gap-14 pr-8 sm:pr-14">
             @foreach(array_merge($fallbackRow2, $fallbackRow2) as $brand)
-              <span class="shrink-0 text-sm font-black tracking-wide text-slate-400 whitespace-nowrap">{{ $brand }}</span>
+              <span class="shrink-0 text-xs sm:text-sm font-black tracking-wide text-slate-400 whitespace-nowrap">{{ $brand }}</span>
             @endforeach
           </div>
         </div>
