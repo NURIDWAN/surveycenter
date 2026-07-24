@@ -76,7 +76,7 @@
         <div class="mt-10 overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]">
           <div class="logo-marquee-left flex items-center gap-12 pr-12">
             @foreach($row1->concat($row1) as $logo)
-              <img src="{{ asset('storage/'.$logo->logo_path) }}" alt="{{ $logo->name }}" loading="lazy" class="h-10 w-32 shrink-0 object-contain grayscale opacity-60 transition hover:grayscale-0 hover:opacity-100">
+              <img src="{{ asset('storage/'.$logo->logo_path) }}" alt="{{ $logo->name }}" loading="lazy" class="h-14 w-40 shrink-0 object-contain grayscale opacity-60 transition hover:grayscale-0 hover:opacity-100">
             @endforeach
           </div>
         </div>
@@ -85,7 +85,7 @@
         <div class="mt-6 overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]">
           <div class="logo-marquee-right flex items-center gap-12 pr-12">
             @foreach($row2->concat($row2) as $logo)
-              <img src="{{ asset('storage/'.$logo->logo_path) }}" alt="{{ $logo->name }}" loading="lazy" class="h-10 w-32 shrink-0 object-contain grayscale opacity-60 transition hover:grayscale-0 hover:opacity-100">
+              <img src="{{ asset('storage/'.$logo->logo_path) }}" alt="{{ $logo->name }}" loading="lazy" class="h-14 w-40 shrink-0 object-contain grayscale opacity-60 transition hover:grayscale-0 hover:opacity-100">
             @endforeach
           </div>
         </div>
@@ -162,10 +162,10 @@
       @if(isset($testimoniImages) && $testimoniImages->isNotEmpty())
         <div class="relative mt-8">
           {{-- Carousel container --}}
-          <div id="testimoni-carousel" class="flex gap-4 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-4 scrollbar-hide">
+          <div id="testimoni-carousel" class="flex gap-4 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-4 scrollbar-hide items-stretch">
             @foreach($testimoniImages as $testimoni)
-              <div class="min-w-[200px] max-w-[220px] flex-shrink-0 snap-start">
-                <img src="{{ asset('storage/'.$testimoni->image_path) }}" alt="Testimoni {{ $loop->iteration }}" loading="lazy" class="h-[280px] w-full rounded-xl object-cover shadow-md border border-slate-100">
+              <div class="min-w-[200px] max-w-[220px] flex-shrink-0 snap-start h-[300px]">
+                <img src="{{ asset('storage/'.$testimoni->image_path) }}" alt="Testimoni {{ $loop->iteration }}" loading="lazy" class="h-full w-full rounded-xl object-contain bg-slate-50 shadow-md border border-slate-100">
               </div>
             @endforeach
           </div>
