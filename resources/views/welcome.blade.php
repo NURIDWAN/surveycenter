@@ -9,10 +9,9 @@
     .landing-shell { color: #172033; }
     .hero-dots { background-image: radial-gradient(#ff8b42 1.4px, transparent 1.4px); background-size: 10px 10px; }
     .dashboard-shadow { box-shadow: 0 25px 60px rgba(24, 39, 75, .12), 0 6px 20px rgba(24, 39, 75, .06); }
-    .client-track { display: flex; width: max-content; animation: clientMarquee 35s linear infinite; }
-    .client-track:hover { animation-play-state: paused; }
-    @keyframes clientMarquee { to { transform: translateX(-50%); } }
-    @media (prefers-reduced-motion: reduce) { .client-track { animation: none; } }
+    .scrollbar-hide::-webkit-scrollbar { display: none; }
+    .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+    @media (prefers-reduced-motion: reduce) { .scroll-smooth { scroll-behavior: auto; } }
 </style>
 @endpush
 
@@ -49,21 +48,21 @@
   </section>
 
 
-  {{-- Client logos --}}
-  <section class="border-y border-slate-100 bg-[#fcfcfd] px-5 py-8">
+  {{-- Has Been Trusted --}}
+  <section class="bg-white px-5 py-14 sm:py-16">
     <div class="mx-auto max-w-6xl text-center">
-      <p class="mb-7 text-xs font-bold text-slate-600">Dipercaya oleh berbagai perusahaan</p>
+      <h2 class="text-2xl font-black text-slate-900 sm:text-3xl">Has Been <span class="text-orange-500">Trusted</span></h2>
       @if($partnerLogos->isNotEmpty())
-        <div class="overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]">
-          <div class="client-track items-center gap-12 pr-12">
-            @foreach($partnerLogos->concat($partnerLogos) as $logo)
-              <img src="{{ asset('storage/'.$logo->logo_path) }}" alt="{{ $logo->name }}" loading="lazy" class="h-8 w-28 shrink-0 object-contain grayscale opacity-60 transition hover:grayscale-0 hover:opacity-100">
-            @endforeach
-          </div>
+        <div class="mt-10 grid grid-cols-3 items-center gap-8 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-7">
+          @foreach($partnerLogos as $logo)
+            <div class="flex items-center justify-center">
+              <img src="{{ asset('storage/'.$logo->logo_path) }}" alt="{{ $logo->name }}" loading="lazy" class="h-10 max-w-[120px] object-contain grayscale opacity-70 transition hover:grayscale-0 hover:opacity-100">
+            </div>
+          @endforeach
         </div>
       @else
-        <div class="flex flex-wrap items-center justify-center gap-x-10 gap-y-5 text-sm font-black tracking-wide text-slate-400 sm:gap-x-14">
-          <span>PGM</span><span>PERTAMINA</span><span>Infokost</span><span>SKINTIFIC</span><span>MADISON GROUP</span><span>JASINDO</span><span>KBM</span>
+        <div class="mt-10 flex flex-wrap items-center justify-center gap-x-10 gap-y-5 text-sm font-black tracking-wide text-slate-400 sm:gap-x-14">
+          <span>PRASARANA</span><span>PGN</span><span>KBN</span><span>SEVENDREAM</span><span>Infokost</span><span>Telkom Property</span><span>TAMINA</span><span>Prodia</span><span>SKIN+</span><span>Indosat</span><span>Perumnas</span><span>MASPION GROUP</span><span>Jasindo</span>
         </div>
       @endif
     </div>
@@ -99,6 +98,41 @@
         @endforeach
       </div>
       <div class="mt-7 text-center"><a href="{{ route('contact') }}" class="inline-flex items-center gap-2 rounded-lg border border-orange-300 px-5 py-2.5 text-xs font-extrabold text-orange-500 hover:bg-orange-50">Lihat Semua Layanan <i class="fa-solid fa-arrow-right text-xs"></i></a></div>
+    </div>
+  </section>
+
+  {{-- Project Delivered / Testimoni --}}
+  <section class="bg-[#fbfcfe] px-5 py-14 sm:py-16">
+    <div class="mx-auto max-w-6xl">
+      <div class="text-center">
+        <span class="inline-flex items-center gap-2 rounded-full bg-green-50 px-4 py-2 text-xs font-extrabold uppercase tracking-[.18em] text-green-600">
+          <i class="fa-solid fa-circle-check"></i> Project Delivered
+        </span>
+        <p class="mt-3 text-sm text-slate-500">Beberapa cuplikan project yang pernah kami buat</p>
+      </div>
+
+      @if(isset($testimoniImages) && $testimoniImages->isNotEmpty())
+        <div class="relative mt-8">
+          {{-- Carousel container --}}
+          <div id="testimoni-carousel" class="flex gap-4 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-4 scrollbar-hide">
+            @foreach($testimoniImages as $testimoni)
+              <div class="min-w-[260px] max-w-[280px] flex-shrink-0 snap-start">
+                <img src="{{ asset('storage/'.$testimoni->image_path) }}" alt="Testimoni {{ $loop->iteration }}" loading="lazy" class="h-[360px] w-full rounded-xl object-cover shadow-md border border-slate-100">
+              </div>
+            @endforeach
+          </div>
+
+          {{-- Navigation arrows --}}
+          <button onclick="document.getElementById('testimoni-carousel').scrollBy({left:-300,behavior:'smooth'})" class="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-3 grid h-10 w-10 place-items-center rounded-full bg-orange-500 text-white shadow-lg hover:bg-orange-600 transition z-10">
+            <i class="fa-solid fa-chevron-left text-sm"></i>
+          </button>
+          <button onclick="document.getElementById('testimoni-carousel').scrollBy({left:300,behavior:'smooth'})" class="absolute right-0 top-1/2 -translate-y-1/2 translate-x-3 grid h-10 w-10 place-items-center rounded-full bg-orange-500 text-white shadow-lg hover:bg-orange-600 transition z-10">
+            <i class="fa-solid fa-chevron-right text-sm"></i>
+          </button>
+        </div>
+      @else
+        <p class="mt-8 text-center text-sm text-slate-400">Belum ada testimoni yang ditampilkan.</p>
+      @endif
     </div>
   </section>
 
