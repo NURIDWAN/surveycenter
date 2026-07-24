@@ -165,7 +165,7 @@
           <div id="testimoni-carousel" class="flex gap-4 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-4 scrollbar-hide items-stretch">
             @foreach($testimoniImages as $testimoni)
               <div class="min-w-[200px] max-w-[220px] flex-shrink-0 snap-start h-[300px]">
-                <img src="{{ asset('storage/'.$testimoni->image_path) }}" alt="Testimoni {{ $loop->iteration }}" loading="lazy" class="h-full w-full rounded-xl object-contain bg-slate-50 shadow-md border border-slate-100">
+                <img src="{{ asset('storage/'.$testimoni->image_path) }}" alt="Testimoni {{ $loop->iteration }}" loading="lazy" class="h-full w-full rounded-xl object-cover shadow-md border border-slate-100">
               </div>
             @endforeach
           </div>
