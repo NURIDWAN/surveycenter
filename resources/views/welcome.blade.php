@@ -11,7 +11,19 @@
     .dashboard-shadow { box-shadow: 0 25px 60px rgba(24, 39, 75, .12), 0 6px 20px rgba(24, 39, 75, .06); }
     .scrollbar-hide::-webkit-scrollbar { display: none; }
     .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
-    @media (prefers-reduced-motion: reduce) { .scroll-smooth { scroll-behavior: auto; } }
+
+    .logo-marquee-left { display: flex; width: max-content; animation: marqueeLeft 30s linear infinite; }
+    .logo-marquee-left:hover { animation-play-state: paused; }
+    .logo-marquee-right { display: flex; width: max-content; animation: marqueeRight 30s linear infinite; }
+    .logo-marquee-right:hover { animation-play-state: paused; }
+
+    @keyframes marqueeLeft { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+    @keyframes marqueeRight { from { transform: translateX(-50%); } to { transform: translateX(0); } }
+
+    @media (prefers-reduced-motion: reduce) {
+      .logo-marquee-left, .logo-marquee-right { animation: none; }
+      .scroll-smooth { scroll-behavior: auto; }
+    }
 </style>
 @endpush
 
@@ -49,16 +61,33 @@
 
 
   {{-- Has Been Trusted --}}
-  <section class="bg-white px-5 py-14 sm:py-16">
+  <section class="bg-white px-5 py-14 sm:py-16 overflow-hidden">
     <div class="mx-auto max-w-6xl text-center">
       <h2 class="text-2xl font-black text-slate-900 sm:text-3xl">Has Been <span class="text-orange-500">Trusted</span></h2>
+
       @if($partnerLogos->isNotEmpty())
-        <div class="mt-10 grid grid-cols-3 items-center gap-8 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-7">
-          @foreach($partnerLogos as $logo)
-            <div class="flex items-center justify-center">
-              <img src="{{ asset('storage/'.$logo->logo_path) }}" alt="{{ $logo->name }}" loading="lazy" class="h-10 max-w-[120px] object-contain grayscale opacity-70 transition hover:grayscale-0 hover:opacity-100">
-            </div>
-          @endforeach
+        @php
+          $half = ceil($partnerLogos->count() / 2);
+          $row1 = $partnerLogos->take($half);
+          $row2 = $partnerLogos->skip($half);
+        @endphp
+
+        {{-- Row 1: scroll left --}}
+        <div class="mt-10 overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]">
+          <div class="logo-marquee-left flex items-center gap-12 pr-12">
+            @foreach($row1->concat($row1) as $logo)
+              <img src="{{ asset('storage/'.$logo->logo_path) }}" alt="{{ $logo->name }}" loading="lazy" class="h-10 w-32 shrink-0 object-contain grayscale opacity-60 transition hover:grayscale-0 hover:opacity-100">
+            @endforeach
+          </div>
+        </div>
+
+        {{-- Row 2: scroll right --}}
+        <div class="mt-6 overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]">
+          <div class="logo-marquee-right flex items-center gap-12 pr-12">
+            @foreach($row2->concat($row2) as $logo)
+              <img src="{{ asset('storage/'.$logo->logo_path) }}" alt="{{ $logo->name }}" loading="lazy" class="h-10 w-32 shrink-0 object-contain grayscale opacity-60 transition hover:grayscale-0 hover:opacity-100">
+            @endforeach
+          </div>
         </div>
       @else
         <div class="mt-10 flex flex-wrap items-center justify-center gap-x-10 gap-y-5 text-sm font-black tracking-wide text-slate-400 sm:gap-x-14">
