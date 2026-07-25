@@ -38,6 +38,13 @@ use App\Http\Controllers\User\AffiliateController;
 use App\Http\Controllers\Admin\AffiliateWithdrawalController;
 use App\Http\Controllers\Admin\RewardItemController;
 use App\Http\Controllers\Admin\RewardRedemptionController;
+use App\Http\Controllers\Admin\SurveyFillingVerificationController;
+use App\Http\Controllers\Responden\AuthController as RespondenAuthController;
+use App\Http\Controllers\Responden\DashboardController as RespondenDashboardController;
+use App\Http\Controllers\Responden\ProfileController as RespondenProfileController;
+use App\Http\Controllers\Responden\SurveyController as RespondenSurveyController;
+use App\Http\Controllers\Responden\SurveyFillingController;
+use App\Http\Controllers\Responden\WithdrawalController;
 use App\Services\SitemapService;
 
 Route::get('/', [HomeController::class, 'index'])->name('landing');
@@ -223,6 +230,37 @@ Route::middleware(['auth'])->group(function () {
 });
 
 
+// ===== RESPONDEN ROUTES =====
+
+// Responden Auth (guest)
+Route::prefix('responden')->name('responden.')->group(function () {
+    Route::get('/login', [RespondenAuthController::class, 'showLoginForm'])->name('login');
+    Route::post('/login', [RespondenAuthController::class, 'login'])->name('login.submit');
+    Route::get('/register', [RespondenAuthController::class, 'showRegisterForm'])->name('register');
+    Route::post('/register', [RespondenAuthController::class, 'register'])->name('register.submit');
+    Route::post('/logout', [RespondenAuthController::class, 'logout'])->name('logout');
+});
+
+// Responden Protected Routes
+Route::middleware(['auth', 'responden'])->prefix('responden')->name('responden.')->group(function () {
+    Route::get('/dashboard', [RespondenDashboardController::class, 'index'])->name('dashboard');
+
+    Route::get('/profile', [RespondenProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile', [RespondenProfileController::class, 'update'])->name('profile.update');
+
+    Route::get('/surveys', [RespondenSurveyController::class, 'index'])->name('surveys.index');
+    Route::get('/surveys/{survey}', [RespondenSurveyController::class, 'show'])->name('surveys.show');
+    Route::post('/surveys/{survey}/start', [RespondenSurveyController::class, 'start'])->name('surveys.start');
+
+    Route::get('/fillings', [SurveyFillingController::class, 'index'])->name('fillings.index');
+    Route::get('/fillings/{filling}/upload', [SurveyFillingController::class, 'showUploadForm'])->name('fillings.upload');
+    Route::post('/fillings/{filling}/upload', [SurveyFillingController::class, 'uploadProof'])->name('fillings.upload.store');
+
+    Route::get('/withdrawals', [WithdrawalController::class, 'index'])->name('withdrawals.index');
+    Route::get('/withdrawals/create', [WithdrawalController::class, 'create'])->name('withdrawals.create');
+    Route::post('/withdrawals', [WithdrawalController::class, 'store'])->name('withdrawals.store');
+});
+
 // Login Admin
 Route::get('admin/login', [AuthController::class, 'showLoginForm'])->name('admin.login');
 Route::post('admin/login', [AuthController::class, 'login'])->name('admin.login.submit');
@@ -364,6 +402,14 @@ Route::middleware(['admin'])->prefix('admin')->group(function () {
     Route::resource('responses', ResponseController::class)->names('admin.responses');
 
     Route::get('payment-proofs', [\App\Http\Controllers\Admin\PaymentProofController::class, 'index'])->name('admin.payment-proofs.index');
+
+    // Survey Filling Verification
+    Route::prefix('survey-fillings')->name('admin.survey-fillings.')->group(function () {
+        Route::get('/', [SurveyFillingVerificationController::class, 'index'])->name('index');
+        Route::get('/{filling}', [SurveyFillingVerificationController::class, 'show'])->name('show');
+        Route::post('/{filling}/approve', [SurveyFillingVerificationController::class, 'approve'])->name('approve');
+        Route::post('/{filling}/reject', [SurveyFillingVerificationController::class, 'reject'])->name('reject');
+    });
 });
 
 

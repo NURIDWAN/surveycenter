@@ -78,14 +78,23 @@ class SurveyController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'title'            => 'required|string|max:255',
-            'question_count'   => 'required|integer|min:1|max:100',
-            'respondent_count' => 'required|integer|min:1|max:10000',
-            'form_link'        => 'required|url|max:2048',
-            'description'      => 'nullable|string|max:1000',
+            'title'                  => 'required|string|max:255',
+            'question_count'         => 'required|integer|min:1|max:100',
+            'respondent_count'       => 'required|integer|min:1|max:10000',
+            'form_link'              => 'required|url|max:2048',
+            'description'            => 'nullable|string|max:1000',
+            'reward_amount'          => 'nullable|integer|min:0',
+            'deadline'               => 'nullable|date|after:now',
+            'estimated_time_minutes' => 'nullable|integer|min:1',
+            'ec_jenis_kelamin'       => 'nullable|array',
+            'ec_jenis_kelamin.*'     => 'in:Laki-laki,Perempuan',
+            'ec_age_min'             => 'nullable|integer|min:0',
+            'ec_age_max'             => 'nullable|integer|min:0',
+            'ec_provinsi'            => 'nullable|string|max:1000',
+            'ec_kota'                => 'nullable|string|max:1000',
+            'ec_pendidikan'          => 'nullable|string|max:1000',
+            'ec_pekerjaan'           => 'nullable|string|max:1000',
         ]);
-
-
 
         $user = Auth::user();
 
@@ -100,12 +109,19 @@ class SurveyController extends Controller
             ]);
         }
 
+        // Build eligibility criteria JSON
+        $eligibilityCriteria = $this->buildEligibilityCriteria($validated);
+
         // Create survey
         $survey = Survey::create([
-            'user_id'          => $user->id,
-            'title'            => $validated['title'],
-            'question_count'   => $validated['question_count'],
-            'respondent_count' => $validated['respondent_count'],
+            'user_id'                => $user->id,
+            'title'                  => $validated['title'],
+            'question_count'         => $validated['question_count'],
+            'respondent_count'       => $validated['respondent_count'],
+            'reward_amount'          => $validated['reward_amount'] ?? 0,
+            'deadline'               => $validated['deadline'] ?? null,
+            'estimated_time_minutes' => $validated['estimated_time_minutes'] ?? null,
+            'eligibility_criteria'   => $eligibilityCriteria,
         ]);
 
         // Store form link in Response
@@ -169,12 +185,30 @@ class SurveyController extends Controller
             abort(403, 'Unauthorized');
         }
 
-        $request->validate([
-            'title' => 'required|string|max:255',
+        $validated = $request->validate([
+            'title'                  => 'required|string|max:255',
+            'reward_amount'          => 'nullable|integer|min:0',
+            'deadline'               => 'nullable|date|after:now',
+            'estimated_time_minutes' => 'nullable|integer|min:1',
+            'ec_jenis_kelamin'       => 'nullable|array',
+            'ec_jenis_kelamin.*'     => 'in:Laki-laki,Perempuan',
+            'ec_age_min'             => 'nullable|integer|min:0',
+            'ec_age_max'             => 'nullable|integer|min:0',
+            'ec_provinsi'            => 'nullable|string|max:1000',
+            'ec_kota'                => 'nullable|string|max:1000',
+            'ec_pendidikan'          => 'nullable|string|max:1000',
+            'ec_pekerjaan'           => 'nullable|string|max:1000',
         ]);
 
+        // Build eligibility criteria JSON
+        $eligibilityCriteria = $this->buildEligibilityCriteria($validated);
+
         $survey->update([
-            'title' => $request->title,
+            'title'                  => $validated['title'],
+            'reward_amount'          => $validated['reward_amount'] ?? 0,
+            'deadline'               => $validated['deadline'] ?? null,
+            'estimated_time_minutes' => $validated['estimated_time_minutes'] ?? null,
+            'eligibility_criteria'   => $eligibilityCriteria,
         ]);
 
         return redirect()->route('user.surveys.show', $survey)
@@ -268,5 +302,49 @@ class SurveyController extends Controller
         ->setOption('margin-right', 10);
 
         return $pdf->download("survey-responses-{$survey->id}-" . now()->format('Y-m-d-His') . ".pdf");
+    }
+
+    /**
+     * Build eligibility criteria JSON from form input fields.
+     */
+    private function buildEligibilityCriteria(array $validated): ?array
+    {
+        $criteria = [];
+
+        if (!empty($validated['ec_jenis_kelamin'])) {
+            $criteria['jenis_kelamin'] = $validated['ec_jenis_kelamin'];
+        } else {
+            $criteria['jenis_kelamin'] = [];
+        }
+
+        $criteria['age_min'] = isset($validated['ec_age_min']) ? (int) $validated['ec_age_min'] : null;
+        $criteria['age_max'] = isset($validated['ec_age_max']) ? (int) $validated['ec_age_max'] : null;
+
+        $criteria['provinsi'] = !empty($validated['ec_provinsi'])
+            ? array_map('trim', explode(',', $validated['ec_provinsi']))
+            : [];
+
+        $criteria['kota'] = !empty($validated['ec_kota'])
+            ? array_map('trim', explode(',', $validated['ec_kota']))
+            : [];
+
+        $criteria['pendidikan'] = !empty($validated['ec_pendidikan'])
+            ? array_map('trim', explode(',', $validated['ec_pendidikan']))
+            : [];
+
+        $criteria['pekerjaan'] = !empty($validated['ec_pekerjaan'])
+            ? array_map('trim', explode(',', $validated['ec_pekerjaan']))
+            : [];
+
+        // Return null if all criteria are empty/null (no restrictions)
+        $hasAnyCriteria = !empty($criteria['jenis_kelamin'])
+            || $criteria['age_min'] !== null
+            || $criteria['age_max'] !== null
+            || !empty($criteria['provinsi'])
+            || !empty($criteria['kota'])
+            || !empty($criteria['pendidikan'])
+            || !empty($criteria['pekerjaan']);
+
+        return $hasAnyCriteria ? $criteria : null;
     }
 }

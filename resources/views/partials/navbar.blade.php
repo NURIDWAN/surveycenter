@@ -38,6 +38,7 @@
     </div>
 
     <div class="hidden items-center gap-2.5 lg:flex">
+      <a href="{{ route('responden.login') }}" class="rounded-full border border-sky-300 px-5 py-2 text-xs font-bold text-sky-600 hover:bg-sky-50">Isi Survey & Dapatkan Saldo</a>
       @auth
         <a href="{{ route('user.dashboard') }}" class="rounded-full border border-orange-300 px-5 py-2 text-xs font-bold text-orange-600 hover:bg-orange-50">Dashboard</a>
       @else
@@ -65,13 +66,16 @@
       <a href="{{ route('blog.index') }}" class="block">Blog</a>
       <a href="{{ route('contact') }}" class="block">Contact Us</a>
     </div>
-    <div class="mt-5 flex gap-3 border-t border-slate-100 pt-4">
-      @auth
-        <a href="{{ route('user.dashboard') }}" class="w-full rounded-full bg-orange-500 px-5 py-3 text-center text-xs font-bold text-white">Dashboard</a>
-      @else
-        <a href="{{ route('login') }}" class="flex-1 rounded-full border border-orange-300 px-5 py-3 text-center text-xs font-bold text-orange-600">Login</a>
-        <a href="{{ route('register') }}" class="flex-1 rounded-full bg-orange-500 px-5 py-3 text-center text-xs font-bold text-white">Daftar Gratis</a>
-      @endauth
+    <div class="mt-5 flex flex-col gap-3 border-t border-slate-100 pt-4">
+      <a href="{{ route('responden.login') }}" class="w-full rounded-full border border-sky-300 px-5 py-3 text-center text-xs font-bold text-sky-600 hover:bg-sky-50">Isi Survey & Dapatkan Saldo</a>
+      <div class="flex gap-3">
+        @auth
+          <a href="{{ route('user.dashboard') }}" class="w-full rounded-full bg-orange-500 px-5 py-3 text-center text-xs font-bold text-white">Dashboard</a>
+        @else
+          <a href="{{ route('login') }}" class="flex-1 rounded-full border border-orange-300 px-5 py-3 text-center text-xs font-bold text-orange-600">Login</a>
+          <a href="{{ route('register') }}" class="flex-1 rounded-full bg-orange-500 px-5 py-3 text-center text-xs font-bold text-white">Daftar Gratis</a>
+        @endauth
+      </div>
     </div>
   </div>
 </nav>

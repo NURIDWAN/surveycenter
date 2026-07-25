@@ -8,6 +8,9 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
 
+use App\Models\SurveyFilling;
+use App\Models\RespondentWithdrawal;
+
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
@@ -36,6 +39,14 @@ class User extends Authenticatable
         'google_avatar',
         'referral_code',
         'referred_by_id',
+        'is_responden',
+        'whatsapp_number',
+        'tanggal_lahir',
+        'jenis_kelamin',
+        'provinsi',
+        'kota',
+        'pendidikan',
+        'pekerjaan',
     ];
 
     /**
@@ -58,6 +69,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'tanggal_lahir' => 'date',
         ];
     }
 
@@ -177,6 +189,16 @@ class User extends Authenticatable
     public function walletTransactions()
     {
         return $this->hasMany(WalletTransaction::class);
+    }
+
+    public function surveyFillings()
+    {
+        return $this->hasMany(SurveyFilling::class);
+    }
+
+    public function respondentWithdrawals()
+    {
+        return $this->hasMany(RespondentWithdrawal::class);
     }
 
     /**

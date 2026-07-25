@@ -5,41 +5,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', 'Dashboard') — SurveyCenter</title>
+    <title>@yield('title', 'Dashboard Responden') — SurveyCenter</title>
 
     {{-- Favicon --}}
     <link rel="icon" type="image/png" href="{{ asset('assets/logosc.png') }}">
 
-    {{-- TailwindCSS --}}
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
-                    },
-                    fontSize: {
-                        '2xs': ['0.65rem', { lineHeight: '1rem' }],
-                    },
-                    colors: {
-                        primary: {
-                            50: '#fff7ed',
-                            100: '#ffedd5',
-                            200: '#fed7aa',
-                            300: '#fdba74',
-                            400: '#fb923c',
-                            500: '#f97316',
-                            600: '#ea580c',
-                            700: '#c2410c',
-                            800: '#9a3412',
-                            900: '#7c2d12',
-                        }
-                    }
-                }
-            }
-        }
-    </script>
+    {{-- Tailwind CSS & JS via Vite --}}
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     {{-- AlpineJS --}}
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
@@ -95,10 +67,6 @@
             transform: translateX(0);
         }
 
-        .sidebar-gradient {
-            background: linear-gradient(180deg, #c2410c 0%, #ea580c 50%, #f97316 100%);
-        }
-
         @keyframes fadeInUp {
             from { opacity: 0; transform: translateY(8px); }
             to { opacity: 1; transform: translateY(0); }
@@ -109,7 +77,7 @@
     @stack('styles')
 </head>
 
-<body class="bg-[#f8f9fc] text-gray-800" x-data="{ sidebarOpen: true, mobileSidebar: false, userMenu: false, notifMenu: false }">
+<body class="bg-[#f8f9fc] text-gray-800" x-data="{ sidebarOpen: true, mobileSidebar: false, userMenu: false }">
 
     <div class="flex h-screen overflow-hidden">
 
@@ -143,13 +111,13 @@
 
             {{-- Logo --}}
             <div class="flex items-center h-[64px] px-5 flex-shrink-0" :class="sidebarOpen ? 'justify-start' : 'justify-center'">
-                <a href="{{ url('/') }}" class="flex items-center gap-3 min-w-0">
+                <a href="{{ route('responden.dashboard') }}" class="flex items-center gap-3 min-w-0">
                     <div class="w-9 h-9 rounded-xl bg-orange-50 flex items-center justify-center flex-shrink-0 shadow-sm p-1.5 border border-orange-100">
                         <img src="{{ asset('assets/logosc.png') }}" alt="SurveyCenter Logo" class="w-full h-full object-contain">
                     </div>
                     <div x-show="sidebarOpen" x-transition:enter="transition-opacity duration-200" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" class="min-w-0">
                         <span class="font-bold text-[14px] tracking-wide text-gray-900 block">SurveyCenter</span>
-                        <span class="text-[10px] text-gray-400 font-medium">User Dashboard</span>
+                        <span class="text-[10px] text-gray-400 font-medium">Panel Responden</span>
                     </div>
                 </a>
                 <button @click="mobileSidebar = false" class="ml-auto w-7 h-7 rounded-lg hover:bg-gray-100 transition lg:hidden flex items-center justify-center">
@@ -163,44 +131,26 @@
             <nav class="flex-1 px-3 py-5 space-y-5 overflow-y-auto sidebar-scroll">
 
                 @php
-                    $menuGroups = [
-                        'SURVEY' => [
-                            ['route' => 'user.dashboard', 'is' => 'user.dashboard', 'icon' => 'layout-dashboard', 'label' => 'Dashboard'],
-                            ['route' => 'user.surveys.index', 'is' => 'user.surveys.*', 'icon' => 'clipboard-list', 'label' => 'Survey Saya'],
-                            ['route' => 'user.surveys.create', 'is' => 'user.surveys.create', 'icon' => 'plus-circle', 'label' => 'Buat Survey'],
-                            
+                    $respondenMenuGroups = [
+                        'MENU UTAMA' => [
+                            ['route' => 'responden.dashboard', 'is' => 'responden.dashboard', 'icon' => 'layout-dashboard', 'label' => 'Dashboard'],
+                            ['route' => 'responden.surveys.index', 'is' => 'responden.surveys.*', 'icon' => 'clipboard-list', 'label' => 'Survey'],
+                            ['route' => 'responden.fillings.index', 'is' => 'responden.fillings.*', 'icon' => 'file-check', 'label' => 'Pengisian Saya'],
                         ],
-                        'TRANSAKSI' => [
-                            ['route' => 'user.transactions.index', 'is' => 'user.transactions.*', 'icon' => 'receipt', 'label' => 'Transaksi'],
-                            ['route' => 'user.wallet.index', 'is' => 'user.wallet.*', 'icon' => 'wallet', 'label' => 'Wallet'],
-                        ],
-                        'ANALYTICS' => [
-                            ['route' => 'user.analytics', 'is' => 'user.analytics', 'icon' => 'bar-chart-2', 'label' => 'Analytics'],
-                            ['route' => 'user.reports.index', 'is' => 'user.reports.*', 'icon' => 'file-bar-chart', 'label' => 'Laporan'],
-                        ],
-                        'REWARD' => [
-                            ['route' => 'user.rewards.index', 'is' => 'user.rewards.*', 'icon' => 'gift', 'label' => 'Reward & Poin'],
-                            ['route' => 'user.affiliate.index', 'is' => 'user.affiliate.*', 'icon' => 'share-2', 'label' => 'Affiliate'],
+                        'KEUANGAN' => [
+                            ['route' => 'responden.withdrawals.index', 'is' => 'responden.withdrawals.*', 'icon' => 'banknote', 'label' => 'Penarikan'],
                         ],
                         'AKUN' => [
-                            ['route' => 'user.profile.show', 'is' => 'user.profile.*', 'icon' => 'user-circle', 'label' => 'Profil Saya'],
-                    
+                            ['route' => 'responden.profile.edit', 'is' => 'responden.profile.*', 'icon' => 'user-circle', 'label' => 'Profil'],
                         ],
                     ];
-
-                    // Add responden link for dual-role users
-                    if (auth()->check() && auth()->user()->is_responden) {
-                        $menuGroups['RESPONDEN'] = [
-                            ['route' => 'responden.dashboard', 'is' => 'responden.*', 'icon' => 'clipboard-check', 'label' => 'Survey Center Responden'],
-                        ];
-                    }
                 @endphp
 
-                @foreach($menuGroups as $groupName => $links)
+                @foreach($respondenMenuGroups as $groupName => $links)
                     <div>
                         <p x-show="sidebarOpen" class="px-3 mb-2 text-[10px] font-bold uppercase tracking-wider text-gray-400/90">{{ $groupName }}</p>
                         <div x-show="!sidebarOpen" class="mb-2 mx-2 border-t border-gray-100"></div>
-                        
+
                         <div class="space-y-0.5">
                             @foreach($links as $link)
                                 @php
@@ -210,10 +160,10 @@
                                 <div class="relative">
                                     <a href="{{ $href }}"
                                        class="nav-item {{ $isActive ? 'active' : '' }} flex items-center gap-3 px-3 py-2 rounded-xl text-[13px] font-medium transition-all duration-200
-                                       {{ $isActive 
-                                            ? 'bg-orange-50 text-orange-600 font-semibold shadow-sm shadow-orange-500/5' 
+                                       {{ $isActive
+                                            ? 'bg-orange-50 text-orange-600 font-semibold shadow-sm shadow-orange-500/5'
                                             : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }}">
-                                        <i data-lucide="{{ $link['icon'] }}" class="w-[18px] h-[18px] flex-shrink-0 {{ $isActive ? 'text-orange-500' : 'text-gray-400 group-hover:text-gray-900' }}"></i>
+                                        <i data-lucide="{{ $link['icon'] }}" class="w-[18px] h-[18px] flex-shrink-0 {{ $isActive ? 'text-orange-500' : 'text-gray-400' }}"></i>
                                         <span x-show="sidebarOpen" class="whitespace-nowrap flex-1">
                                             {{ $link['label'] }}
                                         </span>
@@ -231,17 +181,17 @@
 
             </nav>
 
-            {{-- Saldo Widget (Moved down just above footer) --}}
+            {{-- Saldo Widget --}}
             @auth
             <div class="mx-3 mt-auto mb-2 p-4 rounded-xl bg-gray-50/80 border border-gray-100 relative overflow-hidden group">
                 <div class="absolute top-0 right-0 w-16 h-16 bg-orange-50 rounded-full -translate-y-1/2 translate-x-1/4 blur-md"></div>
-                
+
                 <div x-show="sidebarOpen" x-transition:enter="transition-opacity duration-200" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100">
-                    <p class="text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-1">Saldo Deposit</p>
-                    <p class="text-base font-extrabold text-gray-900 mb-3">Rp {{ number_format(auth()->user()->deposit_balance ?? 0, 0, ',', '.') }}</p>
-                    <a href="{{ route('user.topups.create') }}" class="flex items-center justify-center gap-1.5 w-full py-2 rounded-xl bg-orange-500 hover:bg-orange-600 text-white hover:scale-[1.02] transition-all text-xs font-bold shadow-md shadow-orange-500/10">
-                        <i data-lucide="wallet" class="w-3.5 h-3.5"></i>
-                        Top Up Wallet
+                    <p class="text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-1">Saldo Anda</p>
+                    <p class="text-base font-extrabold text-gray-900 mb-3">{{ \App\Helpers\RupiahHelper::formatRupiah($saldo ?? (auth()->user()->wallet->balance ?? 0)) }}</p>
+                    <a href="{{ route('responden.withdrawals.create') }}" class="flex items-center justify-center gap-1.5 w-full py-2 rounded-xl bg-orange-500 hover:bg-orange-600 text-white hover:scale-[1.02] transition-all text-xs font-bold shadow-md shadow-orange-500/10">
+                        <i data-lucide="banknote" class="w-3.5 h-3.5"></i>
+                        Tarik Saldo
                     </a>
                 </div>
 
@@ -266,7 +216,7 @@
                     </div>
                 </div>
 
-                <form method="POST" action="{{ route('logout') }}">
+                <form method="POST" action="{{ route('responden.logout') }}">
                     @csrf
                     <div class="relative">
                         <button type="submit"
@@ -300,104 +250,57 @@
 
                 <div class="flex-1"></div>
 
-                <div class="flex items-center gap-2">
-                    {{-- Notifications --}}
-                    <div class="relative" @click.away="notifMenu = false">
-                        <button @click="notifMenu = !notifMenu"
-                            class="relative p-2 rounded-lg hover:bg-gray-100 transition">
-                            <i data-lucide="bell" class="w-5 h-5 text-gray-500"></i>
-                            @if(auth()->check() && auth()->user()->unreadNotifications->count() > 0)
-                                <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
-                            @endif
-                        </button>
-
-                        <div x-show="notifMenu"
-                             x-transition:enter="transition ease-out duration-150"
-                             x-transition:enter-start="opacity-0 scale-95"
-                             x-transition:enter-end="opacity-100 scale-100"
-                             x-transition:leave="transition ease-in duration-100"
-                             x-transition:leave-start="opacity-100 scale-100"
-                             x-transition:leave-end="opacity-0 scale-95"
-                             class="absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-xl shadow-gray-200/50 border border-gray-200 py-2 z-50"
-                             style="display: none;">
-                            <div class="px-4 py-3 border-b border-gray-100 flex justify-between items-center">
-                                <h3 class="text-sm font-semibold text-gray-900">Notifikasi</h3>
-                                @if(auth()->check() && auth()->user()->unreadNotifications->count() > 0)
-                                    <form method="POST" action="{{ route('user.notifications.readAll') }}">
-                                        @csrf
-                                        <button type="submit" class="text-[11px] text-orange-600 hover:text-orange-700 font-medium pb-0.5">Tandai sudah dibaca</button>
-                                    </form>
-                                @endif
-                            </div>
-                            <div class="max-h-80 overflow-y-auto">
-                                @if(auth()->check() && auth()->user()->notifications->count() > 0)
-                                    @foreach(auth()->user()->notifications->take(10) as $notification)
-                                        <a href="{{ route('user.notifications.read', $notification->id) }}" class="block px-4 py-3 border-b border-gray-50 hover:bg-gray-50 transition {{ $notification->read_at ? 'opacity-60' : 'bg-orange-50/20' }}">
-                                            <div class="flex gap-3">
-                                                <div class="flex-shrink-0 mt-0.5">
-                                                    <div class="w-8 h-8 rounded-full {{ $notification->read_at ? 'bg-gray-100 text-gray-500' : 'bg-orange-100 text-orange-600' }} flex items-center justify-center">
-                                                        <i data-lucide="bell" class="w-4 h-4"></i>
-                                                    </div>
-                                                </div>
-                                                <div>
-                                                    <p class="text-sm font-medium {{ $notification->read_at ? 'text-gray-700' : 'text-gray-900' }}">
-                                                        {{ $notification->data['message'] ?? 'Notification' }}
-                                                    </p>
-                                                    <p class="text-[10px] text-gray-500 mt-1 uppercase tracking-wider">{{ $notification->created_at->diffForHumans() }}</p>
-                                                </div>
-                                            </div>
-                                        </a>
-                                    @endforeach
-                                @else
-                                    <div class="px-4 py-8 text-center text-sm text-gray-400">
-                                        <i data-lucide="inbox" class="w-8 h-8 mx-auto mb-2 text-gray-300"></i>
-                                        Belum ada notifikasi
-                                    </div>
-                                @endif
-                            </div>
-                        </div>
+                {{-- Saldo in Top Bar (Mobile-friendly) --}}
+                <div class="flex items-center gap-2 mr-3">
+                    <div class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-orange-50 border border-orange-100">
+                        <i data-lucide="wallet" class="w-4 h-4 text-orange-500"></i>
+                        <span class="text-sm font-semibold text-orange-700">{{ \App\Helpers\RupiahHelper::formatRupiah($saldo ?? (auth()->user()->wallet->balance ?? 0)) }}</span>
                     </div>
+                </div>
 
-                    {{-- User Menu --}}
-                    <div class="relative" @click.away="userMenu = false">
-                        <button @click="userMenu = !userMenu"
-                            class="flex items-center gap-2 p-1.5 rounded-xl hover:bg-gray-100 transition">
-                            <div class="w-8 h-8 rounded-full bg-gradient-to-br from-orange-500 to-amber-600 flex items-center justify-center shadow-sm">
-                                <span class="text-white font-bold text-xs">{{ substr(auth()->user()->name ?? 'U', 0, 1) }}</span>
-                            </div>
-                            <div class="hidden sm:block text-left">
-                                <p class="text-xs font-semibold text-gray-700 leading-none">{{ auth()->user()->name ?? 'User' }}</p>
-                                <p class="text-2xs text-gray-400 leading-none mt-0.5">Member</p>
-                            </div>
-                            <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-gray-400 hidden sm:block"></i>
-                        </button>
-
-                        <div x-show="userMenu"
-                             x-transition:enter="transition ease-out duration-150"
-                             x-transition:enter-start="opacity-0 scale-95"
-                             x-transition:enter-end="opacity-100 scale-100"
-                             x-transition:leave="transition ease-in duration-100"
-                             x-transition:leave-start="opacity-100 scale-100"
-                             x-transition:leave-end="opacity-0 scale-95"
-                             class="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-xl shadow-gray-200/50 border border-gray-200 py-1.5 z-50"
-                             style="display: none;">
-                            <a href="{{ route('user.profile.show') }}" class="flex items-center gap-2.5 px-3.5 py-2 text-[13px] text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition">
-                                <i data-lucide="user-circle" class="w-4 h-4 text-gray-400"></i>
-                                Profil Saya
-                            </a>
-                            <a href="{{ url('/') }}" class="flex items-center gap-2.5 px-3.5 py-2 text-[13px] text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition">
-                                <i data-lucide="home" class="w-4 h-4 text-gray-400"></i>
-                                Ke Website
-                            </a>
-                            <div class="my-1 border-t border-gray-100"></div>
-                            <form method="POST" action="{{ route('logout') }}">
-                                @csrf
-                                <button type="submit" class="flex items-center gap-2.5 px-3.5 py-2 text-[13px] text-red-600 hover:bg-red-50 transition w-full text-left">
-                                    <i data-lucide="log-out" class="w-4 h-4"></i>
-                                    Keluar
-                                </button>
-                            </form>
+                {{-- User Menu --}}
+                <div class="relative" @click.away="userMenu = false">
+                    <button @click="userMenu = !userMenu"
+                        class="flex items-center gap-2 p-1.5 rounded-xl hover:bg-gray-100 transition">
+                        <div class="w-8 h-8 rounded-full bg-gradient-to-br from-orange-500 to-amber-600 flex items-center justify-center shadow-sm">
+                            <span class="text-white font-bold text-xs">{{ substr(auth()->user()->name ?? 'R', 0, 1) }}</span>
                         </div>
+                        <div class="hidden sm:block text-left">
+                            <p class="text-xs font-semibold text-gray-700 leading-none">{{ auth()->user()->name ?? 'Responden' }}</p>
+                            <p class="text-[10px] text-gray-400 leading-none mt-0.5">Responden</p>
+                        </div>
+                        <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-gray-400 hidden sm:block"></i>
+                    </button>
+
+                    <div x-show="userMenu"
+                         x-transition:enter="transition ease-out duration-150"
+                         x-transition:enter-start="opacity-0 scale-95"
+                         x-transition:enter-end="opacity-100 scale-100"
+                         x-transition:leave="transition ease-in duration-100"
+                         x-transition:leave-start="opacity-100 scale-100"
+                         x-transition:leave-end="opacity-0 scale-95"
+                         class="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-xl shadow-gray-200/50 border border-gray-200 py-1.5 z-50"
+                         style="display: none;">
+                        <a href="{{ route('responden.profile.edit') }}" class="flex items-center gap-2.5 px-3.5 py-2 text-[13px] text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition">
+                            <i data-lucide="user-circle" class="w-4 h-4 text-gray-400"></i>
+                            Profil Saya
+                        </a>
+                        <a href="{{ route('responden.dashboard') }}" class="flex items-center gap-2.5 px-3.5 py-2 text-[13px] text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition">
+                            <i data-lucide="layout-dashboard" class="w-4 h-4 text-gray-400"></i>
+                            Dashboard
+                        </a>
+                        <a href="{{ url('/') }}" class="flex items-center gap-2.5 px-3.5 py-2 text-[13px] text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition">
+                            <i data-lucide="home" class="w-4 h-4 text-gray-400"></i>
+                            Ke Website
+                        </a>
+                        <div class="my-1 border-t border-gray-100"></div>
+                        <form method="POST" action="{{ route('responden.logout') }}">
+                            @csrf
+                            <button type="submit" class="flex items-center gap-2.5 px-3.5 py-2 text-[13px] text-red-600 hover:bg-red-50 transition w-full text-left">
+                                <i data-lucide="log-out" class="w-4 h-4"></i>
+                                Keluar
+                            </button>
+                        </form>
                     </div>
                 </div>
             </header>
@@ -434,32 +337,20 @@
                         </div>
                     @endif
 
-                    @if(session()->has('impersonator_admin_id'))
-                        <div class="mb-6 flex flex-col sm:flex-row sm:items-center gap-3 px-4 py-3 rounded-xl bg-blue-50 border border-blue-200/60 text-blue-800 text-[13px]">
-                            <div class="flex items-start gap-3">
-                                <div class="w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center flex-shrink-0 mt-0.5 sm:mt-0">
-                                    <i data-lucide="shield-alert" class="w-3 h-3 text-white"></i>
-                                </div>
-                                <div>
-                                    <p class="font-semibold">Mode Admin: Login sebagai user aktif</p>
-                                    <p class="text-blue-700 text-xs mt-0.5">Anda masuk sebagai {{ auth()->user()->name }} dari akun admin {{ session('impersonator_admin_name', 'Admin') }}.</p>
-                                </div>
-                            </div>
-                            <div class="sm:ml-auto">
-                                <form method="POST" action="{{ route('admin.impersonation.stop') }}">
-                                    @csrf
-                                    <button type="submit" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-600 text-white text-xs font-medium hover:bg-blue-700 transition">
-                                        <i data-lucide="undo-2" class="w-3.5 h-3.5"></i>
-                                        Kembali ke Admin
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-                    @endif
-
                     @yield('content')
                 </div>
             </main>
+
+            {{-- Footer --}}
+            <footer class="flex-shrink-0 border-t border-gray-200/80 bg-white/60 backdrop-blur-sm">
+                <div class="px-4 sm:px-6 lg:px-8 py-4 flex flex-col sm:flex-row items-center justify-between gap-2">
+                    <p class="text-xs text-gray-400">&copy; {{ date('Y') }} SurveyCenter. All rights reserved.</p>
+                    <div class="flex items-center gap-4">
+                        <a href="{{ url('/') }}" class="text-xs text-gray-400 hover:text-gray-600 transition">Beranda</a>
+                        <a href="#" class="text-xs text-gray-400 hover:text-gray-600 transition">Bantuan</a>
+                    </div>
+                </div>
+            </footer>
         </div>
     </div>
 
@@ -468,8 +359,6 @@
             if (typeof lucide !== 'undefined') lucide.createIcons();
         });
     </script>
-
-
 
     @stack('scripts')
 </body>

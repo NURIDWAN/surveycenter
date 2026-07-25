@@ -12,12 +12,27 @@ class Survey extends Model
     public const STATUS_ACTIVE = 'active';
     public const STATUS_DRAFT = 'draft';
 
-    protected $fillable = ['user_id', 'title', 'question_count', 'respondent_count', 'form_link', 'description', 'status', 'completed_at'];
+    protected $fillable = [
+        'user_id',
+        'title',
+        'question_count',
+        'respondent_count',
+        'form_link',
+        'description',
+        'status',
+        'completed_at',
+        'reward_amount',
+        'deadline',
+        'estimated_time_minutes',
+        'eligibility_criteria',
+    ];
 
     protected function casts(): array
     {
         return [
             'completed_at' => 'datetime',
+            'eligibility_criteria' => 'array',
+            'deadline' => 'datetime',
         ];
     }
 
@@ -38,6 +53,11 @@ class Survey extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function surveyFillings()
+    {
+        return $this->hasMany(SurveyFilling::class);
     }
 
     public function getRespondentCountAttribute($value)

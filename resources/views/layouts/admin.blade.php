@@ -210,6 +210,7 @@
                     $businessLinks = [
                         ['route' => 'admin.layanan.index', 'is' => 'admin.layanan.*', 'icon' => 'briefcase', 'label' => 'Kelola Layanan', 'check' => 'routeIs'],
                         ['route' => 'admin.transactions.index', 'is' => 'admin.transactions.*', 'icon' => 'credit-card', 'label' => 'Transaksi', 'check' => 'routeIs'],
+                        ['route' => 'admin.survey-fillings.index', 'is' => 'admin.survey-fillings.*', 'icon' => 'file-check-2', 'label' => 'Verifikasi Survey Filling', 'check' => 'routeIs'],
                         ['route' => 'admin.reward-items.index', 'is' => 'admin.reward-items.*', 'icon' => 'gift', 'label' => 'Kelola Reward', 'check' => 'routeIs'],
                         ['route' => 'admin.reward-redemptions.index', 'is' => 'admin.reward-redemptions.*', 'icon' => 'repeat', 'label' => 'Penukaran Poin', 'check' => 'routeIs'],
                         ['route' => 'admin.affiliate-withdrawals.index', 'is' => 'admin.affiliate-withdrawals.*', 'icon' => 'wallet', 'label' => 'Withdrawal Affiliate', 'check' => 'routeIs'],

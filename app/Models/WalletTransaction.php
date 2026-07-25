@@ -11,6 +11,8 @@ class WalletTransaction extends Model
 
     public const REF_TOPUP = 'topup';
     public const REF_TRANSACTION = 'transaction';
+    public const REF_SURVEY_FILLING = 'survey_filling';
+    public const REF_RESPONDENT_WITHDRAWAL = 'respondent_withdrawal';
 
     protected $fillable = [
         'wallet_id',
