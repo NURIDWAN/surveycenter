@@ -234,9 +234,7 @@ Route::middleware(['auth'])->group(function () {
 
 // Responden Auth (guest)
 Route::prefix('responden')->name('responden.')->group(function () {
-    Route::get('/login', [RespondenAuthController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [RespondenAuthController::class, 'login'])->name('login.submit');
-    Route::get('/register', [RespondenAuthController::class, 'showRegisterForm'])->name('register');
     Route::post('/register', [RespondenAuthController::class, 'register'])->name('register.submit');
     Route::post('/logout', [RespondenAuthController::class, 'logout'])->name('logout');
 });

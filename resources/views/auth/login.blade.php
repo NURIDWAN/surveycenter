@@ -74,6 +74,17 @@
                 Masukkan akun Anda untuk mengakses dashboard SurveyCenter.
             </p>
 
+            {{-- Role Selector --}}
+            <div x-data="{ role: 'survey' }">
+            <div class="flex rounded-lg bg-[#f1f5f9] p-1 mb-6">
+                <button type="button" @click="role = 'survey'" :class="role === 'survey' ? 'bg-white shadow-sm text-[#ea580c] font-bold' : 'text-slate-500 font-medium'" class="flex-1 py-2.5 px-3 rounded-md text-[13px] transition-all text-center">
+                    Buat Survey
+                </button>
+                <button type="button" @click="role = 'responden'" :class="role === 'responden' ? 'bg-white shadow-sm text-[#ea580c] font-bold' : 'text-slate-500 font-medium'" class="flex-1 py-2.5 px-3 rounded-md text-[13px] transition-all text-center">
+                    Isi Survey & Dapatkan Saldo
+                </button>
+            </div>
+
             {{-- Status Message --}}
             @if (session('status'))
                 <div class="bg-emerald-50 border border-emerald-200 text-emerald-700 px-4 py-3 rounded text-[12.5px] mb-6 shadow-sm font-medium">
@@ -92,7 +103,7 @@
                 </div>
             @endif
 
-            <a href="{{ route('auth.google') }}" class="w-full py-3.5 bg-white border border-[#e2e8f0] hover:bg-slate-50 text-[#071D49] rounded-md font-bold text-[14.5px] transition-colors shadow-sm mb-5 mt-2 flex items-center justify-center gap-3">
+            <a :href="'{{ route('auth.google') }}' + '?role=' + role" class="w-full py-3.5 bg-white border border-[#e2e8f0] hover:bg-slate-50 text-[#071D49] rounded-md font-bold text-[14.5px] transition-colors shadow-sm mb-5 mt-2 flex items-center justify-center gap-3">
                 <svg viewBox="0 0 24 24" class="w-5 h-5">
                     <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
                     <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
@@ -108,7 +119,7 @@
                 <div class="flex-grow border-t border-[#e2e8f0]"></div>
             </div>
 
-            <form action="{{ route('login.submit') }}" method="POST">
+            <form :action="role === 'responden' ? '{{ route('responden.login.submit') }}' : '{{ route('login.submit') }}'" method="POST">
                 @csrf
                 <input type="hidden" name="redirect" value="{{ old('redirect', $redirect ?? request('redirect')) }}">
                 <div class="mb-5">
@@ -137,6 +148,7 @@
                     <a href="{{ route('password.request') }}" class="inline-block text-[13px] font-semibold text-slate-500 hover:text-[#ea580c] transition-colors">Lupa kata sandi?</a>
                 </div>
             </form>
+            </div>
         </div>
     </div>
 </div>

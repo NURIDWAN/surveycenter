@@ -10,7 +10,7 @@ class RespondenMiddleware
     public function handle($request, Closure $next)
     {
         if (!Auth::check() || !Auth::user()->is_responden) {
-            return redirect()->route('responden.login');
+            return redirect()->route('login', ['role' => 'responden']);
         }
 
         return $next($request);

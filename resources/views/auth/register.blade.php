@@ -119,12 +119,23 @@
         </h1>
         
         <!-- Subheading -->
-        <p class="text-slate-500 text-[14px] sm:text-[15px] font-medium text-center mb-8 px-2 leading-relaxed">
+        <p class="text-slate-500 text-[14px] sm:text-[15px] font-medium text-center mb-6 px-2 leading-relaxed">
             Kelola survei, temukan responden yang tepat, dan dapatkan data yang valid.
         </p>
 
+        {{-- Role Selector --}}
+        <div x-data="{ role: 'survey' }">
+        <div class="flex rounded-lg bg-[#f1f5f9] p-1 mb-8">
+            <button type="button" @click="role = 'survey'" :class="role === 'survey' ? 'bg-white shadow-sm text-[#ea580c] font-bold' : 'text-slate-500 font-medium'" class="flex-1 py-2.5 px-3 rounded-md text-[13px] transition-all text-center">
+                Buat Survey
+            </button>
+            <button type="button" @click="role = 'responden'" :class="role === 'responden' ? 'bg-white shadow-sm text-[#ea580c] font-bold' : 'text-slate-500 font-medium'" class="flex-1 py-2.5 px-3 rounded-md text-[13px] transition-all text-center">
+                Isi Survey & Dapatkan Saldo
+            </button>
+        </div>
+
         <!-- Features -->
-        <div class="grid grid-cols-3 gap-3 sm:gap-4 mb-8">
+        <div class="grid grid-cols-3 gap-3 sm:gap-4 mb-8" x-show="role === 'survey'" x-transition>
             <div class="flex flex-col items-center text-center gap-2.5">
                 <div class="w-[52px] h-[52px] rounded-full bg-orange-50 flex items-center justify-center">
                     <i class="fa-solid fa-users text-orange-500 text-[22px]"></i>
@@ -146,7 +157,7 @@
         </div>
 
         <!-- Google Auth -->
-        <a href="{{ route('auth.google') }}" class="w-full py-3.5 bg-white border border-slate-200 hover:bg-slate-50 hover:border-slate-300 text-slate-800 rounded-lg font-bold text-[15px] transition-all shadow-sm flex items-center justify-center gap-3 mb-6">
+        <a :href="'{{ route('auth.google') }}' + '?role=' + role" class="w-full py-3.5 bg-white border border-slate-200 hover:bg-slate-50 hover:border-slate-300 text-slate-800 rounded-lg font-bold text-[15px] transition-all shadow-sm flex items-center justify-center gap-3 mb-6">
             <svg viewBox="0 0 24 24" class="w-5 h-5">
                 <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
                 <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
@@ -174,14 +185,14 @@
             </div>
         @endif
 
-        <form action="{{ route('register.post') }}" method="POST">
+        <form :action="role === 'responden' ? '{{ route('responden.register.submit') }}' : '{{ route('register.post') }}'" method="POST">
             @csrf
             
             <div class="mb-4">
                 <label class="block text-[11px] font-extrabold text-slate-800 tracking-wider uppercase mb-2" for="name">NAMA LENGKAP</label>
                 <div class="form-input-container">
                     <i class="fa-regular fa-user form-input-icon-left"></i>
-                    <input type="text" id="name" name="name" value="{{ old('name') }}" 
+                    <input type="text" id="name" :name="role === 'responden' ? 'nama' : 'name'" value="{{ old('name', old('nama')) }}" 
                            class="w-full form-input-with-icon py-[14px] bg-white border border-slate-200 rounded-lg text-[14px] text-slate-800 font-medium focus:ring-1 focus:ring-orange-500 focus:border-orange-500 transition-all outline-none shadow-sm" 
                            placeholder="Masukkan nama lengkap Anda" required>
                 </div>
@@ -198,10 +209,10 @@
             </div>
 
             <div class="mb-4">
-                <label class="block text-[11px] font-extrabold text-slate-800 tracking-wider uppercase mb-2" for="phone">NOMOR TELEPON</label>
+                <label class="block text-[11px] font-extrabold text-slate-800 tracking-wider uppercase mb-2" for="phone" x-text="role === 'responden' ? 'NOMOR WHATSAPP' : 'NOMOR TELEPON'">NOMOR TELEPON</label>
                 <div class="form-input-container">
                     <i class="fa-solid fa-phone-flip form-input-icon-left"></i>
-                    <input type="tel" id="phone" name="phone" value="{{ old('phone') }}" 
+                    <input type="tel" id="phone" :name="role === 'responden' ? 'whatsapp_number' : 'phone'" value="{{ old('phone', old('whatsapp_number')) }}" 
                            class="w-full form-input-with-icon py-[14px] bg-white border border-slate-200 rounded-lg text-[14px] text-slate-800 font-medium focus:ring-1 focus:ring-orange-500 focus:border-orange-500 transition-all outline-none shadow-sm" 
                            placeholder="08xxxxxxxxxx" required>
                 </div>
@@ -254,6 +265,7 @@
                 </span>
             </div>
         </form>
+        </div>
     </div>
 </div>
 

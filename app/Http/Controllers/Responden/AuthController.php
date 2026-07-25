@@ -10,18 +10,8 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\View\View;
-
 class AuthController extends Controller
 {
-    /**
-     * Show the respondent registration form.
-     */
-    public function showRegisterForm(): View
-    {
-        return view('responden.auth.register');
-    }
-
     /**
      * Handle respondent registration.
      */
@@ -45,19 +35,6 @@ class AuthController extends Controller
 
         return redirect()->route('responden.dashboard')
             ->with('success', 'Registrasi berhasil! Selamat datang di Survey Center Indonesia.');
-    }
-
-    /**
-     * Show the respondent login form.
-     */
-    public function showLoginForm(): View|RedirectResponse
-    {
-        // If already logged in as responden, redirect to dashboard
-        if (Auth::check() && Auth::user()->is_responden) {
-            return redirect()->route('responden.dashboard');
-        }
-
-        return view('responden.auth.login');
     }
 
     /**
@@ -113,6 +90,6 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('responden.login');
+        return redirect()->route('login');
     }
 }
