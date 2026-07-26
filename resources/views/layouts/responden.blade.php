@@ -191,15 +191,9 @@
 
                     <div class="space-y-1.5 mb-3">
                         <div class="flex items-center justify-between">
-                            <span class="text-[11px] text-gray-500">Saldo Reward</span>
-                            <span class="text-xs font-bold text-emerald-600">
+                            <span class="text-[11px] font-semibold text-gray-700">Saldo Reward</span>
+                            <span class="text-sm font-extrabold text-emerald-600">
                                 {{ \App\Helpers\RupiahHelper::formatRupiah($rewardBalance ?? 0) }}
-                            </span>
-                        </div>
-                        <div class="border-t border-gray-200 pt-1.5 flex items-center justify-between">
-                            <span class="text-[11px] font-semibold text-gray-700">Total Saldo</span>
-                            <span class="text-sm font-extrabold text-gray-900">
-                                {{ \App\Helpers\RupiahHelper::formatRupiah($saldo ?? 0) }}
                             </span>
                         </div>
                     </div>
@@ -267,29 +261,11 @@
 
                 {{-- Saldo in Top Bar --}}
                 <div class="flex items-center gap-2 mr-3">
-                    <div class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-orange-50 border border-orange-100 relative group/saldo cursor-default">
-                        <i data-lucide="wallet" class="w-4 h-4 text-orange-500"></i>
-                        <span class="text-sm font-semibold text-orange-700">
-                            {{ \App\Helpers\RupiahHelper::formatRupiah($saldo ?? (auth()->user()->wallet->balance ?? 0)) }}
+                    <div class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-emerald-50 border border-emerald-100 cursor-default">
+                        <i data-lucide="wallet" class="w-4 h-4 text-emerald-500"></i>
+                        <span class="text-sm font-semibold text-emerald-700">
+                            {{ \App\Helpers\RupiahHelper::formatRupiah($rewardBalance ?? 0) }}
                         </span>
-
-                        {{-- Tooltip dropdown --}}
-                        <div class="absolute top-full right-0 mt-2 w-52 bg-white rounded-xl shadow-xl border border-gray-200 p-3 z-50 opacity-0 invisible group-hover/saldo:opacity-100 group-hover/saldo:visible transition-all duration-200">
-                            <div class="space-y-2">
-                                <div class="flex items-center justify-between">
-                                    <span class="text-xs text-gray-500">Saldo Reward</span>
-                                    <span class="text-xs font-bold text-emerald-600">
-                                        {{ \App\Helpers\RupiahHelper::formatRupiah($rewardBalance ?? 0) }}
-                                    </span>
-                                </div>
-                                <div class="border-t border-gray-100 pt-2 flex items-center justify-between">
-                                    <span class="text-xs font-semibold text-gray-700">Total</span>
-                                    <span class="text-xs font-bold text-gray-900">
-                                        {{ \App\Helpers\RupiahHelper::formatRupiah($saldo ?? 0) }}
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
 
