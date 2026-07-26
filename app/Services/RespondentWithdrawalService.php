@@ -21,7 +21,7 @@ class RespondentWithdrawalService
 
     /**
      * Check if the user can withdraw the given amount.
-     * Balance must be >= threshold AND >= amount.
+     * Only reward_balance can be withdrawn.
      */
     public function canWithdraw(User $user, int $amount): bool
     {
@@ -31,10 +31,10 @@ class RespondentWithdrawalService
             return false;
         }
 
-        $balance = (int) $wallet->balance;
+        $rewardBalance = (int) $wallet->reward_balance;
         $threshold = $this->getMinimumThreshold();
 
-        return $balance >= $threshold && $balance >= $amount;
+        return $rewardBalance >= $threshold && $rewardBalance >= $amount;
     }
 
     /**
@@ -54,21 +54,17 @@ class RespondentWithdrawalService
                 throw new RuntimeException('Wallet tidak ditemukan.');
             }
 
-            $totalBalance = (float) $wallet->balance;
+            $rewardBalance = (float) $wallet->reward_balance;
 
-            // Validate total balance >= amount before debit
-            if ($totalBalance < $amount) {
-                throw new RuntimeException('Saldo tidak mencukupi.');
+            // Validate reward_balance >= amount (only reward can be withdrawn)
+            if ($rewardBalance < $amount) {
+                throw new RuntimeException('Saldo reward tidak mencukupi.');
             }
 
-            $balanceBefore = $totalBalance;
+            $balanceBefore = (float) $wallet->balance;
 
-            // Debit reward_balance first, then deposit_balance for remainder
-            $rewardDebit = min((float) $wallet->reward_balance, (float) $amount);
-            $depositDebit = (float) $amount - $rewardDebit;
-
-            $wallet->reward_balance = bcsub($wallet->reward_balance, $rewardDebit, 2);
-            $wallet->deposit_balance = bcsub($wallet->deposit_balance, $depositDebit, 2);
+            // Debit only from reward_balance
+            $wallet->reward_balance = bcsub($wallet->reward_balance, $amount, 2);
             $wallet->syncTotalBalance();
 
             $balanceAfter = (float) $wallet->balance;

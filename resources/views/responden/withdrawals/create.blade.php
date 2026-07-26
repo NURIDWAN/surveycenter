@@ -17,17 +17,9 @@
                 <h3 class="text-sm font-bold text-gray-900 mb-3">Saldo Anda</h3>
 
                 <div class="space-y-2 mb-3">
-                    <div class="flex items-center justify-between px-3 py-2 rounded-lg bg-blue-50 border border-blue-100">
-                        <span class="text-xs text-blue-700 font-medium">Saldo Deposit</span>
-                        <span class="text-sm font-bold text-blue-700">{{ \App\Helpers\RupiahHelper::formatRupiah($depositBalance) }}</span>
-                    </div>
-                    <div class="flex items-center justify-between px-3 py-2 rounded-lg bg-emerald-50 border border-emerald-100">
-                        <span class="text-xs text-emerald-700 font-medium">Saldo Reward</span>
-                        <span class="text-sm font-bold text-emerald-700">{{ \App\Helpers\RupiahHelper::formatRupiah($rewardBalance) }}</span>
-                    </div>
-                    <div class="flex items-center justify-between px-3 py-2.5 rounded-lg bg-gray-50 border border-gray-200">
-                        <span class="text-xs font-semibold text-gray-700">Total Saldo Tersedia</span>
-                        <span class="text-lg font-extrabold text-gray-900">{{ \App\Helpers\RupiahHelper::formatRupiah($saldo) }}</span>
+                    <div class="flex items-center justify-between px-3 py-2.5 rounded-lg bg-emerald-50 border border-emerald-100">
+                        <span class="text-xs text-emerald-700 font-medium">Saldo Reward (dapat ditarik)</span>
+                        <span class="text-lg font-extrabold text-emerald-700">{{ \App\Helpers\RupiahHelper::formatRupiah($rewardBalance) }}</span>
                     </div>
                 </div>
 
@@ -58,7 +50,7 @@
                        name="amount"
                        id="amount"
                        min="{{ $minThreshold }}"
-                       max="{{ $saldo }}"
+                       max="{{ $rewardBalance }}"
                        value="{{ old('amount') }}"
                        placeholder="Masukkan jumlah penarikan"
                        class="block w-full rounded-xl border border-gray-200 bg-gray-50/50 px-4 py-3 text-sm text-gray-700 placeholder-gray-400 focus:border-orange-300 focus:bg-white focus:ring-2 focus:ring-orange-500/10 transition @error('amount') border-red-300 bg-red-50/50 @enderror">
@@ -68,7 +60,7 @@
                         {{ $message }}
                     </p>
                 @enderror
-                <p class="mt-1.5 text-[11px] text-gray-400">Minimum {{ \App\Helpers\RupiahHelper::formatRupiah($minThreshold) }}, maksimum saldo Anda saat ini</p>
+                <p class="mt-1.5 text-[11px] text-gray-400">Minimum {{ \App\Helpers\RupiahHelper::formatRupiah($minThreshold) }}, maksimum saldo reward Anda saat ini</p>
             </div>
 
             {{-- Provider Name --}}
