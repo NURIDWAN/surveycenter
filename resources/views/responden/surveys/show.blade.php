@@ -148,8 +148,8 @@
 
                 {{-- Estimated Time --}}
                 <div class="flex items-center gap-3">
-                    <div class="w-9 h-9 rounded-xl bg-sky-50 border border-sky-100 flex items-center justify-center flex-shrink-0">
-                        <i data-lucide="clock" class="w-4.5 h-4.5 text-sky-500"></i>
+                    <div class="w-9 h-9 rounded-xl bg-orange-50 border border-orange-100 flex items-center justify-center flex-shrink-0">
+                        <i data-lucide="clock" class="w-4.5 h-4.5 text-orange-500"></i>
                     </div>
                     <div>
                         <p class="text-[11px] font-semibold text-gray-400 uppercase tracking-wider">Estimasi Waktu</p>
@@ -193,7 +193,7 @@
                 @if($isEligible)
                     <form method="POST" action="{{ route('responden.surveys.start', $survey) }}">
                         @csrf
-                        <button type="submit" class="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-sky-500 hover:bg-sky-600 text-white font-bold text-sm shadow-md shadow-sky-500/20 hover:shadow-lg hover:shadow-sky-500/30 hover:scale-[1.02] transition-all">
+                        <button type="submit" class="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-bold text-sm shadow-md shadow-orange-500/20 hover:shadow-lg hover:shadow-orange-500/30 hover:scale-[1.02] transition-all">
                             <i data-lucide="external-link" class="w-4.5 h-4.5"></i>
                             Mulai Survey
                         </button>

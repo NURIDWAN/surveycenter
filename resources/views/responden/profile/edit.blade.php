@@ -8,8 +8,8 @@
 
     {{-- Header Card --}}
     <div class="mb-6 flex items-center gap-3">
-        <div class="w-10 h-10 rounded-xl bg-sky-50 border border-sky-100 flex items-center justify-center">
-            <i data-lucide="user-circle" class="w-5 h-5 text-sky-500"></i>
+        <div class="w-10 h-10 rounded-xl bg-orange-50 border border-orange-100 flex items-center justify-center">
+            <i data-lucide="user-circle" class="w-5 h-5 text-orange-500"></i>
         </div>
         <div>
             <h2 class="text-lg font-bold text-gray-900">Profil Demografis</h2>
@@ -33,7 +33,7 @@
                     id="tanggal_lahir"
                     name="tanggal_lahir"
                     value="{{ old('tanggal_lahir', $user->tanggal_lahir?->format('Y-m-d')) }}"
-                    class="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50/50 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-400 transition @error('tanggal_lahir') border-red-300 bg-red-50/30 @enderror"
+                    class="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50/50 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-400 transition @error('tanggal_lahir') border-red-300 bg-red-50/30 @enderror"
                 >
                 @error('tanggal_lahir')
                     <p class="mt-1.5 text-xs text-red-600 flex items-center gap-1">
@@ -51,7 +51,7 @@
                 <select
                     id="jenis_kelamin"
                     name="jenis_kelamin"
-                    class="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50/50 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-400 transition @error('jenis_kelamin') border-red-300 bg-red-50/30 @enderror"
+                    class="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50/50 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-400 transition @error('jenis_kelamin') border-red-300 bg-red-50/30 @enderror"
                 >
                     <option value="">— Pilih Jenis Kelamin —</option>
                     <option value="Laki-laki" {{ old('jenis_kelamin', $user->jenis_kelamin) === 'Laki-laki' ? 'selected' : '' }}>Laki-laki</option>
@@ -76,7 +76,7 @@
                     name="provinsi"
                     value="{{ old('provinsi', $user->provinsi) }}"
                     placeholder="Contoh: Jawa Barat"
-                    class="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50/50 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-400 transition @error('provinsi') border-red-300 bg-red-50/30 @enderror"
+                    class="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50/50 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-400 transition @error('provinsi') border-red-300 bg-red-50/30 @enderror"
                 >
                 @error('provinsi')
                     <p class="mt-1.5 text-xs text-red-600 flex items-center gap-1">
@@ -97,7 +97,7 @@
                     name="kota"
                     value="{{ old('kota', $user->kota) }}"
                     placeholder="Contoh: Bandung"
-                    class="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50/50 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-400 transition @error('kota') border-red-300 bg-red-50/30 @enderror"
+                    class="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50/50 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-400 transition @error('kota') border-red-300 bg-red-50/30 @enderror"
                 >
                 @error('kota')
                     <p class="mt-1.5 text-xs text-red-600 flex items-center gap-1">
@@ -118,7 +118,7 @@
                     name="pendidikan"
                     value="{{ old('pendidikan', $user->pendidikan) }}"
                     placeholder="Contoh: S1"
-                    class="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50/50 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-400 transition @error('pendidikan') border-red-300 bg-red-50/30 @enderror"
+                    class="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50/50 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-400 transition @error('pendidikan') border-red-300 bg-red-50/30 @enderror"
                 >
                 @error('pendidikan')
                     <p class="mt-1.5 text-xs text-red-600 flex items-center gap-1">
@@ -139,7 +139,7 @@
                     name="pekerjaan"
                     value="{{ old('pekerjaan', $user->pekerjaan) }}"
                     placeholder="Contoh: Karyawan Swasta"
-                    class="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50/50 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-400 transition @error('pekerjaan') border-red-300 bg-red-50/30 @enderror"
+                    class="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50/50 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-400 transition @error('pekerjaan') border-red-300 bg-red-50/30 @enderror"
                 >
                 @error('pekerjaan')
                     <p class="mt-1.5 text-xs text-red-600 flex items-center gap-1">
@@ -161,7 +161,7 @@
             <div class="pt-2">
                 <button
                     type="submit"
-                    class="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-sky-500 hover:bg-sky-600 text-white text-sm font-semibold shadow-md shadow-sky-500/10 hover:shadow-lg hover:shadow-sky-500/20 transition-all hover:scale-[1.01] flex items-center justify-center gap-2"
+                    class="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold shadow-md shadow-orange-500/10 hover:shadow-lg hover:shadow-orange-500/20 transition-all hover:scale-[1.01] flex items-center justify-center gap-2"
                 >
                     <i data-lucide="save" class="w-4 h-4"></i>
                     Simpan Profil

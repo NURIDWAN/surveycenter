@@ -11,7 +11,7 @@
             <h2 class="text-sm font-bold text-gray-900">Riwayat Penarikan</h2>
             <p class="text-xs text-gray-400 mt-0.5">Semua permintaan penarikan saldo Anda</p>
         </div>
-        <a href="{{ route('responden.withdrawals.create') }}" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-sky-50 border border-sky-100 text-xs font-semibold text-sky-600 hover:bg-sky-100 hover:text-sky-700 transition">
+        <a href="{{ route('responden.withdrawals.create') }}" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-orange-50 border border-orange-100 text-xs font-semibold text-orange-600 hover:bg-orange-100 hover:text-orange-700 transition">
             <i data-lucide="plus" class="w-3.5 h-3.5"></i>
             Tarik Saldo
         </a>

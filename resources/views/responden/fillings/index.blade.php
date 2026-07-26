@@ -11,7 +11,7 @@
             <h2 class="text-sm font-bold text-gray-900">Riwayat Pengisian</h2>
             <p class="text-xs text-gray-400 mt-0.5">Semua survey yang telah Anda kerjakan</p>
         </div>
-        <a href="{{ route('responden.surveys.index') }}" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-sky-50 border border-sky-100 text-xs font-semibold text-sky-600 hover:bg-sky-100 hover:text-sky-700 transition">
+        <a href="{{ route('responden.surveys.index') }}" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-orange-50 border border-orange-100 text-xs font-semibold text-orange-600 hover:bg-orange-100 hover:text-orange-700 transition">
             <i data-lucide="plus" class="w-3.5 h-3.5"></i>
             Cari Survey
         </a>
@@ -101,7 +101,7 @@
                             {{-- Aksi --}}
                             <td class="px-6 py-4">
                                 @if($filling->status === \App\Models\SurveyFilling::STATUS_SEDANG_DIKERJAKAN)
-                                    <a href="{{ route('responden.fillings.upload', $filling) }}" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-sky-50 border border-sky-100 text-xs font-semibold text-sky-600 hover:bg-sky-100 hover:text-sky-700 transition">
+                                    <a href="{{ route('responden.fillings.upload', $filling) }}" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-orange-50 border border-orange-100 text-xs font-semibold text-orange-600 hover:bg-orange-100 hover:text-orange-700 transition">
                                         <i data-lucide="upload" class="w-3.5 h-3.5"></i>
                                         Upload Bukti
                                     </a>

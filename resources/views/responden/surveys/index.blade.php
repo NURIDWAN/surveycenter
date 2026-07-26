@@ -20,7 +20,7 @@
             </div>
             <p class="text-sm font-medium text-gray-500">Belum ada survey tersedia</p>
             <p class="text-xs text-gray-400 mt-1">Lengkapi profil demografis Anda untuk mendapatkan lebih banyak survey yang sesuai</p>
-            <a href="{{ route('responden.profile.edit') }}" class="inline-flex items-center gap-1.5 mt-4 px-4 py-2 rounded-xl bg-sky-50 border border-sky-100 text-xs font-semibold text-sky-600 hover:bg-sky-100 transition">
+            <a href="{{ route('responden.profile.edit') }}" class="inline-flex items-center gap-1.5 mt-4 px-4 py-2 rounded-xl bg-orange-50 border border-orange-100 text-xs font-semibold text-orange-600 hover:bg-orange-100 transition">
                 <i data-lucide="user-circle" class="w-3.5 h-3.5"></i>
                 Lengkapi Profil
             </a>
@@ -99,7 +99,7 @@
                                 </span>
                             </td>
                             <td class="px-6 py-4">
-                                <a href="{{ route('responden.surveys.show', $survey) }}" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-sky-50 border border-sky-100 text-xs font-semibold text-sky-600 hover:bg-sky-100 hover:text-sky-700 transition">
+                                <a href="{{ route('responden.surveys.show', $survey) }}" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-orange-50 border border-orange-100 text-xs font-semibold text-orange-600 hover:bg-orange-100 hover:text-orange-700 transition">
                                     <i data-lucide="eye" class="w-3.5 h-3.5"></i>
                                     Detail
                                 </a>
