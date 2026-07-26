@@ -34,10 +34,18 @@ class WithdrawalController extends Controller
      */
     public function create(): View
     {
-        $saldo = (int) (Auth::user()->wallet->balance ?? 0);
+        $wallet = Auth::user()->wallet;
+        $saldo = (int) ($wallet->balance ?? 0);
+        $depositBalance = (int) ($wallet->deposit_balance ?? 0);
+        $rewardBalance = (int) ($wallet->reward_balance ?? 0);
         $minThreshold = $this->withdrawalService->getMinimumThreshold();
 
-        return view('responden.withdrawals.create', compact('saldo', 'minThreshold'));
+        return view('responden.withdrawals.create', compact(
+            'saldo',
+            'depositBalance',
+            'rewardBalance',
+            'minThreshold'
+        ));
     }
 
     /**

@@ -22,7 +22,7 @@ class WalletService
 
         return Wallet::firstOrCreate(
             ['user_id' => $user->id],
-            ['balance' => 0]
+            ['balance' => 0, 'deposit_balance' => 0, 'reward_balance' => 0]
         );
     }
 
@@ -45,9 +45,13 @@ class WalletService
             $wallet = $this->lockedWalletForUser((int) $topup->user_id);
             $before = (float) $wallet->balance;
             $amount = (float) $topup->amount;
-            $after = $before + $amount;
 
-            $wallet->update(['balance' => $after]);
+            // Credit deposit_balance
+            $wallet->deposit_balance = bcadd($wallet->deposit_balance, $amount, 2);
+            $wallet->syncTotalBalance();
+            $after = (float) $wallet->balance;
+
+            $wallet->save();
 
             return WalletTransaction::create([
                 'wallet_id' => $wallet->id,
@@ -92,12 +96,16 @@ class WalletService
             $before = (float) $wallet->balance;
             $amount = (float) $transaction->amount;
 
-            if ($before < $amount) {
+            if ((float) $wallet->deposit_balance < $amount) {
                 throw new RuntimeException('Saldo tidak mencukupi.');
             }
 
-            $after = $before - $amount;
-            $wallet->update(['balance' => $after]);
+            // Debit from deposit_balance (survey payment uses deposited funds)
+            $wallet->deposit_balance = bcsub($wallet->deposit_balance, $amount, 2);
+            $wallet->syncTotalBalance();
+            $after = (float) $wallet->balance;
+
+            $wallet->save();
 
             return WalletTransaction::create([
                 'wallet_id' => $wallet->id,
@@ -133,12 +141,16 @@ class WalletService
             $before = (float) $wallet->balance;
             $amount = (float) $lockedTransaction->amount;
 
-            if ($before < $amount) {
+            if ((float) $wallet->deposit_balance < $amount) {
                 throw new RuntimeException('Saldo tidak mencukupi.');
             }
 
-            $after = $before - $amount;
-            $wallet->update(['balance' => $after]);
+            // Debit from deposit_balance (survey payment uses deposited funds)
+            $wallet->deposit_balance = bcsub($wallet->deposit_balance, $amount, 2);
+            $wallet->syncTotalBalance();
+            $after = (float) $wallet->balance;
+
+            $wallet->save();
 
             WalletTransaction::firstOrCreate(
                 [
@@ -177,6 +189,8 @@ class WalletService
         Wallet::create([
             'user_id' => $userId,
             'balance' => 0,
+            'deposit_balance' => 0,
+            'reward_balance' => 0,
         ]);
 
         return Wallet::where('user_id', $userId)->lockForUpdate()->firstOrFail();

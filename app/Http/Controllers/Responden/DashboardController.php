@@ -19,9 +19,12 @@ class DashboardController extends Controller
     public function index(): View
     {
         $user = Auth::user();
+        $wallet = $user->wallet;
 
-        // Get saldo from user's wallet (handle null wallet = 0)
-        $saldo = $user->wallet?->balance ?? 0;
+        // Get split balances from wallet (handle null wallet = 0)
+        $depositBalance = (int) ($wallet?->deposit_balance ?? 0);
+        $rewardBalance = (int) ($wallet?->reward_balance ?? 0);
+        $saldo = (int) ($wallet?->balance ?? 0);
 
         // Count survey tersedia using SurveyEligibilityService
         $surveyTersediaCount = $this->surveyEligibilityService->getAvailableSurveys($user)->count();
@@ -47,6 +50,8 @@ class DashboardController extends Controller
 
         return view('responden.dashboard.index', compact(
             'saldo',
+            'depositBalance',
+            'rewardBalance',
             'surveyTersediaCount',
             'menungguCount',
             'disetujuiCount',

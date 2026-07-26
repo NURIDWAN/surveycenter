@@ -101,6 +101,8 @@ class SurveyFillingService
                 $wallet = Wallet::create([
                     'user_id' => $filling->user_id,
                     'balance' => 0,
+                    'deposit_balance' => 0,
+                    'reward_balance' => 0,
                 ]);
                 $wallet = Wallet::where('user_id', $filling->user_id)
                     ->lockForUpdate()
@@ -117,9 +119,13 @@ class SurveyFillingService
             $survey = $filling->survey;
             $rewardAmount = (float) $survey->reward_amount;
             $balanceBefore = (float) $wallet->balance;
-            $balanceAfter = $balanceBefore + $rewardAmount;
 
-            $wallet->update(['balance' => $balanceAfter]);
+            // Credit reward_balance
+            $wallet->reward_balance = bcadd($wallet->reward_balance, $rewardAmount, 2);
+            $wallet->syncTotalBalance();
+            $balanceAfter = (float) $wallet->balance;
+
+            $wallet->save();
 
             // Create wallet transaction
             WalletTransaction::create([

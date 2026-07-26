@@ -186,16 +186,31 @@
             <div class="mx-3 mt-auto mb-2 p-4 rounded-xl bg-gray-50/80 border border-gray-100 relative overflow-hidden group">
                 <div class="absolute top-0 right-0 w-16 h-16 bg-orange-50 rounded-full -translate-y-1/2 translate-x-1/4 blur-md"></div>
 
-                <div x-show="sidebarOpen" x-transition:enter="transition-opacity duration-200" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100">
-                    <p class="text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-1">Saldo Anda</p>
-                    <p class="text-base font-extrabold text-gray-900 mb-3">{{ \App\Helpers\RupiahHelper::formatRupiah($saldo ?? (auth()->user()->wallet->balance ?? 0)) }}</p>
-                    <a href="{{ route('responden.withdrawals.create') }}" class="flex items-center justify-center gap-1.5 w-full py-2 rounded-xl bg-orange-500 hover:bg-orange-600 text-white hover:scale-[1.02] transition-all text-xs font-bold shadow-md shadow-orange-500/10">
+                <div x-show="sidebarOpen" x-transition>
+                    <p class="text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-2">Saldo Anda</p>
+
+                    <div class="space-y-1.5 mb-3">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[11px] text-gray-500">Saldo Reward</span>
+                            <span class="text-xs font-bold text-emerald-600">
+                                {{ \App\Helpers\RupiahHelper::formatRupiah($rewardBalance ?? 0) }}
+                            </span>
+                        </div>
+                        <div class="border-t border-gray-200 pt-1.5 flex items-center justify-between">
+                            <span class="text-[11px] font-semibold text-gray-700">Total Saldo</span>
+                            <span class="text-sm font-extrabold text-gray-900">
+                                {{ \App\Helpers\RupiahHelper::formatRupiah($saldo ?? 0) }}
+                            </span>
+                        </div>
+                    </div>
+
+                    <a href="{{ route('responden.withdrawals.create') }}" class="flex items-center justify-center gap-1.5 w-full py-2 rounded-xl bg-orange-500 hover:bg-orange-600 text-white text-xs font-bold shadow-md shadow-orange-500/10 transition-all hover:scale-[1.02]">
                         <i data-lucide="banknote" class="w-3.5 h-3.5"></i>
                         Tarik Saldo
                     </a>
                 </div>
 
-                <div x-show="!sidebarOpen" class="flex flex-col items-center justify-center relative cursor-pointer" @click="sidebarOpen = true" x-transition:enter="transition-opacity duration-200" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100">
+                <div x-show="!sidebarOpen" class="flex flex-col items-center justify-center relative cursor-pointer" @click="sidebarOpen = true" x-transition>
                     <i data-lucide="wallet" class="w-5 h-5 text-gray-500 group-hover:text-orange-500 transition"></i>
                 </div>
             </div>
@@ -250,11 +265,31 @@
 
                 <div class="flex-1"></div>
 
-                {{-- Saldo in Top Bar (Mobile-friendly) --}}
+                {{-- Saldo in Top Bar --}}
                 <div class="flex items-center gap-2 mr-3">
-                    <div class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-orange-50 border border-orange-100">
+                    <div class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-orange-50 border border-orange-100 relative group/saldo cursor-default">
                         <i data-lucide="wallet" class="w-4 h-4 text-orange-500"></i>
-                        <span class="text-sm font-semibold text-orange-700">{{ \App\Helpers\RupiahHelper::formatRupiah($saldo ?? (auth()->user()->wallet->balance ?? 0)) }}</span>
+                        <span class="text-sm font-semibold text-orange-700">
+                            {{ \App\Helpers\RupiahHelper::formatRupiah($saldo ?? (auth()->user()->wallet->balance ?? 0)) }}
+                        </span>
+
+                        {{-- Tooltip dropdown --}}
+                        <div class="absolute top-full right-0 mt-2 w-52 bg-white rounded-xl shadow-xl border border-gray-200 p-3 z-50 opacity-0 invisible group-hover/saldo:opacity-100 group-hover/saldo:visible transition-all duration-200">
+                            <div class="space-y-2">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xs text-gray-500">Saldo Reward</span>
+                                    <span class="text-xs font-bold text-emerald-600">
+                                        {{ \App\Helpers\RupiahHelper::formatRupiah($rewardBalance ?? 0) }}
+                                    </span>
+                                </div>
+                                <div class="border-t border-gray-100 pt-2 flex items-center justify-between">
+                                    <span class="text-xs font-semibold text-gray-700">Total</span>
+                                    <span class="text-xs font-bold text-gray-900">
+                                        {{ \App\Helpers\RupiahHelper::formatRupiah($saldo ?? 0) }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 

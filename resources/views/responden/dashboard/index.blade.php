@@ -29,16 +29,25 @@
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
 
     {{-- Saldo Card --}}
-    <div class="relative overflow-hidden bg-white rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow">
+    <div class="relative overflow-hidden bg-white rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow sm:col-span-2">
         <div class="absolute top-0 right-0 w-20 h-20 bg-orange-50 rounded-full -translate-y-1/2 translate-x-1/4 blur-lg"></div>
         <div class="relative">
-            <div class="flex items-center gap-3 mb-3">
+            <div class="flex items-center gap-3 mb-4">
                 <div class="w-10 h-10 rounded-xl bg-orange-50 flex items-center justify-center">
                     <i data-lucide="wallet" class="w-5 h-5 text-orange-500"></i>
                 </div>
                 <p class="text-xs font-semibold uppercase tracking-wider text-gray-400">Saldo</p>
             </div>
-            <p class="text-xl font-extrabold text-gray-900">{{ \App\Helpers\RupiahHelper::formatRupiah($saldo) }}</p>
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <p class="text-[10px] font-semibold uppercase tracking-wider text-emerald-500 mb-1">Reward</p>
+                    <p class="text-base font-extrabold text-gray-900">{{ \App\Helpers\RupiahHelper::formatRupiah($rewardBalance) }}</p>
+                </div>
+                <div>
+                    <p class="text-[10px] font-semibold uppercase tracking-wider text-gray-400 mb-1">Total</p>
+                    <p class="text-xl font-extrabold text-gray-900">{{ \App\Helpers\RupiahHelper::formatRupiah($saldo) }}</p>
+                </div>
+            </div>
         </div>
     </div>
 

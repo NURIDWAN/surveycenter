@@ -82,6 +82,19 @@ class AppServiceProvider extends ServiceProvider
             $view->with(compact('seoTitle', 'seoDesc', 'seoKeywords'));
         });
 
+        // Responden layout View Composer — split balance data
+        View::composer('layouts.responden', function ($view) {
+            $user = auth()->user();
+            if ($user) {
+                $wallet = $user->wallet;
+                $view->with([
+                    'saldo' => (int) ($wallet?->balance ?? 0),
+                    'depositBalance' => (int) ($wallet?->deposit_balance ?? 0),
+                    'rewardBalance' => (int) ($wallet?->reward_balance ?? 0),
+                ]);
+            }
+        });
+
         // General View Composer — shared data for all views
         View::composer('*', function ($view) {
             $jenis = collect();

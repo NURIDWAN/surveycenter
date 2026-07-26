@@ -54,11 +54,25 @@ class RespondentWithdrawalService
                 throw new RuntimeException('Wallet tidak ditemukan.');
             }
 
-            $balance = (float) $wallet->balance;
+            $totalBalance = (float) $wallet->balance;
 
-            if ($balance < $amount) {
+            // Validate total balance >= amount before debit
+            if ($totalBalance < $amount) {
                 throw new RuntimeException('Saldo tidak mencukupi.');
             }
+
+            $balanceBefore = $totalBalance;
+
+            // Debit reward_balance first, then deposit_balance for remainder
+            $rewardDebit = min((float) $wallet->reward_balance, (float) $amount);
+            $depositDebit = (float) $amount - $rewardDebit;
+
+            $wallet->reward_balance = bcsub($wallet->reward_balance, $rewardDebit, 2);
+            $wallet->deposit_balance = bcsub($wallet->deposit_balance, $depositDebit, 2);
+            $wallet->syncTotalBalance();
+
+            $balanceAfter = (float) $wallet->balance;
+            $wallet->save();
 
             // Create the withdrawal record with pending status
             $withdrawal = RespondentWithdrawal::create([
@@ -69,11 +83,6 @@ class RespondentWithdrawalService
                 'account_holder_name' => $accountDetails['account_holder_name'],
                 'status' => RespondentWithdrawal::STATUS_PENDING,
             ]);
-
-            // Debit the wallet
-            $balanceBefore = $balance;
-            $balanceAfter = $balance - $amount;
-            $wallet->update(['balance' => $balanceAfter]);
 
             // Create wallet transaction record
             WalletTransaction::create([
