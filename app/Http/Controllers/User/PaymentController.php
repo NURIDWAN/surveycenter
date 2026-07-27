@@ -5,6 +5,7 @@ namespace App\Http\Controllers\User;
 use App\Http\Controllers\Controller;
 use App\Mail\PaymentFailedMail;
 use App\Mail\PaymentSuccessMail;
+use App\Models\Survey;
 use App\Models\Transaction;
 use App\Services\SingaPayService;
 use App\Services\WalletService;
@@ -69,6 +70,11 @@ class PaymentController extends Controller
             'amount' => $transaction->amount,
         ]);
 
+        // Activate the survey so it appears for respondents
+        if ($transaction->survey) {
+            $transaction->survey->update(['status' => Survey::STATUS_ACTIVE]);
+        }
+
         // Send success email
         try {
             Mail::to($transaction->user->email)->queue(new PaymentSuccessMail($transaction));
@@ -127,6 +133,11 @@ class PaymentController extends Controller
         // Update transaction status
         if ($status === Transaction::STATUS_PAID) {
             $transaction->update(['status' => Transaction::STATUS_PAID]);
+
+            // Activate the survey so it appears for respondents
+            if ($transaction->survey) {
+                $transaction->survey->update(['status' => Survey::STATUS_ACTIVE]);
+            }
             
             Log::info('Payment Confirmed via Webhook', [
                 'transaction_id' => $transaction->id,
