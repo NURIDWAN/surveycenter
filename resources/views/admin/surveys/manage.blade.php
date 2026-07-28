@@ -267,17 +267,16 @@
 
                                         {{-- Toggle Responden Active/Draft --}}
                                         @if($survey->status === 'active')
-                                            <form method="POST" action="{{ route('admin.surveys.toggle-status', $survey) }}">
-                                                @csrf
-                                                @method('PATCH')
-                                                <button type="submit"
-                                                    class="inline-flex items-center gap-1.5 rounded-lg border border-amber-300 bg-amber-50 px-2.5 py-2 text-xs font-semibold text-amber-700 hover:bg-amber-100 transition"
-                                                    onclick="return confirm('Nonaktifkan survey ini dari tampilan responden?')"
-                                                >
-                                                    <i data-lucide="eye-off" class="w-4 h-4"></i>
-                                                    Nonaktifkan
-                                                </button>
-                                            </form>
+                                            <button type="button"
+                                                @click="openDeactivateModal({
+                                                    surveyTitle: @js($survey->title),
+                                                    toggleUrl: @js(route('admin.surveys.toggle-status', $survey))
+                                                })"
+                                                class="inline-flex items-center gap-1.5 rounded-lg border border-amber-300 bg-amber-50 px-2.5 py-2 text-xs font-semibold text-amber-700 hover:bg-amber-100 transition"
+                                            >
+                                                <i data-lucide="eye-off" class="w-4 h-4"></i>
+                                                Nonaktifkan
+                                            </button>
                                         @else
                                             <button type="button"
                                                 @click="openActivateModal({
@@ -626,6 +625,52 @@
             </div>
         </div>
 
+        {{-- ══════════ DEACTIVATE MODAL ══════════ --}}
+        <div
+            x-show="deactivateModalOpen"
+            x-transition.opacity
+            class="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+            style="display: none;"
+        >
+            <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm" @click.stop>
+                <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200">
+                    <div class="flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-xl bg-amber-50 flex items-center justify-center">
+                            <i data-lucide="eye-off" class="w-5 h-5 text-amber-600"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-sm font-bold text-gray-900">Nonaktifkan Survey</h3>
+                            <p class="text-xs text-gray-500 mt-0.5 truncate max-w-[200px]" x-text="deactivateSurveyTitle"></p>
+                        </div>
+                    </div>
+                    <button @click="closeDeactivateModal()" class="p-1.5 rounded-lg hover:bg-gray-100 transition">
+                        <i data-lucide="x" class="w-4 h-4 text-gray-500"></i>
+                    </button>
+                </div>
+
+                <form :action="deactivateFormUrl" method="POST" class="px-6 py-5 space-y-4">
+                    @csrf
+                    @method('PATCH')
+
+                    <div class="rounded-xl bg-amber-50 border border-amber-100 px-4 py-3">
+                        <p class="text-xs text-amber-700">Survey akan disembunyikan dari dashboard responden. Responden yang sudah mengisi tidak terpengaruh.</p>
+                    </div>
+
+                    <div class="flex items-center justify-end gap-2 pt-1 border-t border-gray-100">
+                        <button type="button" @click="closeDeactivateModal()"
+                            class="px-4 py-2 text-sm font-medium text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition">
+                            Batal
+                        </button>
+                        <button type="submit"
+                            class="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white bg-amber-600 rounded-lg hover:bg-amber-700 transition">
+                            <i data-lucide="eye-off" class="w-4 h-4"></i>
+                            Ya, Nonaktifkan
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
     </div>
 @endsection
 
@@ -658,6 +703,24 @@
 
             closeActivateModal() {
                 this.activateModalOpen = false;
+            },
+
+            // Deactivate modal state
+            deactivateModalOpen: false,
+            deactivateSurveyTitle: '',
+            deactivateFormUrl: '',
+
+            openDeactivateModal(payload) {
+                this.deactivateSurveyTitle = payload.surveyTitle || '';
+                this.deactivateFormUrl = payload.toggleUrl || '';
+                this.deactivateModalOpen = true;
+                this.$nextTick(() => {
+                    if (typeof lucide !== 'undefined') lucide.createIcons();
+                });
+            },
+
+            closeDeactivateModal() {
+                this.deactivateModalOpen = false;
             },
 
             openDetailModal(payload) {

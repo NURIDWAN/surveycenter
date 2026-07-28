@@ -132,6 +132,9 @@ class SurveyController extends Controller
             'google_form_link' => $validated['form_link'],
         ]);
 
+        // Also store form_link directly on the survey for easy access
+        $survey->update(['form_link' => $validated['form_link']]);
+
         // Create transaction
         Transaction::create([
             'survey_id' => $survey->id,
