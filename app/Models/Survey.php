@@ -19,6 +19,7 @@ class Survey extends Model
         'respondent_count',
         'form_link',
         'description',
+        'notes_for_respondent',
         'status',
         'completed_at',
         'reward_amount',

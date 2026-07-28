@@ -49,3 +49,11 @@ Artisan::command('send-mail {to? : Email tujuan (default: MAIL_FROM_ADDRESS)}', 
 use Illuminate\Support\Facades\Schedule;
 Schedule::command('queue:work --stop-when-empty')->everyMinute()->withoutOverlapping();
 Schedule::command('sitemap:generate')->dailyAt('02:00')->withoutOverlapping();
+
+// Auto-deactivate surveys when deadline has passed
+Schedule::call(function () {
+    \App\Models\Survey::where('status', \App\Models\Survey::STATUS_ACTIVE)
+        ->whereNotNull('deadline')
+        ->where('deadline', '<', now())
+        ->update(['status' => \App\Models\Survey::STATUS_DRAFT]);
+})->everyFiveMinutes()->name('auto-deactivate-expired-surveys')->withoutOverlapping();

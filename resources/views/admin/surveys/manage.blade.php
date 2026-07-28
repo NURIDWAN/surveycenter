@@ -283,6 +283,9 @@
                                                     surveyId: {{ $survey->id }},
                                                     surveyTitle: @js($survey->title),
                                                     currentReward: {{ (int) ($survey->reward_amount ?? 0) }},
+                                                    currentEstimatedTime: @js($survey->estimated_time_minutes ?? ''),
+                                                    currentDeadline: @js($survey->deadline ? $survey->deadline->format('Y-m-d\TH:i') : ''),
+                                                    currentNotes: @js($survey->notes_for_respondent ?? ''),
                                                     toggleUrl: @js(route('admin.surveys.toggle-status', $survey))
                                                 })"
                                                 class="inline-flex items-center gap-1.5 rounded-lg border border-emerald-300 bg-emerald-50 px-2.5 py-2 text-xs font-semibold text-emerald-700 hover:bg-emerald-100 transition"
@@ -581,7 +584,7 @@
                     </button>
                 </div>
 
-                <form :action="activateFormUrl" method="POST" class="px-6 py-5 space-y-4">
+                <form :action="activateFormUrl" method="POST" class="px-6 py-5 space-y-4 max-h-[70vh] overflow-y-auto">
                     @csrf
                     @method('PATCH')
 
@@ -589,6 +592,7 @@
                         <p class="text-xs text-emerald-700">Survey akan tampil di dashboard responden yang memenuhi kriteria eligibilitas.</p>
                     </div>
 
+                    {{-- Reward --}}
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1.5">
                             Reward per Responden (Rp)
@@ -607,7 +611,57 @@
                                 placeholder="Contoh: 5000"
                             >
                         </div>
-                        <p class="mt-1.5 text-xs text-gray-400">Jumlah reward yang diterima responden setelah survey disetujui. Isi 0 jika tidak ada reward.</p>
+                        <p class="mt-1 text-xs text-gray-400">Jumlah reward yang diterima responden setelah survey disetujui.</p>
+                    </div>
+
+                    {{-- Estimasi Waktu & Deadline in 2 columns --}}
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1.5">
+                                Estimasi Waktu
+                                <span class="text-gray-400 font-normal">(menit)</span>
+                            </label>
+                            <input
+                                type="number"
+                                name="estimated_time_minutes"
+                                :value="activateEstimatedTime"
+                                @input="activateEstimatedTime = $event.target.value"
+                                min="1"
+                                class="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none"
+                                placeholder="Contoh: 10"
+                            >
+                            <p class="mt-1 text-xs text-gray-400">Dikosongkan = tidak ditentukan</p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1.5">
+                                Deadline
+                            </label>
+                            <input
+                                type="datetime-local"
+                                name="deadline"
+                                :value="activateDeadline"
+                                @input="activateDeadline = $event.target.value"
+                                class="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none"
+                            >
+                            <p class="mt-1 text-xs text-gray-400">Otomatis nonaktif saat deadline tercapai</p>
+                        </div>
+                    </div>
+
+                    {{-- Catatan untuk Responden --}}
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1.5">
+                            Catatan untuk Responden
+                            <span class="text-gray-400 font-normal ml-1">— opsional</span>
+                        </label>
+                        <textarea
+                            name="notes_for_respondent"
+                            :value="activateNotes"
+                            @input="activateNotes = $event.target.value"
+                            rows="3"
+                            class="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none resize-none"
+                            placeholder="Contoh: Pastikan Anda mengisi semua pertanyaan dengan jujur. Screenshot bukti pengisian harus menampilkan halaman konfirmasi..."
+                        ></textarea>
+                        <p class="mt-1 text-xs text-gray-400">Ditampilkan di halaman detail survey untuk responden.</p>
                     </div>
 
                     <div class="flex items-center justify-end gap-2 pt-2 border-t border-gray-100">
@@ -690,11 +744,17 @@
             activateSurveyTitle: '',
             activateFormUrl: '',
             activateRewardAmount: 0,
+            activateEstimatedTime: '',
+            activateDeadline: '',
+            activateNotes: '',
 
             openActivateModal(payload) {
                 this.activateSurveyTitle = payload.surveyTitle || '';
                 this.activateFormUrl = payload.toggleUrl || '';
                 this.activateRewardAmount = payload.currentReward || 0;
+                this.activateEstimatedTime = payload.currentEstimatedTime || '';
+                this.activateDeadline = payload.currentDeadline || '';
+                this.activateNotes = payload.currentNotes || '';
                 this.activateModalOpen = true;
                 this.$nextTick(() => {
                     if (typeof lucide !== 'undefined') lucide.createIcons();

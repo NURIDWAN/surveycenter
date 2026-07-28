@@ -91,9 +91,20 @@ class SurveyManagementController extends Controller
 
         $data = ['status' => $newStatus];
 
-        // When activating, optionally update reward_amount
-        if ($newStatus === Survey::STATUS_ACTIVE && $request->has('reward_amount')) {
-            $data['reward_amount'] = max(0, (int) $request->input('reward_amount', 0));
+        // When activating, save all optional fields from the modal
+        if ($newStatus === Survey::STATUS_ACTIVE) {
+            if ($request->has('reward_amount')) {
+                $data['reward_amount'] = max(0, (int) $request->input('reward_amount', 0));
+            }
+            if ($request->filled('estimated_time_minutes')) {
+                $data['estimated_time_minutes'] = (int) $request->input('estimated_time_minutes');
+            }
+            if ($request->filled('deadline')) {
+                $data['deadline'] = $request->input('deadline');
+            }
+            if ($request->has('notes_for_respondent')) {
+                $data['notes_for_respondent'] = $request->input('notes_for_respondent') ?: null;
+            }
         }
 
         $survey->update($data);

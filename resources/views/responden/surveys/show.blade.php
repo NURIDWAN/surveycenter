@@ -35,6 +35,17 @@
                     </div>
                 @endif
 
+                {{-- Notes from Admin --}}
+                @if($survey->notes_for_respondent)
+                    <div class="rounded-xl bg-amber-50 border border-amber-100 px-4 py-3 flex items-start gap-3">
+                        <i data-lucide="info" class="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5"></i>
+                        <div>
+                            <p class="text-xs font-bold text-amber-700 uppercase tracking-wider mb-1">Catatan dari Peneliti</p>
+                            <p class="text-sm text-amber-800 leading-relaxed">{{ $survey->notes_for_respondent }}</p>
+                        </div>
+                    </div>
+                @endif
+
                 {{-- Eligibility Criteria --}}
                 @if($survey->eligibility_criteria && count(array_filter($survey->eligibility_criteria)))
                     <div>
