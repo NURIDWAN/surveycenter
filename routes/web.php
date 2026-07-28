@@ -93,6 +93,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/', [UserSurveyController::class, 'index'])->name('index');
         Route::get('/create', [UserSurveyController::class, 'create'])->name('create');
         Route::post('/', [UserSurveyController::class, 'store'])->name('store');
+        Route::get('/responden', [UserSurveyController::class, 'respondenManagement'])->name('responden');
+        Route::patch('/{survey}/toggle-status', [UserSurveyController::class, 'toggleStatus'])->name('toggle-status');
         Route::get('/{survey}', [UserSurveyController::class, 'show'])->name('show');
         Route::get('/{survey}/edit', [UserSurveyController::class, 'edit'])->name('edit');
         Route::put('/{survey}', [UserSurveyController::class, 'update'])->name('update');
@@ -396,6 +398,9 @@ Route::middleware(['admin'])->prefix('admin')->group(function () {
 
     Route::put('/surveys/{survey}/respondents/{response}', [SurveyManagementController::class, 'updateRespondent'])
         ->name('admin.surveys.respondents.update');
+
+    Route::patch('/surveys/{survey}/toggle-status', [SurveyManagementController::class, 'toggleStatus'])
+        ->name('admin.surveys.toggle-status');
 
     Route::resource('responses', ResponseController::class)->names('admin.responses');
 

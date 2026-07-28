@@ -122,6 +122,21 @@
                                             Perlu hasil admin
                                         </span>
                                     @endif
+
+                                    {{-- Responden visibility badge --}}
+                                    <div class="mt-1.5">
+                                        @if($survey->status === 'active')
+                                            <span class="inline-flex items-center gap-1 rounded-full bg-blue-50 px-2.5 py-1 text-xs font-medium text-blue-700 border border-blue-200">
+                                                <i data-lucide="users" class="w-3 h-3"></i>
+                                                Tampil Responden
+                                            </span>
+                                        @else
+                                            <span class="inline-flex items-center gap-1 rounded-full bg-gray-100 px-2.5 py-1 text-xs font-medium text-gray-500 border border-gray-200">
+                                                <i data-lucide="eye-off" class="w-3 h-3"></i>
+                                                Tersembunyi
+                                            </span>
+                                        @endif
+                                    </div>
                                 </td>
 
                                 <td class="px-4 py-3.5">
@@ -249,6 +264,29 @@
                                                 Edit
                                             </button>
                                         @endif
+
+                                        {{-- Toggle Responden Active/Draft --}}
+                                        <form method="POST" action="{{ route('admin.surveys.toggle-status', $survey) }}">
+                                            @csrf
+                                            @method('PATCH')
+                                            @if($survey->status === 'active')
+                                                <button type="submit"
+                                                    class="inline-flex items-center gap-1.5 rounded-lg border border-amber-300 bg-amber-50 px-2.5 py-2 text-xs font-semibold text-amber-700 hover:bg-amber-100 transition"
+                                                    onclick="return confirm('Nonaktifkan survey ini dari tampilan responden?')"
+                                                >
+                                                    <i data-lucide="eye-off" class="w-4 h-4"></i>
+                                                    Nonaktifkan
+                                                </button>
+                                            @else
+                                                <button type="submit"
+                                                    class="inline-flex items-center gap-1.5 rounded-lg border border-emerald-300 bg-emerald-50 px-2.5 py-2 text-xs font-semibold text-emerald-700 hover:bg-emerald-100 transition"
+                                                    onclick="return confirm('Aktifkan survey ini agar muncul di dashboard responden?')"
+                                                >
+                                                    <i data-lucide="eye" class="w-4 h-4"></i>
+                                                    Aktifkan
+                                                </button>
+                                            @endif
+                                        </form>
                                     </div>
                                 </td>
                             </tr>
