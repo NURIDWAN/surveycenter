@@ -41,6 +41,16 @@ class SurveyController extends Controller
 
         $isEligible = $this->surveyEligibilityService->isEligible($user, $survey);
 
+        // Fallback: if survey.form_link is empty, get it from responses table
+        if (empty($survey->form_link)) {
+            $userResponse = $survey->responses()->whereNull('input_by_admin_id')->latest()->first();
+            if ($userResponse?->google_form_link) {
+                $survey->form_link = $userResponse->google_form_link;
+                // Persist it so we don't need the fallback next time
+                $survey->saveQuietly();
+            }
+        }
+
         return view('responden.surveys.show', compact('survey', 'isEligible'));
     }
 

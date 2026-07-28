@@ -52,6 +52,16 @@ class SurveyFillingController extends Controller
 
         $filling->load('survey');
 
+        // Fallback: populate survey.form_link from responses table if empty
+        $survey = $filling->survey;
+        if ($survey && empty($survey->form_link)) {
+            $userResponse = $survey->responses()->whereNull('input_by_admin_id')->latest()->first();
+            if ($userResponse?->google_form_link) {
+                $survey->form_link = $userResponse->google_form_link;
+                $survey->saveQuietly();
+            }
+        }
+
         return view('responden.fillings.upload', compact('filling'));
     }
 
