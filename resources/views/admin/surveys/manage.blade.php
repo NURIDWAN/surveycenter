@@ -266,10 +266,10 @@
                                         @endif
 
                                         {{-- Toggle Responden Active/Draft --}}
-                                        <form method="POST" action="{{ route('admin.surveys.toggle-status', $survey) }}">
-                                            @csrf
-                                            @method('PATCH')
-                                            @if($survey->status === 'active')
+                                        @if($survey->status === 'active')
+                                            <form method="POST" action="{{ route('admin.surveys.toggle-status', $survey) }}">
+                                                @csrf
+                                                @method('PATCH')
                                                 <button type="submit"
                                                     class="inline-flex items-center gap-1.5 rounded-lg border border-amber-300 bg-amber-50 px-2.5 py-2 text-xs font-semibold text-amber-700 hover:bg-amber-100 transition"
                                                     onclick="return confirm('Nonaktifkan survey ini dari tampilan responden?')"
@@ -277,16 +277,21 @@
                                                     <i data-lucide="eye-off" class="w-4 h-4"></i>
                                                     Nonaktifkan
                                                 </button>
-                                            @else
-                                                <button type="submit"
-                                                    class="inline-flex items-center gap-1.5 rounded-lg border border-emerald-300 bg-emerald-50 px-2.5 py-2 text-xs font-semibold text-emerald-700 hover:bg-emerald-100 transition"
-                                                    onclick="return confirm('Aktifkan survey ini agar muncul di dashboard responden?')"
-                                                >
-                                                    <i data-lucide="eye" class="w-4 h-4"></i>
-                                                    Aktifkan
-                                                </button>
-                                            @endif
-                                        </form>
+                                            </form>
+                                        @else
+                                            <button type="button"
+                                                @click="openActivateModal({
+                                                    surveyId: {{ $survey->id }},
+                                                    surveyTitle: @js($survey->title),
+                                                    currentReward: {{ (int) ($survey->reward_amount ?? 0) }},
+                                                    toggleUrl: @js(route('admin.surveys.toggle-status', $survey))
+                                                })"
+                                                class="inline-flex items-center gap-1.5 rounded-lg border border-emerald-300 bg-emerald-50 px-2.5 py-2 text-xs font-semibold text-emerald-700 hover:bg-emerald-100 transition"
+                                            >
+                                                <i data-lucide="eye" class="w-4 h-4"></i>
+                                                Aktifkan
+                                            </button>
+                                        @endif
                                     </div>
                                 </td>
                             </tr>
@@ -553,6 +558,74 @@
                 </div>
             </div>
         </div>
+
+        {{-- ══════════ ACTIVATE MODAL ══════════ --}}
+        <div
+            x-show="activateModalOpen"
+            x-transition.opacity
+            class="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+            style="display: none;"
+        >
+            <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md" @click.stop>
+                <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200">
+                    <div class="flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-xl bg-emerald-50 flex items-center justify-center">
+                            <i data-lucide="eye" class="w-5 h-5 text-emerald-600"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-sm font-bold text-gray-900">Aktifkan Survey untuk Responden</h3>
+                            <p class="text-xs text-gray-500 mt-0.5 truncate max-w-[240px]" x-text="activateSurveyTitle"></p>
+                        </div>
+                    </div>
+                    <button @click="closeActivateModal()" class="p-1.5 rounded-lg hover:bg-gray-100 transition">
+                        <i data-lucide="x" class="w-4 h-4 text-gray-500"></i>
+                    </button>
+                </div>
+
+                <form :action="activateFormUrl" method="POST" class="px-6 py-5 space-y-4">
+                    @csrf
+                    @method('PATCH')
+
+                    <div class="rounded-xl bg-emerald-50 border border-emerald-100 px-4 py-3">
+                        <p class="text-xs text-emerald-700">Survey akan tampil di dashboard responden yang memenuhi kriteria eligibilitas.</p>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1.5">
+                            Reward per Responden (Rp)
+                            <span class="text-gray-400 font-normal ml-1">— opsional</span>
+                        </label>
+                        <div class="relative">
+                            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-sm font-medium text-gray-500">Rp</span>
+                            <input
+                                type="number"
+                                name="reward_amount"
+                                :value="activateRewardAmount"
+                                @input="activateRewardAmount = $event.target.value"
+                                min="0"
+                                step="1000"
+                                class="w-full pl-9 pr-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none"
+                                placeholder="Contoh: 5000"
+                            >
+                        </div>
+                        <p class="mt-1.5 text-xs text-gray-400">Jumlah reward yang diterima responden setelah survey disetujui. Isi 0 jika tidak ada reward.</p>
+                    </div>
+
+                    <div class="flex items-center justify-end gap-2 pt-2 border-t border-gray-100">
+                        <button type="button" @click="closeActivateModal()"
+                            class="px-4 py-2 text-sm font-medium text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition">
+                            Batal
+                        </button>
+                        <button type="submit"
+                            class="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white bg-emerald-600 rounded-lg hover:bg-emerald-700 transition">
+                            <i data-lucide="play-circle" class="w-4 h-4"></i>
+                            Aktifkan Sekarang
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
     </div>
 @endsection
 
@@ -566,6 +639,26 @@
             createFormAction: '',
             detailData: {},
             editResponses: [],
+
+            // Activate modal state
+            activateModalOpen: false,
+            activateSurveyTitle: '',
+            activateFormUrl: '',
+            activateRewardAmount: 0,
+
+            openActivateModal(payload) {
+                this.activateSurveyTitle = payload.surveyTitle || '';
+                this.activateFormUrl = payload.toggleUrl || '';
+                this.activateRewardAmount = payload.currentReward || 0;
+                this.activateModalOpen = true;
+                this.$nextTick(() => {
+                    if (typeof lucide !== 'undefined') lucide.createIcons();
+                });
+            },
+
+            closeActivateModal() {
+                this.activateModalOpen = false;
+            },
 
             openDetailModal(payload) {
                 this.modalMode = 'detail';

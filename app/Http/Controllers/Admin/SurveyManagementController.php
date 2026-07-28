@@ -83,13 +83,20 @@ class SurveyManagementController extends Controller
         return view('admin.surveys.manage', compact('surveys', 'filter'));
     }
 
-    public function toggleStatus(Survey $survey)
+    public function toggleStatus(Request $request, Survey $survey)
     {
         $newStatus = $survey->status === Survey::STATUS_ACTIVE
             ? Survey::STATUS_DRAFT
             : Survey::STATUS_ACTIVE;
 
-        $survey->update(['status' => $newStatus]);
+        $data = ['status' => $newStatus];
+
+        // When activating, optionally update reward_amount
+        if ($newStatus === Survey::STATUS_ACTIVE && $request->has('reward_amount')) {
+            $data['reward_amount'] = max(0, (int) $request->input('reward_amount', 0));
+        }
+
+        $survey->update($data);
 
         $label = $newStatus === Survey::STATUS_ACTIVE ? 'diaktifkan' : 'dinonaktifkan';
 

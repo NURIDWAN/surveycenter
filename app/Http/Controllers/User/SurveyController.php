@@ -347,4 +347,46 @@ class SurveyController extends Controller
 
         return $hasAnyCriteria ? $criteria : null;
     }
+
+    /**
+     * Display the responden survey management page.
+     * Shows surveys with toggle to activate/deactivate for respondents.
+     */
+    public function respondenManagement()
+    {
+        $surveys = Survey::where('user_id', Auth::id())
+            ->whereHas('transactions', function ($q) {
+                $q->where('status', Transaction::STATUS_PAID);
+            })
+            ->withCount(['surveyFillings as approved_count' => function ($q) {
+                $q->where('status', 'disetujui');
+            }])
+            ->withCount(['surveyFillings as pending_count' => function ($q) {
+                $q->where('status', 'menunggu_verifikasi');
+            }])
+            ->latest()
+            ->paginate(15);
+
+        return view('user.surveys.responden', compact('surveys'));
+    }
+
+    /**
+     * Toggle a survey's status between active and draft.
+     */
+    public function toggleStatus(Survey $survey)
+    {
+        if ($survey->user_id !== Auth::id()) {
+            abort(403);
+        }
+
+        $newStatus = $survey->status === Survey::STATUS_ACTIVE
+            ? Survey::STATUS_DRAFT
+            : Survey::STATUS_ACTIVE;
+
+        $survey->update(['status' => $newStatus]);
+
+        $label = $newStatus === Survey::STATUS_ACTIVE ? 'diaktifkan' : 'dinonaktifkan';
+
+        return back()->with('success', "Survey \"{$survey->title}\" berhasil {$label}.");
+    }
 }
