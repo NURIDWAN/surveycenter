@@ -326,6 +326,13 @@ Route::middleware(['admin'])->prefix('admin')->group(function () {
         Route::post('/{withdrawal}/reject', [AffiliateWithdrawalController::class, 'reject'])->name('reject');
     });
 
+    // Respondent Withdrawals
+    Route::prefix('respondent-withdrawals')->name('admin.respondent-withdrawals.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Admin\RespondentWithdrawalController::class, 'index'])->name('index');
+        Route::post('/{withdrawal}/approve', [\App\Http\Controllers\Admin\RespondentWithdrawalController::class, 'approve'])->name('approve');
+        Route::post('/{withdrawal}/reject', [\App\Http\Controllers\Admin\RespondentWithdrawalController::class, 'reject'])->name('reject');
+    });
+
     // Tab Management (CRUD)
     Route::get('tabs', [TabController::class, 'index'])->name('tabs.index');
     Route::get('tabs/create', [TabController::class, 'create'])->name('tabs.create');
