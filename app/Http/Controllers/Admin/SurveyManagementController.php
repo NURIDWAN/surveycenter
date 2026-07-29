@@ -102,7 +102,8 @@ class SurveyManagementController extends Controller
             if ($request->filled('deadline')) {
                 $data['deadline'] = $request->input('deadline');
             }
-            if ($request->has('notes_for_respondent')) {
+            // Only include notes_for_respondent if column exists (migration may not have run yet)
+            if ($request->has('notes_for_respondent') && \Illuminate\Support\Facades\Schema::hasColumn('surveys', 'notes_for_respondent')) {
                 $data['notes_for_respondent'] = $request->input('notes_for_respondent') ?: null;
             }
         }
