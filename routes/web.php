@@ -93,8 +93,6 @@ Route::middleware(['auth', 'client'])->group(function () {
         Route::get('/', [UserSurveyController::class, 'index'])->name('index');
         Route::get('/create', [UserSurveyController::class, 'create'])->name('create');
         Route::post('/', [UserSurveyController::class, 'store'])->name('store');
-        Route::get('/responden', [UserSurveyController::class, 'respondenManagement'])->name('responden');
-        Route::patch('/{survey}/toggle-status', [UserSurveyController::class, 'toggleStatus'])->name('toggle-status');
         Route::get('/{survey}', [UserSurveyController::class, 'show'])->name('show');
         Route::get('/{survey}/edit', [UserSurveyController::class, 'edit'])->name('edit');
         Route::put('/{survey}', [UserSurveyController::class, 'update'])->name('update');

@@ -73,17 +73,6 @@
                 <h3 class="text-sm font-bold text-gray-900">Informasi Survey</h3>
             </div>
             <div class="px-5 py-4 space-y-4">
-                {{-- Reward --}}
-                <div class="flex items-center gap-3">
-                    <div class="w-9 h-9 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center flex-shrink-0">
-                        <i data-lucide="banknote" class="w-4.5 h-4.5 text-emerald-500"></i>
-                    </div>
-                    <div>
-                        <p class="text-[11px] font-semibold text-gray-400 uppercase tracking-wider">Reward</p>
-                        <p class="text-sm font-bold text-emerald-700">{{ \App\Helpers\RupiahHelper::formatRupiah($survey->reward_amount) }}</p>
-                    </div>
-                </div>
-
                 {{-- Estimated Time --}}
                 <div class="flex items-center gap-3">
                     <div class="w-9 h-9 rounded-xl bg-orange-50 border border-orange-100 flex items-center justify-center flex-shrink-0">

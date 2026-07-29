@@ -167,9 +167,7 @@
                         'SURVEY' => [
                             ['route' => 'user.dashboard', 'is' => 'user.dashboard', 'icon' => 'layout-dashboard', 'label' => 'Dashboard'],
                             ['route' => 'user.surveys.index', 'is' => 'user.surveys.index', 'icon' => 'clipboard-list', 'label' => 'Survey Saya'],
-                            ['route' => 'user.surveys.responden', 'is' => 'user.surveys.responden', 'icon' => 'users', 'label' => 'Kelola Responden'],
                             ['route' => 'user.surveys.create', 'is' => 'user.surveys.create', 'icon' => 'plus-circle', 'label' => 'Buat Survey'],
-                            
                         ],
                         'TRANSAKSI' => [
                             ['route' => 'user.transactions.index', 'is' => 'user.transactions.*', 'icon' => 'receipt', 'label' => 'Transaksi'],
