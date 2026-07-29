@@ -37,22 +37,35 @@ class RegisterController extends Controller
             }
         }
 
+        $isResponden = $request->input('role') === 'responden' || $request->boolean('is_responden');
+
         $user = User::create([
-            'name' => $request->name,
+            'name' => $request->name ?? $request->nama,
             'email' => $request->email,
-            'phone' => $request->phone,
+            'phone' => $request->phone ?? $request->whatsapp_number,
+            'whatsapp_number' => $request->whatsapp_number ?? $request->phone,
             'password' => Hash::make($request->password),
             'referred_by_id' => $referrerId,
+            'is_responden' => $isResponden,
         ]);
 
         $user->forceFill([
             'email_verified_at' => now(),
         ])->save();
 
+        if ($isResponden) {
+            \App\Models\Wallet::create([
+                'user_id' => $user->id,
+                'balance' => 0,
+            ]);
+        }
+
         Auth::login($user);
         $request->session()->regenerate();
 
-        return redirect()->route('user.dashboard')
+        $targetRoute = $isResponden ? 'responden.dashboard' : 'user.dashboard';
+
+        return redirect()->route($targetRoute)
             ->with('success', 'Registrasi berhasil! Selamat datang di SurveyCenter.');
     }
 }

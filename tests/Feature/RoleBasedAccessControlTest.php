@@ -37,7 +37,7 @@ class RoleBasedAccessControlTest extends TestCase
         $response->assertSessionHas('error');
     }
 
-    public function test_responden_user_cannot_login_via_pembuat_survey_login_form(): void
+    public function test_responden_user_is_automatically_redirected_to_responden_dashboard_on_login(): void
     {
         $user = User::factory()->create([
             'email' => 'responden@example.com',
@@ -51,42 +51,21 @@ class RoleBasedAccessControlTest extends TestCase
             'password' => 'secret123',
         ]);
 
-        $this->assertGuest();
-        $response->assertSessionHasErrors('email');
+        $this->assertAuthenticatedAs($user);
+        $response->assertRedirect(route('responden.dashboard'));
     }
 
-    public function test_pembuat_survey_user_cannot_login_via_responden_login_form(): void
+    public function test_pembuat_survey_user_is_automatically_redirected_to_user_dashboard_on_login(): void
     {
         $user = User::factory()->create([
             'email' => 'client@example.com',
-            'password' => Hash::make('secret123'),
-            'is_responden' => 0,
-            'is_admin' => 0,
-        ]);
-
-        $response = $this->post(route('responden.login.submit'), [
-            'email' => 'client@example.com',
-            'password' => 'secret123',
-        ]);
-
-        $this->assertGuest();
-        $response->assertSessionHasErrors('email');
-
-        $user->refresh();
-        $this->assertEquals(0, $user->is_responden);
-    }
-
-    public function test_pembuat_survey_user_can_login_via_pembuat_survey_login_form(): void
-    {
-        $user = User::factory()->create([
-            'email' => 'client2@example.com',
             'password' => Hash::make('secret123'),
             'is_responden' => 0,
             'is_admin' => 0,
         ]);
 
         $response = $this->post(route('login.submit'), [
-            'email' => 'client2@example.com',
+            'email' => 'client@example.com',
             'password' => 'secret123',
         ]);
 
@@ -94,21 +73,38 @@ class RoleBasedAccessControlTest extends TestCase
         $response->assertRedirect(route('user.dashboard'));
     }
 
-    public function test_responden_user_can_login_via_responden_login_form(): void
+    public function test_registering_as_responden_sets_is_responden_true(): void
     {
-        $user = User::factory()->create([
-            'email' => 'responden2@example.com',
-            'password' => Hash::make('secret123'),
-            'is_responden' => 1,
-            'is_admin' => 0,
+        $response = $this->post(route('responden.register.submit'), [
+            'nama' => 'Responden Baru',
+            'email' => 'newresponden@example.com',
+            'whatsapp_number' => '081234567890',
+            'password' => 'secret12345',
+            'password_confirmation' => 'secret12345',
         ]);
 
-        $response = $this->post(route('responden.login.submit'), [
-            'email' => 'responden2@example.com',
-            'password' => 'secret123',
-        ]);
+        $user = User::where('email', 'newresponden@example.com')->first();
 
-        $this->assertAuthenticatedAs($user);
+        $this->assertNotNull($user);
+        $this->assertEquals(1, $user->is_responden);
+        $this->assertNotNull($user->wallet);
         $response->assertRedirect(route('responden.dashboard'));
+    }
+
+    public function test_registering_as_pembuat_survey_sets_is_responden_false(): void
+    {
+        $response = $this->post(route('register.post'), [
+            'name' => 'Client Baru',
+            'email' => 'newclient@example.com',
+            'phone' => '081298765432',
+            'password' => 'secret12345',
+            'password_confirmation' => 'secret12345',
+        ]);
+
+        $user = User::where('email', 'newclient@example.com')->first();
+
+        $this->assertNotNull($user);
+        $this->assertEquals(0, $user->is_responden);
+        $response->assertRedirect(route('user.dashboard'));
     }
 }

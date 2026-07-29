@@ -285,6 +285,7 @@
                                                     currentReward: {{ (int) ($survey->reward_amount ?? 0) }},
                                                     currentEstimatedTime: @js($survey->estimated_time_minutes ?? ''),
                                                     currentDeadline: @js($survey->deadline ? $survey->deadline->format('Y-m-d\TH:i') : ''),
+                                                    currentDescription: @js($survey->description ?? ''),
                                                     currentNotes: @js($survey->notes_for_respondent ?? ''),
                                                     toggleUrl: @js(route('admin.surveys.toggle-status', $survey))
                                                 })"
@@ -647,6 +648,23 @@
                         </div>
                     </div>
 
+                    {{-- Deskripsi Survey --}}
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1.5">
+                            Deskripsi Survey
+                            <span class="text-gray-400 font-normal ml-1">— opsional</span>
+                        </label>
+                        <textarea
+                            name="description"
+                            :value="activateDescription"
+                            @input="activateDescription = $event.target.value"
+                            rows="3"
+                            class="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none resize-none"
+                            placeholder="Deskripsi atau penjelasan mengenai survey ini..."
+                        ></textarea>
+                        <p class="mt-1 text-xs text-gray-400">Deskripsi utama survey yang akan dilihat oleh responden.</p>
+                    </div>
+
                     {{-- Catatan untuk Responden --}}
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1.5">
@@ -746,6 +764,7 @@
             activateRewardAmount: 0,
             activateEstimatedTime: '',
             activateDeadline: '',
+            activateDescription: '',
             activateNotes: '',
 
             openActivateModal(payload) {
@@ -754,6 +773,7 @@
                 this.activateRewardAmount = payload.currentReward || 0;
                 this.activateEstimatedTime = payload.currentEstimatedTime || '';
                 this.activateDeadline = payload.currentDeadline || '';
+                this.activateDescription = payload.currentDescription || '';
                 this.activateNotes = payload.currentNotes || '';
                 this.activateModalOpen = true;
                 this.$nextTick(() => {

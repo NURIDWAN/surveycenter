@@ -26,14 +26,18 @@
 
             <div class="px-6 py-5 space-y-5">
                 {{-- Description --}}
-                @if($survey->description)
-                    <div>
-                        <h3 class="text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">Deskripsi</h3>
-                        <div class="text-sm text-gray-600 leading-relaxed prose prose-sm max-w-none">
+                <div>
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">Deskripsi Survey</h3>
+                    <div class="text-sm text-gray-600 leading-relaxed prose prose-sm max-w-none">
+                        @if(!empty($survey->description))
                             {!! nl2br(e($survey->description)) !!}
-                        </div>
+                        @elseif(!empty($survey->notes_for_respondent))
+                            {!! nl2br(e($survey->notes_for_respondent)) !!}
+                        @else
+                            <p class="text-gray-500 italic">Silakan baca dan isi pertanyaan pada survey ini dengan seksama sampai selesai.</p>
+                        @endif
                     </div>
-                @endif
+                </div>
 
                 {{-- Notes from Admin --}}
                 @if($survey->notes_for_respondent)

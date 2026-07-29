@@ -56,20 +56,17 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
-
-            if ($user->is_admin || !$user->is_responden) {
-                Auth::logout();
-                $request->session()->invalidate();
-                $request->session()->regenerateToken();
-
-                return back()->withErrors([
-                    'email' => 'Akun ini terdaftar sebagai Pembuat Survey. Silakan masuk via pilihan \'Buat Survey\'.',
-                ])->onlyInput('email');
-            }
-
             $request->session()->regenerate();
 
-            return redirect()->route('responden.dashboard');
+            if ($user->is_admin) {
+                return redirect()->route('admin.dashboard');
+            }
+
+            if ($user->is_responden) {
+                return redirect()->route('responden.dashboard');
+            }
+
+            return redirect()->intended(route('user.dashboard'));
         }
 
         return back()->withErrors([

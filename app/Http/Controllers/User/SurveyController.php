@@ -116,6 +116,7 @@ class SurveyController extends Controller
         $survey = Survey::create([
             'user_id'                => $user->id,
             'title'                  => $validated['title'],
+            'description'            => $validated['description'] ?? null,
             'question_count'         => $validated['question_count'],
             'respondent_count'       => $validated['respondent_count'],
             'reward_amount'          => $validated['reward_amount'] ?? 0,
@@ -190,6 +191,7 @@ class SurveyController extends Controller
 
         $validated = $request->validate([
             'title'                  => 'required|string|max:255',
+            'description'            => 'nullable|string|max:1000',
             'reward_amount'          => 'nullable|integer|min:0',
             'deadline'               => 'nullable|date|after:now',
             'estimated_time_minutes' => 'nullable|integer|min:1',
@@ -208,6 +210,7 @@ class SurveyController extends Controller
 
         $survey->update([
             'title'                  => $validated['title'],
+            'description'            => $validated['description'] ?? null,
             'reward_amount'          => $validated['reward_amount'] ?? 0,
             'deadline'               => $validated['deadline'] ?? null,
             'estimated_time_minutes' => $validated['estimated_time_minutes'] ?? null,

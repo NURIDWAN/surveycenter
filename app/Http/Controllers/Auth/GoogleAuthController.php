@@ -17,22 +17,17 @@ class GoogleAuthController extends Controller
 {
     public function redirectToGoogle(Request $request): RedirectResponse
     {
-        // Read role from query parameter, default to 'survey'
         $role = $request->query('role', 'survey');
-
-        // Validate role is one of allowed values
         $role = in_array($role, ['survey', 'responden']) ? $role : 'survey';
 
-        // Store in session for retrieval after OAuth callback
         $request->session()->put('google_auth_role', $role);
-        $request->session()->save(); // Force session save before redirect
+        $request->session()->save();
 
         return Socialite::driver('google')->redirect();
     }
 
     public function handleGoogleCallback(Request $request): RedirectResponse
     {
-        // Pull role from session, default to 'survey'
         $role = $request->session()->pull('google_auth_role', 'survey');
         $isResponden = ($role === 'responden');
 
@@ -44,7 +39,7 @@ class GoogleAuthController extends Controller
                 ?? User::where('email', $googleUser->email)->first();
 
             if ($user) {
-                return $this->handleExistingUser($user, $googleUser, $isResponden, $request);
+                return $this->handleExistingUser($user, $googleUser, $request);
             }
 
             return $this->handleNewUser($googleUser, $isResponden, $request);
@@ -60,23 +55,12 @@ class GoogleAuthController extends Controller
         }
     }
 
-    private function handleExistingUser(User $user, $googleUser, bool $isResponden, Request $request): RedirectResponse
+    private function handleExistingUser(User $user, $googleUser, Request $request): RedirectResponse
     {
         // Block admin accounts
         if ($user->is_admin) {
             return redirect()->route('login')
                 ->withErrors(['email' => 'Akun admin tidak dapat login melalui Google.']);
-        }
-
-        // Enforce role matching: Pembuat Survey vs Responden
-        if ($isResponden && !$user->is_responden) {
-            return redirect()->route('login')
-                ->withErrors(['email' => 'Akun ini terdaftar sebagai Pembuat Survey. Silakan login pada pilihan \'Buat Survey\'.']);
-        }
-
-        if (!$isResponden && $user->is_responden) {
-            return redirect()->route('login')
-                ->withErrors(['email' => 'Akun ini terdaftar sebagai Responden. Silakan login pada pilihan \'Isi Survey & Dapatkan Saldo\'.']);
         }
 
         // Link Google account if not already linked
@@ -90,7 +74,7 @@ class GoogleAuthController extends Controller
         Auth::login($user);
         $request->session()->regenerate();
 
-        if ($isResponden) {
+        if ($user->is_responden) {
             return redirect()->route('responden.dashboard');
         }
 
@@ -126,9 +110,8 @@ class GoogleAuthController extends Controller
         Auth::login($newUser);
         $request->session()->regenerate();
 
-        $dashboard = $isResponden ? 'responden.dashboard' : 'user.dashboard';
-        $message = 'Registrasi dengan Google berhasil!';
+        $targetRoute = $isResponden ? 'responden.dashboard' : 'user.dashboard';
 
-        return redirect()->route($dashboard)->with('success', $message);
+        return redirect()->route($targetRoute)->with('success', 'Registrasi dengan Google berhasil!');
     }
 }
