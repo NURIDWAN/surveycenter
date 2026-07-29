@@ -101,10 +101,19 @@
                             {{-- Aksi --}}
                             <td class="px-6 py-4">
                                 @if($filling->status === \App\Models\SurveyFilling::STATUS_SEDANG_DIKERJAKAN)
-                                    <a href="{{ route('responden.fillings.upload', $filling) }}" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-orange-50 border border-orange-100 text-xs font-semibold text-orange-600 hover:bg-orange-100 hover:text-orange-700 transition">
-                                        <i data-lucide="upload" class="w-3.5 h-3.5"></i>
-                                        Upload Bukti
-                                    </a>
+                                    <div class="flex items-center gap-2 flex-wrap">
+                                        <a href="{{ route('responden.fillings.upload', $filling) }}" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-orange-50 border border-orange-100 text-xs font-semibold text-orange-600 hover:bg-orange-100 hover:text-orange-700 transition">
+                                            <i data-lucide="upload" class="w-3.5 h-3.5"></i>
+                                            Upload Bukti
+                                        </a>
+                                        @if($filling->survey->form_link ?? null)
+                                            <a href="{{ $filling->survey->form_link }}" target="_blank" rel="noopener noreferrer"
+                                               class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-50 border border-emerald-100 text-xs font-semibold text-emerald-600 hover:bg-emerald-100 hover:text-emerald-700 transition">
+                                                <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                                                Buka Form
+                                            </a>
+                                        @endif
+                                    </div>
                                 @else
                                     <span class="text-xs text-gray-300">—</span>
                                 @endif
