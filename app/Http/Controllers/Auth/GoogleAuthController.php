@@ -27,22 +27,13 @@ class GoogleAuthController extends Controller
         $request->session()->put('google_auth_role', $role);
         $request->session()->save(); // Force session save before redirect
 
-        return Socialite::driver('google')
-            ->with(['state' => $role]) // Also pass role in OAuth state parameter as backup
-            ->redirect();
+        return Socialite::driver('google')->redirect();
     }
 
     public function handleGoogleCallback(Request $request): RedirectResponse
     {
-        // Try to get role from session first, then fall back to OAuth state parameter
-        $role = $request->session()->pull('google_auth_role');
-
-        // If session was lost (common with some server configs), use the state parameter
-        if (!$role) {
-            $state = $request->query('state', '');
-            $role = in_array($state, ['survey', 'responden']) ? $state : 'survey';
-        }
-
+        // Pull role from session, default to 'survey'
+        $role = $request->session()->pull('google_auth_role', 'survey');
         $isResponden = ($role === 'responden');
 
         try {
@@ -59,6 +50,11 @@ class GoogleAuthController extends Controller
             return $this->handleNewUser($googleUser, $isResponden, $request);
 
         } catch (Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Google OAuth error', [
+                'message' => $e->getMessage(),
+                'class' => get_class($e),
+            ]);
+
             return redirect()->route('login')
                 ->withErrors(['email' => 'Gagal login dengan Google. Silakan coba lagi.']);
         }
