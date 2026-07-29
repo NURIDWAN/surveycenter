@@ -19,39 +19,10 @@ class SurveyEligibilityService
     {
         return Survey::query()
             ->where('status', Survey::STATUS_ACTIVE)
-            // Exclude surveys created by this user
-            ->where('user_id', '!=', $responden->id)
-            // Exclude surveys the user has already started
             ->whereDoesntHave('surveyFillings', function (Builder $query) use ($responden) {
                 $query->where('user_id', $responden->id);
             })
-            // Only include surveys with remaining slots
-            ->where(function (Builder $query) {
-                $query->where(function (Builder $q) {
-                    // respondent_count NULL or 0 means unlimited
-                    $q->whereNull('respondent_count')
-                        ->orWhere('respondent_count', 0);
-                })->orWhereColumn(
-                    'respondent_count',
-                    '>',
-                    \Illuminate\Support\Facades\DB::raw(
-                        '(SELECT COUNT(*) FROM survey_fillings WHERE survey_fillings.survey_id = surveys.id AND survey_fillings.status = \'' . SurveyFilling::STATUS_DISETUJUI . '\')'
-                    )
-                );
-            })
-            // Filter by eligibility criteria
-            ->where(function (Builder $query) use ($responden) {
-                $query->whereNull('eligibility_criteria')
-                    ->orWhere('eligibility_criteria', '[]')
-                    ->orWhere('eligibility_criteria', '{}')
-                    ->orWhere(function (Builder $q) use ($responden) {
-                        // Include surveys where the responden matches criteria
-                        // This is handled via a callback that fetches all and filters in PHP
-                        // For DB-level filtering, we use a broad match and let isEligible do fine-grained check
-                        // But for efficiency, we apply what we can at DB level
-                        $this->applyDemographicFilters($q, $responden);
-                    });
-            });
+            ->latest();
     }
 
     /**
