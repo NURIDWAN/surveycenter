@@ -34,9 +34,6 @@
                         <div class="min-w-0 flex-1">
                             <p class="text-sm font-semibold text-gray-900 leading-tight truncate">{{ $survey->title }}</p>
                             <div class="flex items-center gap-3 mt-2">
-                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-emerald-50 border border-emerald-100 text-[11px] font-bold text-emerald-700">
-                                    {{ \App\Helpers\RupiahHelper::formatRupiah($survey->reward_amount) }}
-                                </span>
                                 @if($survey->estimated_time_minutes)
                                     <span class="text-[11px] text-gray-400 font-medium flex items-center gap-1">
                                         <i data-lucide="clock" class="w-3 h-3"></i>
@@ -63,7 +60,6 @@
                 <thead>
                     <tr class="border-b border-gray-100 bg-gray-50/50">
                         <th class="px-6 py-3 text-[11px] font-bold uppercase tracking-wider text-gray-400">Survey</th>
-                        <th class="px-6 py-3 text-[11px] font-bold uppercase tracking-wider text-gray-400">Reward</th>
                         <th class="px-6 py-3 text-[11px] font-bold uppercase tracking-wider text-gray-400">Estimasi Waktu</th>
                         <th class="px-6 py-3 text-[11px] font-bold uppercase tracking-wider text-gray-400">Deadline</th>
                         <th class="px-6 py-3 text-[11px] font-bold uppercase tracking-wider text-gray-400">Aksi</th>
@@ -74,11 +70,6 @@
                         <tr class="hover:bg-gray-50/50 transition-colors">
                             <td class="px-6 py-4">
                                 <p class="text-sm font-semibold text-gray-900 leading-tight">{{ $survey->title }}</p>
-                            </td>
-                            <td class="px-6 py-4">
-                                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald-50 border border-emerald-100 text-xs font-bold text-emerald-700">
-                                    {{ \App\Helpers\RupiahHelper::formatRupiah($survey->reward_amount) }}
-                                </span>
                             </td>
                             <td class="px-6 py-4">
                                 <span class="text-xs text-gray-500 font-medium">
