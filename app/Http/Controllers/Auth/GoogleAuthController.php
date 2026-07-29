@@ -25,14 +25,24 @@ class GoogleAuthController extends Controller
 
         // Store in session for retrieval after OAuth callback
         $request->session()->put('google_auth_role', $role);
+        $request->session()->save(); // Force session save before redirect
 
-        return Socialite::driver('google')->redirect();
+        return Socialite::driver('google')
+            ->with(['state' => $role]) // Also pass role in OAuth state parameter as backup
+            ->redirect();
     }
 
     public function handleGoogleCallback(Request $request): RedirectResponse
     {
-        // Pull role from session (retrieve + remove), default to 'survey'
-        $role = $request->session()->pull('google_auth_role', 'survey');
+        // Try to get role from session first, then fall back to OAuth state parameter
+        $role = $request->session()->pull('google_auth_role');
+
+        // If session was lost (common with some server configs), use the state parameter
+        if (!$role) {
+            $state = $request->query('state', '');
+            $role = in_array($state, ['survey', 'responden']) ? $state : 'survey';
+        }
+
         $isResponden = ($role === 'responden');
 
         try {
@@ -74,15 +84,17 @@ class GoogleAuthController extends Controller
         if ($isResponden && !$user->is_responden) {
             $user->update(['is_responden' => true]);
             if (!$user->wallet) {
-                Wallet::create(['user_id' => $user->id, 'balance' => 0]);
+                Wallet::create(['user_id' => $user->id, 'balance' => 0, 'deposit_balance' => 0, 'reward_balance' => 0]);
             }
         }
 
         Auth::login($user);
         $request->session()->regenerate();
 
-        // Redirect based on final role state
-        if ($user->is_responden) {
+        // Redirect based on CHOSEN role (not just account state)
+        // If user explicitly chose responden tab, go to responden dashboard
+        // If user chose survey tab, go to user dashboard (even if they also have responden role)
+        if ($isResponden) {
             return redirect()->route('responden.dashboard');
         }
 

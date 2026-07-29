@@ -155,6 +155,7 @@
                         ['route' => 'crm.dashboard', 'is' => 'crm.dashboard', 'icon' => 'layout-dashboard', 'label' => 'Dashboard CRM'],
                         ['route' => 'admin.surveys.manage', 'is' => 'admin.surveys.*', 'icon' => 'clipboard-list', 'label' => 'Kelola Survey', 'extra' => 'admin.responses.*,admin.transactions.progress.*'],
                         ['route' => 'admin.respondent-withdrawals.index', 'is' => 'admin.respondent-withdrawals.*', 'icon' => 'banknote', 'label' => 'Penarikan Responden'],
+                        ['route' => 'admin.survey-fillings.index', 'is' => 'admin.survey-fillings.*', 'icon' => 'clipboard-check', 'label' => 'Verifikasi Pengisian'],
                         ['route' => 'crm.manage-users', 'is' => 'crm.manage-users', 'icon' => 'users', 'label' => 'Manage User', 'extra' => 'followups.*,pilih-client,crm.customer-already'],
                     ];
                 @endphp
