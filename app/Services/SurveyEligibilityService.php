@@ -27,7 +27,11 @@ class SurveyEligibilityService
             })
             // Only include surveys with remaining slots
             ->where(function (Builder $query) {
-                $query->whereColumn(
+                $query->where(function (Builder $q) {
+                    // respondent_count NULL or 0 means unlimited
+                    $q->whereNull('respondent_count')
+                        ->orWhere('respondent_count', 0);
+                })->orWhereColumn(
                     'respondent_count',
                     '>',
                     \Illuminate\Support\Facades\DB::raw(
@@ -181,6 +185,12 @@ class SurveyEligibilityService
                     ->orWhereJsonLength('eligibility_criteria->jenis_kelamin', 0)
                     ->orWhereJsonContains('eligibility_criteria->jenis_kelamin', $responden->jenis_kelamin);
             });
+        } else {
+            // User has no jenis_kelamin — only show surveys that don't restrict it
+            $query->where(function (Builder $q) {
+                $q->whereNull('eligibility_criteria->jenis_kelamin')
+                    ->orWhereJsonLength('eligibility_criteria->jenis_kelamin', 0);
+            });
         }
 
         if ($responden->provinsi !== null) {
@@ -188,6 +198,11 @@ class SurveyEligibilityService
                 $q->whereNull('eligibility_criteria->provinsi')
                     ->orWhereJsonLength('eligibility_criteria->provinsi', 0)
                     ->orWhereJsonContains('eligibility_criteria->provinsi', $responden->provinsi);
+            });
+        } else {
+            $query->where(function (Builder $q) {
+                $q->whereNull('eligibility_criteria->provinsi')
+                    ->orWhereJsonLength('eligibility_criteria->provinsi', 0);
             });
         }
 
@@ -197,6 +212,11 @@ class SurveyEligibilityService
                     ->orWhereJsonLength('eligibility_criteria->kota', 0)
                     ->orWhereJsonContains('eligibility_criteria->kota', $responden->kota);
             });
+        } else {
+            $query->where(function (Builder $q) {
+                $q->whereNull('eligibility_criteria->kota')
+                    ->orWhereJsonLength('eligibility_criteria->kota', 0);
+            });
         }
 
         if ($responden->pendidikan !== null) {
@@ -205,6 +225,11 @@ class SurveyEligibilityService
                     ->orWhereJsonLength('eligibility_criteria->pendidikan', 0)
                     ->orWhereJsonContains('eligibility_criteria->pendidikan', $responden->pendidikan);
             });
+        } else {
+            $query->where(function (Builder $q) {
+                $q->whereNull('eligibility_criteria->pendidikan')
+                    ->orWhereJsonLength('eligibility_criteria->pendidikan', 0);
+            });
         }
 
         if ($responden->pekerjaan !== null) {
@@ -212,6 +237,11 @@ class SurveyEligibilityService
                 $q->whereNull('eligibility_criteria->pekerjaan')
                     ->orWhereJsonLength('eligibility_criteria->pekerjaan', 0)
                     ->orWhereJsonContains('eligibility_criteria->pekerjaan', $responden->pekerjaan);
+            });
+        } else {
+            $query->where(function (Builder $q) {
+                $q->whereNull('eligibility_criteria->pekerjaan')
+                    ->orWhereJsonLength('eligibility_criteria->pekerjaan', 0);
             });
         }
 
