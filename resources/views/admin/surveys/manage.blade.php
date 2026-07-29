@@ -80,6 +80,7 @@
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-100">
+                        @php $hasNotesColumn = \Illuminate\Support\Facades\Schema::hasColumn('surveys', 'notes_for_respondent'); @endphp
                         @forelse($surveys as $survey)
                             @php
                                 $latestPaidTransaction = $survey->transactions->first();
@@ -286,7 +287,7 @@
                                                     currentEstimatedTime: @js($survey->estimated_time_minutes ?? ''),
                                                     currentDeadline: @js($survey->deadline ? $survey->deadline->format('Y-m-d\TH:i') : ''),
                                                     currentDescription: @js($survey->description ?? ''),
-                                                    currentNotes: @js($survey->notes_for_respondent ?? ''),
+                                                    currentNotes: @js(($hasNotesColumn ? $survey->notes_for_respondent : '') ?? ''),
                                                     toggleUrl: @js(route('admin.surveys.toggle-status', $survey))
                                                 })"
                                                 class="inline-flex items-center gap-1.5 rounded-lg border border-emerald-300 bg-emerald-50 px-2.5 py-2 text-xs font-semibold text-emerald-700 hover:bg-emerald-100 transition"

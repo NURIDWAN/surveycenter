@@ -40,7 +40,7 @@
                 </div>
 
                 {{-- Notes from Admin --}}
-                @if($survey->notes_for_respondent)
+                @if(\Illuminate\Support\Facades\Schema::hasColumn('surveys', 'notes_for_respondent') && $survey->notes_for_respondent)
                     <div class="rounded-xl bg-amber-50 border border-amber-100 px-4 py-3 flex items-start gap-3">
                         <i data-lucide="info" class="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5"></i>
                         <div>
