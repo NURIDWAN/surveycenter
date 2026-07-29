@@ -33,6 +33,22 @@ class UserAuthController extends Controller
         unset($credentials['redirect']);
 
         if (Auth::attempt(array_merge($credentials, ['is_admin' => 0]))) {
+            $user = Auth::user();
+
+            if ($user->is_responden) {
+                Auth::logout();
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
+
+                ActivityLog::log('login_rejected_role', 'Responden user attempted login on Pembuat Survey tab: ' . $user->email, [
+                    'role' => 'user',
+                ]);
+
+                return back()->withErrors([
+                    'email' => 'Akun ini terdaftar sebagai Responden. Silakan masuk via pilihan \'Isi Survey & Dapatkan Saldo\'.',
+                ])->onlyInput('email', 'redirect');
+            }
+
             $request->session()->regenerate();
 
             ActivityLog::log('login', 'User logged in: ' . Auth::user()->email, [

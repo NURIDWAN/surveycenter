@@ -5,6 +5,7 @@ use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use App\Http\Middleware\AdminMiddleware;
 use App\Http\Middleware\RespondenMiddleware;
+use App\Http\Middleware\UserMiddleware;
 use App\Http\Middleware\CaptureReferral;
 
 return Application::configure(basePath: dirname(__DIR__))
@@ -26,6 +27,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'admin' => AdminMiddleware::class,
             'responden' => RespondenMiddleware::class,
+            'client' => UserMiddleware::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

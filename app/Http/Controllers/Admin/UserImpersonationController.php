@@ -37,7 +37,8 @@ class UserImpersonationController extends Controller
         $request->session()->put('impersonator_admin_id', $impersonatorId);
         $request->session()->put('impersonator_admin_name', $impersonatorName);
 
-        return redirect()->route('user.dashboard')
+        $targetRoute = $user->is_responden ? 'responden.dashboard' : 'user.dashboard';
+        return redirect()->route($targetRoute)
             ->with('success', 'Berhasil login sebagai user ' . $user->name . '.');
     }
 

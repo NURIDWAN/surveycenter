@@ -70,7 +70,7 @@ Route::post('/resend-otp', [ForgotPasswordController::class, 'resendOtp'])->name
 Route::get('/reset-password', [ForgotPasswordController::class, 'showResetForm'])->name('password.reset');
 Route::post('/reset-password', [ForgotPasswordController::class, 'resetPassword'])->name('password.update');
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'client'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])
         ->name('user.dashboard');
     

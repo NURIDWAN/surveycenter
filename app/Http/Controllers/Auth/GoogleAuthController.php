@@ -68,6 +68,17 @@ class GoogleAuthController extends Controller
                 ->withErrors(['email' => 'Akun admin tidak dapat login melalui Google.']);
         }
 
+        // Enforce role matching: Pembuat Survey vs Responden
+        if ($isResponden && !$user->is_responden) {
+            return redirect()->route('login')
+                ->withErrors(['email' => 'Akun ini terdaftar sebagai Pembuat Survey. Silakan login pada pilihan \'Buat Survey\'.']);
+        }
+
+        if (!$isResponden && $user->is_responden) {
+            return redirect()->route('login')
+                ->withErrors(['email' => 'Akun ini terdaftar sebagai Responden. Silakan login pada pilihan \'Isi Survey & Dapatkan Saldo\'.']);
+        }
+
         // Link Google account if not already linked
         if (!$user->google_id) {
             $user->update([
@@ -76,20 +87,9 @@ class GoogleAuthController extends Controller
             ]);
         }
 
-        // Upgrade to responden if requested and not already
-        if ($isResponden && !$user->is_responden) {
-            $user->update(['is_responden' => true]);
-            if (!$user->wallet) {
-                Wallet::create(['user_id' => $user->id, 'balance' => 0, 'deposit_balance' => 0, 'reward_balance' => 0]);
-            }
-        }
-
         Auth::login($user);
         $request->session()->regenerate();
 
-        // Redirect based on CHOSEN role (not just account state)
-        // If user explicitly chose responden tab, go to responden dashboard
-        // If user chose survey tab, go to user dashboard (even if they also have responden role)
         if ($isResponden) {
             return redirect()->route('responden.dashboard');
         }

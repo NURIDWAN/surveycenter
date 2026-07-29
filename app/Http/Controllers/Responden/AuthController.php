@@ -57,17 +57,14 @@ class AuthController extends Controller
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
 
-            if (!$user->is_responden) {
-                // Auto-enable responden role for existing users
-                $user->update(['is_responden' => true]);
+            if ($user->is_admin || !$user->is_responden) {
+                Auth::logout();
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
 
-                // Create wallet if not exists
-                if (!$user->wallet) {
-                    \App\Models\Wallet::create([
-                        'user_id' => $user->id,
-                        'balance' => 0,
-                    ]);
-                }
+                return back()->withErrors([
+                    'email' => 'Akun ini terdaftar sebagai Pembuat Survey. Silakan masuk via pilihan \'Buat Survey\'.',
+                ])->onlyInput('email');
             }
 
             $request->session()->regenerate();
