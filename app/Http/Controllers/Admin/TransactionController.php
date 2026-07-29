@@ -100,8 +100,13 @@ class TransactionController extends Controller
 
         $transaction->update($validated);
 
-        return redirect()->route('admin.transactions.index')
-            ->with('success', 'Transaksi berhasil diperbarui.');
+        // If manually set to paid, activate the survey for respondents
+        if ($validated['status'] === Transaction::STATUS_PAID && $transaction->survey) {
+            $transaction->survey->update(['status' => Survey::STATUS_ACTIVE]);
+        }
+
+        return redirect()->route('admin.transactions.edit', $transaction)
+            ->with('success', 'Status transaksi berhasil diperbarui menjadi "' . Transaction::getStatusLabel($validated['status']) . '".');
     }
 
     public function destroy(Transaction $transaction)
