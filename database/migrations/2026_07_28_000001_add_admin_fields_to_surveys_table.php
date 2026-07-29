@@ -9,7 +9,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('surveys', function (Blueprint $table) {
-            $table->text('notes_for_respondent')->nullable()->after('description');
+            $table->text('notes_for_respondent')->nullable();
         });
     }
 
