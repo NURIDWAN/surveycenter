@@ -286,6 +286,7 @@ Route::middleware(['admin'])->prefix('admin')->group(function () {
     Route::get('/crm/manage-users', [CRMController::class, 'customerAlready'])->name('crm.manage-users');
     Route::get('/crm/customer-already', [CRMController::class, 'customerAlready'])->name('crm.customer-already');
     Route::get('/crm/manage-users/{user}', [CRMController::class, 'showManageUser'])->name('crm.manage-users.show');
+    Route::patch('/crm/manage-users/{user}/toggle-responden', [CRMController::class, 'toggleResponden'])->name('crm.manage-users.toggle-responden');
     Route::post('/users/{user}/impersonate', [UserImpersonationController::class, 'impersonate'])->name('admin.users.impersonate');
 
     // Follow Up khusus status closed

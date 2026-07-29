@@ -11,6 +11,21 @@
             <p class="text-sm text-gray-500 mt-1">{{ $user->email }} @if($user->phone) • {{ $user->phone }} @endif</p>
         </div>
         <div class="flex items-center gap-2">
+            <form method="POST" action="{{ route('crm.manage-users.toggle-responden', $user) }}">
+                @csrf
+                @method('PATCH')
+                @if($user->is_responden)
+                    <button type="submit" class="inline-flex items-center gap-1.5 px-3 py-2 bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-semibold rounded-lg hover:bg-emerald-100 transition" title="Klik untuk nonaktifkan akses responden">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                        Responden: Aktif
+                    </button>
+                @else
+                    <button type="submit" class="inline-flex items-center gap-1.5 px-3 py-2 bg-gray-100 text-gray-600 border border-gray-200 text-xs font-semibold rounded-lg hover:bg-gray-200 transition" title="Klik untuk aktifkan akses responden">
+                        <span class="w-2 h-2 rounded-full bg-gray-400"></span>
+                        Responden: Nonaktif
+                    </button>
+                @endif
+            </form>
             @if(!$user->is_admin)
                 <form method="POST" action="{{ route('admin.users.impersonate', $user) }}">
                     @csrf
@@ -26,6 +41,15 @@
             </a>
         </div>
     </div>
+
+    @if(session('success'))
+        <div class="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-700 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <i data-lucide="check-circle" class="w-4 h-4 text-emerald-600"></i>
+                <span>{{ session('success') }}</span>
+            </div>
+        </div>
+    @endif
 
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <div class="bg-white rounded-xl border border-gray-200 p-4">

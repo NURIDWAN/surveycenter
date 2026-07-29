@@ -127,6 +127,7 @@ class CRMController extends Controller
     {
         $search = trim((string) $request->input('q', ''));
         $role = $request->input('role', 'all');
+        $respondenFilter = $request->input('is_responden', 'all');
         $perPage = (int) $request->input('per_page', 10);
         $allowedPerPage = [10, 25, 50];
 
@@ -161,9 +162,28 @@ class CRMController extends Controller
             $query->where('is_admin', false);
         }
 
+        if ($respondenFilter === '1') {
+            $query->where('is_responden', true);
+        } elseif ($respondenFilter === '0') {
+            $query->where('is_responden', false);
+        }
+
         $users = $query->paginate($perPage)->withQueryString();
 
-        return view('admin.crm.customer-already', compact('users', 'search', 'role', 'perPage'));
+        return view('admin.crm.customer-already', compact('users', 'search', 'role', 'respondenFilter', 'perPage'));
+    }
+
+    /**
+     * Toggle is_responden status for a user.
+     */
+    public function toggleResponden(User $user)
+    {
+        $user->update([
+            'is_responden' => !$user->is_responden,
+        ]);
+
+        $status = $user->is_responden ? 'aktifkan' : 'nonaktifkan';
+        return back()->with('success', "Akses responden untuk {$user->name} berhasil di-{$status}.");
     }
 
     public function showManageUser(User $user, Request $request)
