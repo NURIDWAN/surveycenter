@@ -20,8 +20,19 @@
 
         {{-- Survey Info Card --}}
         <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
-            <div class="px-6 py-5 border-b border-gray-100">
+            <div class="px-6 py-5 border-b border-gray-100 flex items-center justify-between">
                 <h2 class="text-lg font-bold text-gray-900">{{ $survey->title }}</h2>
+                @if($survey->status === \App\Models\Survey::STATUS_ACTIVE)
+                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-50 text-xs font-bold text-emerald-600">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                        Aktif
+                    </span>
+                @else
+                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-gray-100 text-xs font-bold text-gray-500">
+                        <span class="w-1.5 h-1.5 rounded-full bg-gray-400"></span>
+                        Nonaktif
+                    </span>
+                @endif
             </div>
 
             <div class="px-6 py-5 space-y-5">
@@ -46,94 +57,6 @@
                         <div>
                             <p class="text-xs font-bold text-amber-700 uppercase tracking-wider mb-1">Catatan dari Peneliti</p>
                             <p class="text-sm text-amber-800 leading-relaxed">{{ $survey->notes_for_respondent }}</p>
-                        </div>
-                    </div>
-                @endif
-
-                {{-- Eligibility Criteria --}}
-                @if($survey->eligibility_criteria && count(array_filter($survey->eligibility_criteria)))
-                    <div>
-                        <h3 class="text-xs font-bold uppercase tracking-wider text-gray-400 mb-3">Kriteria Responden</h3>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                            @php $criteria = $survey->eligibility_criteria; @endphp
-
-                            @if(!empty($criteria['jenis_kelamin']))
-                                <div class="flex items-start gap-2.5 px-3 py-2.5 rounded-xl bg-gray-50 border border-gray-100">
-                                    <i data-lucide="users" class="w-4 h-4 text-gray-400 flex-shrink-0 mt-0.5"></i>
-                                    <div>
-                                        <p class="text-[11px] font-semibold text-gray-400 uppercase tracking-wider">Jenis Kelamin</p>
-                                        <p class="text-xs font-medium text-gray-700 mt-0.5">
-                                            {{ is_array($criteria['jenis_kelamin']) ? implode(', ', $criteria['jenis_kelamin']) : $criteria['jenis_kelamin'] }}
-                                        </p>
-                                    </div>
-                                </div>
-                            @endif
-
-                            @if(!empty($criteria['age_min']) || !empty($criteria['age_max']))
-                                <div class="flex items-start gap-2.5 px-3 py-2.5 rounded-xl bg-gray-50 border border-gray-100">
-                                    <i data-lucide="calendar" class="w-4 h-4 text-gray-400 flex-shrink-0 mt-0.5"></i>
-                                    <div>
-                                        <p class="text-[11px] font-semibold text-gray-400 uppercase tracking-wider">Usia</p>
-                                        <p class="text-xs font-medium text-gray-700 mt-0.5">
-                                            @if(!empty($criteria['age_min']) && !empty($criteria['age_max']))
-                                                {{ $criteria['age_min'] }} - {{ $criteria['age_max'] }} tahun
-                                            @elseif(!empty($criteria['age_min']))
-                                                Minimal {{ $criteria['age_min'] }} tahun
-                                            @else
-                                                Maksimal {{ $criteria['age_max'] }} tahun
-                                            @endif
-                                        </p>
-                                    </div>
-                                </div>
-                            @endif
-
-                            @if(!empty($criteria['provinsi']))
-                                <div class="flex items-start gap-2.5 px-3 py-2.5 rounded-xl bg-gray-50 border border-gray-100">
-                                    <i data-lucide="map-pin" class="w-4 h-4 text-gray-400 flex-shrink-0 mt-0.5"></i>
-                                    <div>
-                                        <p class="text-[11px] font-semibold text-gray-400 uppercase tracking-wider">Provinsi</p>
-                                        <p class="text-xs font-medium text-gray-700 mt-0.5">
-                                            {{ is_array($criteria['provinsi']) ? implode(', ', $criteria['provinsi']) : $criteria['provinsi'] }}
-                                        </p>
-                                    </div>
-                                </div>
-                            @endif
-
-                            @if(!empty($criteria['kota']))
-                                <div class="flex items-start gap-2.5 px-3 py-2.5 rounded-xl bg-gray-50 border border-gray-100">
-                                    <i data-lucide="building" class="w-4 h-4 text-gray-400 flex-shrink-0 mt-0.5"></i>
-                                    <div>
-                                        <p class="text-[11px] font-semibold text-gray-400 uppercase tracking-wider">Kota</p>
-                                        <p class="text-xs font-medium text-gray-700 mt-0.5">
-                                            {{ is_array($criteria['kota']) ? implode(', ', $criteria['kota']) : $criteria['kota'] }}
-                                        </p>
-                                    </div>
-                                </div>
-                            @endif
-
-                            @if(!empty($criteria['pendidikan']))
-                                <div class="flex items-start gap-2.5 px-3 py-2.5 rounded-xl bg-gray-50 border border-gray-100">
-                                    <i data-lucide="graduation-cap" class="w-4 h-4 text-gray-400 flex-shrink-0 mt-0.5"></i>
-                                    <div>
-                                        <p class="text-[11px] font-semibold text-gray-400 uppercase tracking-wider">Pendidikan</p>
-                                        <p class="text-xs font-medium text-gray-700 mt-0.5">
-                                            {{ is_array($criteria['pendidikan']) ? implode(', ', $criteria['pendidikan']) : $criteria['pendidikan'] }}
-                                        </p>
-                                    </div>
-                                </div>
-                            @endif
-
-                            @if(!empty($criteria['pekerjaan']))
-                                <div class="flex items-start gap-2.5 px-3 py-2.5 rounded-xl bg-gray-50 border border-gray-100">
-                                    <i data-lucide="briefcase" class="w-4 h-4 text-gray-400 flex-shrink-0 mt-0.5"></i>
-                                    <div>
-                                        <p class="text-[11px] font-semibold text-gray-400 uppercase tracking-wider">Pekerjaan</p>
-                                        <p class="text-xs font-medium text-gray-700 mt-0.5">
-                                            {{ is_array($criteria['pekerjaan']) ? implode(', ', $criteria['pekerjaan']) : $criteria['pekerjaan'] }}
-                                        </p>
-                                    </div>
-                                </div>
-                            @endif
                         </div>
                     </div>
                 @endif
@@ -205,7 +128,7 @@
         {{-- Action Card --}}
         <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
             <div class="px-5 py-5">
-                @if($isEligible)
+                @if($survey->status === \App\Models\Survey::STATUS_ACTIVE && $isEligible)
                     <form method="POST" action="{{ route('responden.surveys.start', $survey) }}">
                         @csrf
                         <button type="submit" class="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-bold text-sm shadow-md shadow-orange-500/20 hover:shadow-lg hover:shadow-orange-500/30 hover:scale-[1.02] transition-all">
@@ -225,18 +148,14 @@
                         Klik "Mulai Survey" untuk memulai pengisian. Anda akan diarahkan ke Google Form.
                     </p>
                 @else
-                    <div class="text-center">
-                        <div class="w-12 h-12 mx-auto rounded-2xl bg-red-50 border border-red-100 flex items-center justify-center mb-3">
-                            <i data-lucide="shield-x" class="w-6 h-6 text-red-400"></i>
+                    <div class="text-center py-2">
+                        <div class="w-12 h-12 mx-auto rounded-2xl bg-amber-50 border border-amber-100 flex items-center justify-center mb-3">
+                            <i data-lucide="alert-circle" class="w-6 h-6 text-amber-500"></i>
                         </div>
-                        <p class="text-sm font-semibold text-gray-700 mb-1">Tidak Memenuhi Kriteria</p>
+                        <p class="text-sm font-semibold text-gray-700 mb-1">Survey Tidak Aktif</p>
                         <p class="text-xs text-gray-400 leading-relaxed">
-                            Profil demografis Anda belum sesuai dengan kriteria yang dibutuhkan survey ini. Pastikan profil Anda sudah lengkap dan sesuai.
+                            Survey ini sedang tidak aktif atau tidak menerima pengisian baru saat ini.
                         </p>
-                        <a href="{{ route('responden.profile.edit') }}" class="inline-flex items-center gap-1.5 mt-4 px-4 py-2 rounded-xl bg-gray-50 border border-gray-200 text-xs font-semibold text-gray-600 hover:bg-gray-100 transition">
-                            <i data-lucide="user-circle" class="w-3.5 h-3.5"></i>
-                            Perbarui Profil
-                        </a>
                     </div>
                 @endif
             </div>

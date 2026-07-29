@@ -26,6 +26,11 @@ class SurveyFillingService
      */
     public function startFilling(User $user, Survey $survey): SurveyFilling
     {
+        // Check survey status: must be active
+        if ($survey->status !== Survey::STATUS_ACTIVE) {
+            throw new RuntimeException('Survey tidak aktif.');
+        }
+
         // Check uniqueness: no existing filling for this user+survey
         $existingFilling = SurveyFilling::where('survey_id', $survey->id)
             ->where('user_id', $user->id)

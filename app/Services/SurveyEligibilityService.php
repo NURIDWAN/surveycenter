@@ -60,76 +60,17 @@ class SurveyEligibilityService
             return false;
         }
 
-        // Must match eligibility criteria
-        $criteria = $survey->eligibility_criteria;
-
-        return $this->matchesCriteria($responden, $criteria);
+        // Criteria matching temporarily disabled per user instruction
+        // "hapus kreteria yang ada di responden, hanya mengandalkan staus survey saja aktif/nonaktif. untuk service kriteria sementara jagan di gunakan dulu"
+        return true;
     }
 
     /**
      * Check if a responden matches the given eligibility criteria.
-     *
-     * If criteria is null or empty, returns true (visible to all).
-     * Each non-empty criterion field must be satisfied by the user's profile.
-     * If a user's profile field is null for a required criterion, returns false.
+     * Service criteria is temporarily disabled per user instruction.
      */
     public function matchesCriteria(User $responden, ?array $criteria): bool
     {
-        // Null or empty criteria means no restriction
-        if (empty($criteria)) {
-            return true;
-        }
-
-        // Check jenis_kelamin
-        if (!empty($criteria['jenis_kelamin']) && is_array($criteria['jenis_kelamin'])) {
-            if ($responden->jenis_kelamin !== null && !in_array($responden->jenis_kelamin, $criteria['jenis_kelamin'])) {
-                return false;
-            }
-        }
-
-        // Check age range
-        if (isset($criteria['age_min']) || isset($criteria['age_max'])) {
-            if ($responden->tanggal_lahir !== null) {
-                $age = $responden->tanggal_lahir->age;
-
-                if (isset($criteria['age_min']) && $age < $criteria['age_min']) {
-                    return false;
-                }
-
-                if (isset($criteria['age_max']) && $age > $criteria['age_max']) {
-                    return false;
-                }
-            }
-        }
-
-        // Check provinsi
-        if (!empty($criteria['provinsi']) && is_array($criteria['provinsi'])) {
-            if ($responden->provinsi !== null && !in_array($responden->provinsi, $criteria['provinsi'])) {
-                return false;
-            }
-        }
-
-        // Check kota
-        if (!empty($criteria['kota']) && is_array($criteria['kota'])) {
-            if ($responden->kota !== null && !in_array($responden->kota, $criteria['kota'])) {
-                return false;
-            }
-        }
-
-        // Check pendidikan
-        if (!empty($criteria['pendidikan']) && is_array($criteria['pendidikan'])) {
-            if ($responden->pendidikan !== null && !in_array($responden->pendidikan, $criteria['pendidikan'])) {
-                return false;
-            }
-        }
-
-        // Check pekerjaan
-        if (!empty($criteria['pekerjaan']) && is_array($criteria['pekerjaan'])) {
-            if ($responden->pekerjaan !== null && !in_array($responden->pekerjaan, $criteria['pekerjaan'])) {
-                return false;
-            }
-        }
-
         return true;
     }
 

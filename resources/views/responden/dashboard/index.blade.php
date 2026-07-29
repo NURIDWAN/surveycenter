@@ -100,7 +100,7 @@
     <div class="px-6 py-4 flex items-center justify-between">
         <div>
             <h2 class="text-sm font-bold text-gray-900">Survey Tersedia</h2>
-            <p class="text-xs text-gray-400 mt-0.5">Survey yang cocok dengan profil Anda</p>
+            <p class="text-xs text-gray-400 mt-0.5">Daftar survey yang sedang aktif</p>
         </div>
         <a href="{{ route('responden.surveys.index') }}" class="text-xs font-semibold text-orange-600 hover:text-orange-700 transition flex items-center gap-1">
             Lihat Semua
@@ -114,13 +114,7 @@
                 <i data-lucide="inbox" class="w-7 h-7 text-gray-300"></i>
             </div>
             <p class="text-sm font-medium text-gray-500">Belum ada survey tersedia</p>
-            <p class="text-xs text-gray-400 mt-1">Lengkapi profil demografis Anda untuk mendapatkan lebih banyak survey</p>
-            @if(!$profileComplete)
-                <a href="{{ route('responden.profile.edit') }}" class="inline-flex items-center gap-1.5 mt-4 px-4 py-2 rounded-xl bg-orange-500 hover:bg-orange-600 text-white text-xs font-bold shadow-sm transition">
-                    <i data-lucide="user-circle" class="w-3.5 h-3.5"></i>
-                    Lengkapi Profil
-                </a>
-            @endif
+            <p class="text-xs text-gray-400 mt-1">Saat ini belum ada survey aktif yang tersedia.</p>
         </div>
     @else
         <div class="overflow-x-auto">

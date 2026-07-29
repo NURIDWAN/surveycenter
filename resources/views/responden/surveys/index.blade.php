@@ -9,7 +9,7 @@
     <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
         <div>
             <h2 class="text-sm font-bold text-gray-900">Survey Tersedia</h2>
-            <p class="text-xs text-gray-400 mt-0.5">Survey yang cocok dengan profil demografis Anda</p>
+            <p class="text-xs text-gray-400 mt-0.5">Daftar survey yang sedang aktif</p>
         </div>
     </div>
 
@@ -19,11 +19,7 @@
                 <i data-lucide="inbox" class="w-8 h-8 text-gray-300"></i>
             </div>
             <p class="text-sm font-medium text-gray-500">Belum ada survey tersedia</p>
-            <p class="text-xs text-gray-400 mt-1">Lengkapi profil demografis Anda untuk mendapatkan lebih banyak survey yang sesuai</p>
-            <a href="{{ route('responden.profile.edit') }}" class="inline-flex items-center gap-1.5 mt-4 px-4 py-2 rounded-xl bg-orange-50 border border-orange-100 text-xs font-semibold text-orange-600 hover:bg-orange-100 transition">
-                <i data-lucide="user-circle" class="w-3.5 h-3.5"></i>
-                Lengkapi Profil
-            </a>
+            <p class="text-xs text-gray-400 mt-1">Saat ini belum ada survey aktif yang tersedia.</p>
         </div>
     @else
         {{-- Mobile Cards --}}
