@@ -17,11 +17,11 @@
     @if (isset($transaction))
         <!-- Edit form: dropdown survey -->
         <select id="surveySelect" name="survey_id" class="w-full border rounded px-3 py-2"
-            data-selected="{{ $transaction->survey_id }}">
+            data-selected="{{ optional($transaction)->survey_id }}">
             <option value="">-- Select Survey --</option>
             @foreach ($surveys as $survey)
                 <option value="{{ $survey->id }}" data-user="{{ $survey->user_id }}"
-                    {{ $transaction->survey_id == $survey->id ? 'selected' : '' }}>
+                    {{ optional($transaction)->survey_id == $survey->id ? 'selected' : '' }}>
                     {{ $survey->title }}
                 </option>
             @endforeach
@@ -40,7 +40,7 @@
 <div>
     <label class="block mb-1 font-medium">Jumlah Pertanyaan</label>
     @if (isset($transaction) && $transaction->survey)
-        <input type="number" name="question_count" value="{{ $transaction->survey->question_count }}"
+        <input type="number" name="question_count" value="{{ $transaction->survey?->question_count ?? 0 }}"
             class="w-full border rounded px-3 py-2" readonly>
     @else
         <input type="number" name="question_count" value="{{ old('question_count', 0) }}"
@@ -59,7 +59,7 @@
 <div>
     <label class="block mb-1 font-medium">Status</label>
     <select name="status" class="w-full border rounded px-3 py-2" required>
-        @foreach (['pending', 'paid', 'failed', 'refunded'] as $status)
+        @foreach (['pending', 'processing', 'paid', 'failed', 'completed', 'cancelled', 'refunded'] as $status)
             <option value="{{ $status }}"
                 {{ old('status', optional($transaction)->status) == $status ? 'selected' : '' }}>
                 {{ ucfirst($status) }}

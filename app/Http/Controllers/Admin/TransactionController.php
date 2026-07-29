@@ -90,23 +90,18 @@ class TransactionController extends Controller
     public function update(Request $request, Transaction $transaction)
     {
         $validated = $request->validate([
-            'survey_id' => 'required|exists:surveys,id',
+            'survey_id' => 'nullable|exists:surveys,id',
             'user_id' => 'nullable|exists:users,id',
             'amount' => 'required|integer|min:0',
             'payment_method' => 'nullable|string|max:50',
-            'status' => 'required|in:' . implode(',', [
-                Transaction::STATUS_PENDING,
-                Transaction::STATUS_PROCESSING,
-                Transaction::STATUS_PAID,
-                Transaction::STATUS_FAILED,
-            ]),
+            'status' => 'required|string|in:pending,processing,paid,failed,completed,cancelled,refunded',
             'singapay_ref' => 'nullable|string',
         ]);
 
         $transaction->update($validated);
 
         return redirect()->route('admin.transactions.index')
-            ->with('success', 'Transaction updated successfully.');
+            ->with('success', 'Transaksi berhasil diperbarui.');
     }
 
     public function destroy(Transaction $transaction)

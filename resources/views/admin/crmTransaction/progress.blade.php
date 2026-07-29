@@ -31,23 +31,23 @@
                 <i data-lucide="file-text" class="w-5 h-5 text-gray-500"></i> Detail Survey
             </h3>
             <p class="text-gray-800">
-                <span class="font-semibold">Judul Survey:</span> {{ $transaction->survey->title ?? '-' }}
+                <span class="font-semibold">Judul Survey:</span> {{ $transaction->survey?->title ?? '-' }}
             </p>
             <div class="mt-3">
                 <span class="font-semibold text-gray-800">Deskripsi / Kebutuhan:</span>
                 <p class="text-gray-600 mt-1 italic text-sm p-3 bg-white rounded border border-gray-100">
-                    {{ $transaction->survey->description ?? 'Tidak ada deskripsi yang diberikan.' }}
+                    {{ $transaction->survey?->description ?? 'Tidak ada deskripsi yang diberikan.' }}
                 </p>
             </div>
             
             <div class="grid grid-cols-2 gap-4 mt-4">
                 <div class="p-3 bg-white rounded-lg shadow-sm border border-gray-100 flex flex-col justify-center items-center">
                     <p class="text-xs text-gray-500 font-semibold uppercase tracking-wider mb-1">Pertanyaan</p>
-                    <p class="text-2xl font-bold text-gray-900">{{ $transaction->survey->question_count ?? 0 }}</p>
+                    <p class="text-2xl font-bold text-gray-900">{{ $transaction->survey?->question_count ?? 0 }}</p>
                 </div>
                 <div class="p-3 bg-white rounded-lg shadow-sm border border-gray-100 flex flex-col justify-center items-center">
                     <p class="text-xs text-gray-500 font-semibold uppercase tracking-wider mb-1">Responden (Target)</p>
-                    <p class="text-2xl font-bold text-gray-900">{{ $transaction->survey->respondent_count ?? 0 }}</p>
+                    <p class="text-2xl font-bold text-gray-900">{{ $transaction->survey?->respondent_count ?? 0 }}</p>
                 </div>
             </div>
         </div>

@@ -60,10 +60,11 @@ class TransactionProgressController extends Controller
         if ($wantsToNotify || $justCompleted) {
             $msg = $request->notification_message;
             if (!$msg && $justCompleted) {
-                $msg = 'Survey Anda "' . $transaction->survey->title . '" telah selesai (100%). Silakan periksa detailnya.';
+                $surveyTitle = $transaction->survey?->title ?? 'Survey';
+                $msg = 'Survey Anda "' . $surveyTitle . '" telah selesai (100%). Silakan periksa detailnya.';
             }
             
-            if ($msg) {
+            if ($msg && $transaction->user && $transaction->survey) {
                 try {
                     $transaction->user->notify(new \App\Notifications\SurveyCompletedNotification($transaction->survey, $msg));
                 } catch (\Exception $e) {
