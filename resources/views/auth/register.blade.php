@@ -130,7 +130,7 @@
                 Buat Survey
             </button>
             <button type="button" @click="role = 'responden'" :class="role === 'responden' ? 'bg-white shadow-sm text-[#ea580c] font-bold' : 'text-slate-500 font-medium'" class="flex-1 py-2.5 px-3 rounded-md text-[13px] transition-all text-center">
-                Isi Survey & Dapatkan Saldo
+                Suarakan Pendapatmu
             </button>
         </div>
 

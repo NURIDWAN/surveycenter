@@ -49,10 +49,9 @@ use App\Services\SitemapService;
 use App\Http\Controllers\PublicSurveyController;
 
 Route::get('/', [HomeController::class, 'index'])->name('landing');
-Route::get('/kuisioner', [PublicSurveyController::class, 'index'])->name('surveys.public');
-Route::get('/kumpulan-kuisioner', function() {
-    return redirect()->route('surveys.public');
-});
+Route::get('/kumpulan-quisioner', [PublicSurveyController::class, 'index'])->name('kumpulan-quisioner');
+Route::redirect('/kuisioner', '/kumpulan-quisioner');
+Route::redirect('/kumpulan-kuisioner', '/kumpulan-quisioner');
 
 
 Route::get('/login', [UserAuthController::class, 'showLoginForm'])->name('login');

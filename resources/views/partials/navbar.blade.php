@@ -32,7 +32,7 @@
           </div>
         </div>
       </div>
-      <a href="{{ route('surveys.public') }}" class="{{ request()->routeIs('surveys.public') ? 'text-orange-500 font-bold border-b-2 border-orange-500 py-1' : 'transition hover:text-orange-500' }}">Kuisioner</a>
+      <a href="{{ route('kumpulan-quisioner') }}" class="{{ request()->routeIs('kumpulan-quisioner') ? 'text-orange-500 font-bold border-b-2 border-orange-500 py-1' : 'transition hover:text-orange-500' }}">Kumpulan Quisioner</a>
       <a href="{{ route('pricing') }}" class="{{ request()->routeIs('pricing') ? 'text-orange-500 font-bold' : 'transition hover:text-orange-500' }}">Harga</a>
       <a href="{{ route('blog.index') }}" class="{{ request()->routeIs('blog.*') ? 'text-orange-500 font-bold' : 'transition hover:text-orange-500' }}">Blog</a>
       <a href="{{ route('contact') }}" class="{{ request()->routeIs('contact') ? 'text-orange-500 font-bold' : 'transition hover:text-orange-500' }}">Contact Us</a>
@@ -63,7 +63,7 @@
           <a href="{{ route('layanan.show', $item->slug) }}" class="block">{{ $item->title }}</a>
         @endforeach
       </div>
-      <a href="{{ route('surveys.public') }}" class="block {{ request()->routeIs('surveys.public') ? 'text-orange-500 font-bold' : '' }}">Kuisioner</a>
+      <a href="{{ route('kumpulan-quisioner') }}" class="block {{ request()->routeIs('kumpulan-quisioner') ? 'text-orange-500 font-bold' : '' }}">Kumpulan Quisioner</a>
       <a href="{{ route('pricing') }}" class="block {{ request()->routeIs('pricing') ? 'text-orange-500 font-bold' : '' }}">Harga</a>
       <a href="{{ route('blog.index') }}" class="block {{ request()->routeIs('blog.*') ? 'text-orange-500 font-bold' : '' }}">Blog</a>
       <a href="{{ route('contact') }}" class="block {{ request()->routeIs('contact') ? 'text-orange-500 font-bold' : '' }}">Contact Us</a>

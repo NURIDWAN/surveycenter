@@ -24,12 +24,12 @@
 
         {{-- Filter & Search Header Card --}}
         <div class="mb-8 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm lg:p-6">
-            <form action="{{ route('surveys.public') }}" method="GET" class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+            <form action="{{ route('kumpulan-quisioner') }}" method="GET" class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
 
                 {{-- Status Filter Tabs (Semua, Tersedia, Tidak Tersedia) --}}
                 <div class="flex flex-wrap items-center gap-2">
                     {{-- Status: Semua --}}
-                    <a href="{{ route('surveys.public', array_merge(request()->query(), ['status' => 'all', 'page' => 1])) }}"
+                    <a href="{{ route('kumpulan-quisioner', array_merge(request()->query(), ['status' => 'all', 'page' => 1])) }}"
                        class="inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-bold transition-all duration-200 {{ $statusFilter === 'all' ? 'bg-orange-500 text-white shadow-md shadow-orange-500/20' : 'bg-slate-50 text-slate-600 ring-1 ring-slate-200 hover:bg-orange-50 hover:text-orange-700 hover:ring-orange-200' }}">
                         <i class="fa-solid fa-layer-group text-xs"></i>
                         <span>Semua Kuisioner</span>
@@ -39,7 +39,7 @@
                     </a>
 
                     {{-- Status: Tersedia --}}
-                    <a href="{{ route('surveys.public', array_merge(request()->query(), ['status' => 'available', 'page' => 1])) }}"
+                    <a href="{{ route('kumpulan-quisioner', array_merge(request()->query(), ['status' => 'available', 'page' => 1])) }}"
                        class="inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-bold transition-all duration-200 {{ $statusFilter === 'available' ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/20' : 'bg-slate-50 text-slate-600 ring-1 ring-slate-200 hover:bg-emerald-50 hover:text-emerald-700 hover:ring-emerald-200' }}">
                         <span class="relative flex h-2 w-2">
                             <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
@@ -52,7 +52,7 @@
                     </a>
 
                     {{-- Status: Tidak Tersedia --}}
-                    <a href="{{ route('surveys.public', array_merge(request()->query(), ['status' => 'unavailable', 'page' => 1])) }}"
+                    <a href="{{ route('kumpulan-quisioner', array_merge(request()->query(), ['status' => 'unavailable', 'page' => 1])) }}"
                        class="inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-bold transition-all duration-200 {{ $statusFilter === 'unavailable' ? 'bg-rose-600 text-white shadow-md shadow-rose-600/20' : 'bg-slate-50 text-slate-600 ring-1 ring-slate-200 hover:bg-rose-50 hover:text-rose-700 hover:ring-rose-200' }}">
                         <span class="inline-block h-2 w-2 rounded-full bg-rose-500"></span>
                         <span>Tidak Tersedia</span>
@@ -74,7 +74,7 @@
                         <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-sm text-slate-400"></i>
 
                         @if($search)
-                            <a href="{{ route('surveys.public', ['status' => $statusFilter]) }}"
+                            <a href="{{ route('kumpulan-quisioner', ['status' => $statusFilter]) }}"
                                class="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-slate-400 hover:text-slate-600">
                                 <i class="fa-solid fa-xmark"></i>
                             </a>
@@ -104,7 +104,7 @@
                         @endif
                     </span>
                 </div>
-                <a href="{{ route('surveys.public') }}" class="font-bold text-orange-600 hover:text-orange-800 underline transition">
+                <a href="{{ route('kumpulan-quisioner') }}" class="font-bold text-orange-600 hover:text-orange-800 underline transition">
                     Reset Filter
                 </a>
             </div>
@@ -261,7 +261,7 @@
                         Belum ada kuisioner yang terdaftar saat ini.
                     @endif
                 </p>
-                <a href="{{ route('surveys.public') }}"
+                <a href="{{ route('kumpulan-quisioner') }}"
                    class="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-5 py-2.5 text-sm font-bold text-white shadow-md transition hover:bg-slate-800">
                     <i class="fa-solid fa-arrows-rotate text-xs"></i>
                     <span>Tampilkan Semua Kuisioner</span>
