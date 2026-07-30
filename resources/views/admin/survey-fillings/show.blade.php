@@ -129,9 +129,9 @@
                     <h3 class="text-sm font-bold text-gray-900">Bukti Screenshot Pengisian</h3>
                 </div>
                 <div class="p-5">
-                    @if($filling->proof_file_path)
-                        <a href="{{ asset('storage/' . $filling->proof_file_path) }}" target="_blank">
-                            <img src="{{ asset('storage/' . $filling->proof_file_path) }}"
+                    @if($filling->proof_url)
+                        <a href="{{ $filling->proof_url }}" target="_blank">
+                            <img src="{{ $filling->proof_url }}"
                                  alt="Bukti pengisian survey"
                                  class="max-w-full rounded-xl border border-gray-200 shadow-sm hover:opacity-90 transition cursor-zoom-in">
                         </a>

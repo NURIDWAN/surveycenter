@@ -416,6 +416,7 @@ Route::middleware(['admin'])->prefix('admin')->group(function () {
     Route::prefix('survey-fillings')->name('admin.survey-fillings.')->group(function () {
         Route::get('/', [SurveyFillingVerificationController::class, 'index'])->name('index');
         Route::get('/{filling}', [SurveyFillingVerificationController::class, 'show'])->name('show');
+        Route::get('/{filling}/proof', [SurveyFillingVerificationController::class, 'showProof'])->name('proof');
         Route::post('/{filling}/approve', [SurveyFillingVerificationController::class, 'approve'])->name('approve');
         Route::post('/{filling}/reject', [SurveyFillingVerificationController::class, 'reject'])->name('reject');
     });

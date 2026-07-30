@@ -49,4 +49,34 @@ class SurveyFilling extends Model
     {
         return $this->belongsTo(RejectionReason::class);
     }
+
+    /**
+     * Get the accessible URL of the proof screenshot file.
+     */
+    public function getProofUrlAttribute(): ?string
+    {
+        if (empty($this->proof_file_path)) {
+            return null;
+        }
+
+        if (str_starts_with($this->proof_file_path, 'http://') || str_starts_with($this->proof_file_path, 'https://')) {
+            return $this->proof_file_path;
+        }
+
+        $disk = config('responden.proof_disk', 'public');
+
+        if (\Illuminate\Support\Facades\Storage::disk($disk)->exists($this->proof_file_path)) {
+            return \Illuminate\Support\Facades\Storage::disk($disk)->url($this->proof_file_path);
+        }
+
+        if (\Illuminate\Support\Facades\Storage::disk('public')->exists($this->proof_file_path)) {
+            return \Illuminate\Support\Facades\Storage::disk('public')->url($this->proof_file_path);
+        }
+
+        if (\Illuminate\Support\Facades\Storage::disk('local')->exists($this->proof_file_path)) {
+            return route('admin.survey-fillings.proof', $this);
+        }
+
+        return asset('storage/' . ltrim($this->proof_file_path, '/'));
+    }
 }

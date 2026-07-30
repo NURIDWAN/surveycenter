@@ -48,6 +48,32 @@ class SurveyFillingVerificationController extends Controller
     }
 
     /**
+     * Serve or stream the proof screenshot file directly.
+     */
+    public function showProof(SurveyFilling $filling)
+    {
+        if (empty($filling->proof_file_path)) {
+            abort(404, 'File bukti tidak ditemukan.');
+        }
+
+        $disk = config('responden.proof_disk', 'public');
+
+        if (\Illuminate\Support\Facades\Storage::disk($disk)->exists($filling->proof_file_path)) {
+            return \Illuminate\Support\Facades\Storage::disk($disk)->response($filling->proof_file_path);
+        }
+
+        if (\Illuminate\Support\Facades\Storage::disk('public')->exists($filling->proof_file_path)) {
+            return \Illuminate\Support\Facades\Storage::disk('public')->response($filling->proof_file_path);
+        }
+
+        if (\Illuminate\Support\Facades\Storage::disk('local')->exists($filling->proof_file_path)) {
+            return \Illuminate\Support\Facades\Storage::disk('local')->response($filling->proof_file_path);
+        }
+
+        abort(404, 'File bukti tidak ditemukan pada storage.');
+    }
+
+    /**
      * Approve a survey filling.
      */
     public function approve(SurveyFilling $filling): RedirectResponse
