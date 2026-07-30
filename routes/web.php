@@ -46,8 +46,14 @@ use App\Http\Controllers\Responden\SurveyController as RespondenSurveyController
 use App\Http\Controllers\Responden\SurveyFillingController;
 use App\Http\Controllers\Responden\WithdrawalController;
 use App\Services\SitemapService;
+use App\Http\Controllers\PublicSurveyController;
 
 Route::get('/', [HomeController::class, 'index'])->name('landing');
+Route::get('/kuisioner', [PublicSurveyController::class, 'index'])->name('surveys.public');
+Route::get('/kumpulan-kuisioner', function() {
+    return redirect()->route('surveys.public');
+});
+
 
 Route::get('/login', [UserAuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [UserAuthController::class, 'login'])->name('login.submit');

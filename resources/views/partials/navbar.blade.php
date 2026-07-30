@@ -9,8 +9,8 @@
     </a>
 
     <div class="hidden items-center gap-7 text-[13px] font-semibold text-slate-700 lg:flex">
-      <a href="{{ route('landing') }}" class="border-b-2 border-orange-500 py-2 text-orange-500">Home</a>
-      <a href="{{ route('about') }}" class="transition hover:text-orange-500">About</a>
+      <a href="{{ route('landing') }}" class="{{ request()->routeIs('landing') ? 'text-orange-500 font-bold' : 'transition hover:text-orange-500' }}">Home</a>
+      <a href="{{ route('about') }}" class="{{ request()->routeIs('about') ? 'text-orange-500 font-bold' : 'transition hover:text-orange-500' }}">About</a>
       <div class="relative" @mouseenter="services = true" @mouseleave="services = false">
         <button @click="services = !services" class="flex items-center gap-1 py-4 transition hover:text-orange-500">
           Layanan <i class="fa-solid fa-chevron-down text-[8px]"></i>
@@ -32,9 +32,10 @@
           </div>
         </div>
       </div>
-      <a href="{{ route('pricing') }}" class="transition hover:text-orange-500">Harga</a>
-      <a href="{{ route('blog.index') }}" class="transition hover:text-orange-500">Blog</a>
-      <a href="{{ route('contact') }}" class="transition hover:text-orange-500">Contact Us</a>
+      <a href="{{ route('surveys.public') }}" class="{{ request()->routeIs('surveys.public') ? 'text-orange-500 font-bold border-b-2 border-orange-500 py-1' : 'transition hover:text-orange-500' }}">Kuisioner</a>
+      <a href="{{ route('pricing') }}" class="{{ request()->routeIs('pricing') ? 'text-orange-500 font-bold' : 'transition hover:text-orange-500' }}">Harga</a>
+      <a href="{{ route('blog.index') }}" class="{{ request()->routeIs('blog.*') ? 'text-orange-500 font-bold' : 'transition hover:text-orange-500' }}">Blog</a>
+      <a href="{{ route('contact') }}" class="{{ request()->routeIs('contact') ? 'text-orange-500 font-bold' : 'transition hover:text-orange-500' }}">Contact Us</a>
     </div>
 
     <div class="hidden items-center gap-2.5 lg:flex">
@@ -54,17 +55,18 @@
 
   <div x-cloak x-show="open" x-transition class="border-t border-slate-100 bg-white px-5 py-5 shadow-xl lg:hidden">
     <div class="space-y-3 text-sm font-semibold text-slate-700">
-      <a href="{{ route('landing') }}" class="block text-orange-500">Home</a>
-      <a href="{{ route('about') }}" class="block">About</a>
+      <a href="{{ route('landing') }}" class="block {{ request()->routeIs('landing') ? 'text-orange-500 font-bold' : '' }}">Home</a>
+      <a href="{{ route('about') }}" class="block {{ request()->routeIs('about') ? 'text-orange-500 font-bold' : '' }}">About</a>
       <button @click="services = !services" class="flex w-full items-center justify-between">Layanan <i class="fa-solid fa-chevron-down text-[9px]"></i></button>
       <div x-show="services" class="max-h-60 space-y-2 overflow-y-auto border-l-2 border-orange-100 pl-4 text-xs font-medium text-slate-500">
         @foreach($jenis->concat($tambahan) as $item)
           <a href="{{ route('layanan.show', $item->slug) }}" class="block">{{ $item->title }}</a>
         @endforeach
       </div>
-      <a href="{{ route('pricing') }}" class="block">Harga</a>
-      <a href="{{ route('blog.index') }}" class="block">Blog</a>
-      <a href="{{ route('contact') }}" class="block">Contact Us</a>
+      <a href="{{ route('surveys.public') }}" class="block {{ request()->routeIs('surveys.public') ? 'text-orange-500 font-bold' : '' }}">Kuisioner</a>
+      <a href="{{ route('pricing') }}" class="block {{ request()->routeIs('pricing') ? 'text-orange-500 font-bold' : '' }}">Harga</a>
+      <a href="{{ route('blog.index') }}" class="block {{ request()->routeIs('blog.*') ? 'text-orange-500 font-bold' : '' }}">Blog</a>
+      <a href="{{ route('contact') }}" class="block {{ request()->routeIs('contact') ? 'text-orange-500 font-bold' : '' }}">Contact Us</a>
     </div>
     <div class="mt-5 flex flex-col gap-3 border-t border-slate-100 pt-4">
 

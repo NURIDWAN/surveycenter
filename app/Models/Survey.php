@@ -37,6 +37,35 @@ class Survey extends Model
         ];
     }
 
+    public function getIsAvailableAttribute(): bool
+    {
+        if ($this->status !== self::STATUS_ACTIVE) {
+            return false;
+        }
+
+        if ($this->completed_at !== null) {
+            return false;
+        }
+
+        if ($this->deadline && $this->deadline->isPast()) {
+            return false;
+        }
+
+        $targetCount = (int) $this->respondent_count;
+        if ($targetCount > 0) {
+            $approvedCount = array_key_exists('approved_fillings_count', $this->attributes)
+                ? (int) $this->attributes['approved_fillings_count']
+                : $this->surveyFillings()->where('status', \App\Models\SurveyFilling::STATUS_DISETUJUI)->count();
+
+            if ($approvedCount >= $targetCount) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+
     public function responses()
     {
         return $this->hasMany(Response::class);
