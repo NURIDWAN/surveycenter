@@ -11,6 +11,37 @@ class RespondentSurveyVisibilityTest extends TestCase
 {
     use RefreshDatabase;
 
+    public function test_public_survey_directory_renders_for_authenticated_roles_and_guests(): void
+    {
+        $client = User::factory()->create(['is_responden' => 0, 'is_admin' => 0]);
+        $responden = User::factory()->create(['is_responden' => 1, 'is_admin' => 0]);
+        $survey = Survey::create([
+            'user_id' => $client->id,
+            'title' => 'Survey Direktori Publik',
+            'question_count' => 5,
+            'respondent_count' => 100,
+            'status' => Survey::STATUS_ACTIVE,
+        ]);
+
+        $this->actingAs($responden)
+            ->get(route('kumpulan-quisioner'))
+            ->assertOk()
+            ->assertSee('Isi Kuisioner Sekarang')
+            ->assertSee(route('responden.surveys.show', $survey), false);
+
+        $this->actingAs($client)
+            ->get(route('kumpulan-quisioner'))
+            ->assertOk()
+            ->assertSee('Lihat Detail Kuisioner');
+
+        auth()->logout();
+
+        $this->get(route('kumpulan-quisioner'))
+            ->assertOk()
+            ->assertSee('Isi Kuisioner (Login Responden)')
+            ->assertSee(route('login'), false);
+    }
+
     public function test_active_surveys_with_default_criteria_are_visible_to_responden_with_profile(): void
     {
         $client = User::factory()->create(['is_responden' => 0, 'is_admin' => 0]);

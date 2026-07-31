@@ -9,7 +9,7 @@
                 <i class="fa-solid fa-clipboard-list text-orange-500"></i> Public Directory
             </span>
             <h1 class="text-3xl font-extrabold tracking-tight text-slate-950 sm:text-4xl lg:text-5xl">
-                Kumpulan <span class="text-orange-600">Kuisioner</span>
+                Kumpulan <span class="text-orange-600">Quisioner</span>
             </h1>
             <p class="mt-4 text-base leading-8 text-slate-600 sm:text-lg">
                 Jelajahi berbagai riset dan survei aktif. Berikan tanggapan Anda dan bantu pengambil keputusan mendapatkan data yang lebih baik.
