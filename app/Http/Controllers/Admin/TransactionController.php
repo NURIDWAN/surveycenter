@@ -82,23 +82,25 @@ class TransactionController extends Controller
 
     public function edit(Transaction $transaction)
     {
-        $surveys = Survey::select(['id', 'user_id', 'title'])->orderBy('title')->get();
-        $users = User::select(['id', 'name'])->orderBy('name')->get();
-        return view('admin.transactions.edit', compact('transaction', 'surveys', 'users'));
+        $transaction->load(['survey', 'user']);
+
+        return view('admin.transactions.edit', compact('transaction'));
     }
 
     public function update(Request $request, Transaction $transaction)
     {
         $validated = $request->validate([
-            'survey_id' => 'nullable|exists:surveys,id',
-            'user_id' => 'nullable|exists:users,id',
-            'amount' => 'required|integer|min:0',
-            'payment_method' => 'nullable|string|max:50',
-            'status' => 'required|string|in:pending,processing,paid,failed,completed,cancelled,refunded',
-            'singapay_ref' => 'nullable|string',
+            'status' => 'required|string|in:' . implode(',', [
+                Transaction::STATUS_PENDING,
+                Transaction::STATUS_PROCESSING,
+                Transaction::STATUS_PAID,
+                Transaction::STATUS_FAILED,
+            ]),
         ]);
 
-        $transaction->update($validated);
+        $transaction->update([
+            'status' => $validated['status'],
+        ]);
 
         // If manually set to paid, activate the survey for respondents
         if ($validated['status'] === Transaction::STATUS_PAID && $transaction->survey) {

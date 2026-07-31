@@ -175,22 +175,6 @@
                         </select>
                     </div>
 
-                    <input type="hidden" name="amount" value="{{ $transaction->amount }}">
-                    <input type="hidden" name="survey_id" value="{{ $transaction->survey_id }}">
-                    <input type="hidden" name="user_id" value="{{ $transaction->user_id }}">
-                    <input type="hidden" name="payment_method" value="{{ $transaction->payment_method }}">
-                    <input type="hidden" name="singapay_ref" value="{{ $transaction->singapay_ref }}">
-
-                    <div>
-                        <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1.5">
-                            Catatan
-                            <span class="font-normal text-gray-400">(opsional)</span>
-                        </label>
-                        <textarea name="admin_note" rows="2"
-                            class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-orange-400 outline-none resize-none"
-                            placeholder="Alasan perubahan status..."></textarea>
-                    </div>
-
                     <button type="submit"
                         onclick="return confirm('Yakin ingin mengubah status transaksi ini?')"
                         class="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-orange-600 text-white text-sm font-semibold rounded-xl hover:bg-orange-700 transition shadow-sm">

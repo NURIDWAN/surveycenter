@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Survey;
 use App\Models\Transaction;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
 class AdminTransactionEditTest extends TestCase
@@ -28,9 +29,24 @@ class AdminTransactionEditTest extends TestCase
             'status' => 'pending',
         ]);
 
+        $queries = [];
+        DB::listen(function ($query) use (&$queries): void {
+            $queries[] = str_replace(['`', '"'], '', strtolower($query->sql));
+        });
+
         $response = $this->actingAs($admin)->get(route('admin.transactions.edit', $transaction));
 
         $response->assertOk();
+        $response->assertSee('Test Survey');
+        $response->assertSee($client->name);
+        $this->assertFalse(
+            collect($queries)->contains(fn (string $query): bool => str_contains($query, 'order by name')),
+            'The edit page must not load the complete users table.'
+        );
+        $this->assertFalse(
+            collect($queries)->contains(fn (string $query): bool => str_contains($query, 'order by title')),
+            'The edit page must not load the complete surveys table.'
+        );
     }
 
     public function test_admin_can_update_transaction(): void
@@ -41,6 +57,7 @@ class AdminTransactionEditTest extends TestCase
             'user_id' => $client->id,
             'title' => 'Test Survey',
             'question_count' => 5,
+            'status' => Survey::STATUS_DRAFT,
         ]);
         $transaction = Transaction::create([
             'user_id' => $client->id,
@@ -50,18 +67,25 @@ class AdminTransactionEditTest extends TestCase
         ]);
 
         $response = $this->actingAs($admin)->put(route('admin.transactions.update', $transaction), [
-            'survey_id' => $survey->id,
-            'user_id' => $client->id,
+            'survey_id' => null,
+            'user_id' => $admin->id,
             'amount' => 60000,
             'status' => 'paid',
             'payment_method' => 'bank_transfer',
         ]);
 
-        $response->assertRedirect(route('admin.transactions.index'));
+        $response->assertRedirect(route('admin.transactions.edit', $transaction));
         $this->assertDatabaseHas('transactions', [
             'id' => $transaction->id,
-            'amount' => 60000,
+            'survey_id' => $survey->id,
+            'user_id' => $client->id,
+            'amount' => 50000,
             'status' => 'paid',
+            'payment_method' => null,
+        ]);
+        $this->assertDatabaseHas('surveys', [
+            'id' => $survey->id,
+            'status' => Survey::STATUS_ACTIVE,
         ]);
     }
 
@@ -130,18 +154,17 @@ class AdminTransactionEditTest extends TestCase
         ]);
 
         $response = $this->actingAs($admin)->put(route('admin.transactions.update', $transaction), [
-            'survey_id' => $survey->id,
-            'user_id' => null,
             'amount' => 75000,
             'status' => 'processing',
             'payment_method' => 'bank_transfer',
         ]);
 
-        $response->assertRedirect(route('admin.transactions.index'));
+        $response->assertRedirect(route('admin.transactions.edit', $transaction));
         $this->assertDatabaseHas('transactions', [
             'id' => $transaction->id,
-            'amount' => 75000,
+            'amount' => 50000,
             'status' => 'processing',
+            'payment_method' => null,
         ]);
     }
 }
