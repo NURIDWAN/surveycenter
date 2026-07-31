@@ -52,6 +52,27 @@
         <a href="#demo-dashboard" class="inline-flex min-w-44 items-center justify-center rounded-lg border border-orange-300 bg-white px-6 py-3.5 text-xs font-extrabold text-orange-500 transition hover:bg-orange-50">Lihat Demo Dashboard</a>
       </div>
 
+      @php
+        $trustBadges = [
+          '10+ Tahun Pengalaman',
+          '250.000+ Responden',
+          '500+ Project',
+          'Dashboard Real Time',
+          'Enumerator Seluruh Indonesia',
+          'Ahli Market Research',
+        ];
+      @endphp
+      <div class="mx-auto mt-8 grid max-w-4xl grid-cols-2 gap-2.5 sm:grid-cols-3 sm:gap-3" aria-label="Keunggulan Survey Center Indonesia">
+        @foreach($trustBadges as $badge)
+          <div class="flex items-center gap-2.5 rounded-xl border border-orange-100 bg-white px-3 py-3 text-left shadow-[0_6px_18px_rgba(249,115,22,.07)] transition hover:-translate-y-0.5 hover:border-orange-200 hover:shadow-[0_8px_22px_rgba(249,115,22,.12)] sm:px-4">
+            <span class="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-orange-500 text-[10px] text-white shadow-sm shadow-orange-200" aria-hidden="true">
+              <i class="fa-solid fa-check"></i>
+            </span>
+            <span class="text-[11px] font-extrabold leading-4 text-slate-700 sm:text-xs">{{ $badge }}</span>
+          </div>
+        @endforeach
+      </div>
+
       {{-- Dashboard mockup --}}
       <div id="demo-dashboard" class="dashboard-shadow relative mx-auto mt-12 w-full max-w-[940px] overflow-hidden rounded-[20px]">
         <img src="{{ asset('assets/dashboard.webp') }}" alt="Demo Dashboard Survey Center" class="w-full h-auto rounded-[20px]" loading="lazy">
