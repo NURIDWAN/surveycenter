@@ -206,7 +206,7 @@
                         <div class="pt-2">
                             @if($isAvailable)
                                 @auth
-                                    @if(auth()->user()->isResponden())
+                                    @if(auth()->user()->is_responden)
                                         <a href="{{ route('responden.surveys.show', $survey) }}"
                                            class="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-orange-500 py-3 text-sm font-bold text-white shadow-lg shadow-orange-500/20 transition-all hover:bg-orange-600 hover:shadow-orange-500/30">
                                             <span>Isi Kuisioner Sekarang</span>
