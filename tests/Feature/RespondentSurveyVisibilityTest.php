@@ -23,6 +23,9 @@ class RespondentSurveyVisibilityTest extends TestCase
             'status' => Survey::STATUS_ACTIVE,
         ]);
 
+        $this->assertTrue($responden->isResponden());
+        $this->assertFalse($client->isResponden());
+
         $this->actingAs($responden)
             ->get(route('kumpulan-quisioner'))
             ->assertOk()

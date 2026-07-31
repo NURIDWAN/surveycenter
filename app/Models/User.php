@@ -70,7 +70,13 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'tanggal_lahir' => 'date',
+            'is_responden' => 'boolean',
         ];
+    }
+
+    public function isResponden(): bool
+    {
+        return $this->is_responden;
     }
 
     public function surveys()
